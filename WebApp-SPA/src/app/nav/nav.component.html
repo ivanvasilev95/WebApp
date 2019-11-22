@@ -1,15 +1,18 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container">
+  <a class="navbar-brand" [routerLink]="['/home']">Web Bazar</a>
   
-  <a class="navbar-brand" href="#">Web Bazar</a>
-  
-  <ul class="navbar-nav mr-auto">
-    <li class="nav-item active">
-      <a class="nav-link" href="#">Favorites</a>
+  <ul *ngIf="loggedIn()" class="navbar-nav mr-auto">
+    <li class="nav-item" routerLinkActive="active">
+      <a class="nav-link" [routerLink]="['/ads']">Ads</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Messages</a>
+    <li class="nav-item" routerLinkActive="active">
+      <a class="nav-link" [routerLink]="['/favorites']">Favorites</a>
     </li>
-    <li *ngIf="loggedIn()" class="nav-item">
+    <li class="nav-item" routerLinkActive="active">
+      <a class="nav-link" [routerLink]="['/messages']">Messages</a>
+    </li>
+    <li class="nav-item" routerLinkActive="active">
       <a class="nav-link" (click)="logout()">Logout</a>
     </li>
   </ul>
@@ -31,5 +34,5 @@
     <input class="form-control mr-sm-2" type="password" name="password" placeholder="Password" required [(ngModel)]="model.password">
     <button [disabled]="!loginForm.valid" class="btn btn-success my-2 my-sm-0" type="submit">Login</button>
   </form>
-
+</div>
 </nav>

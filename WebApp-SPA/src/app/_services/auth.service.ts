@@ -26,4 +26,7 @@ export class AuthService {
     return this.http.post(this.baseURL + 'register', model);
   }
 
+  loggedIn() {
+    return false;
+  }
 }
