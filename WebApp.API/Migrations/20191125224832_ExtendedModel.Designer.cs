@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp.API.Data;
 
 namespace WebApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20191125224832_ExtendedModel")]
+    partial class ExtendedModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +58,7 @@ namespace WebApp.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ads");
+                    b.ToTable("Ad");
                 });
 
             modelBuilder.Entity("WebApp.API.Models.Category", b =>
@@ -71,7 +73,7 @@ namespace WebApp.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("WebApp.API.Models.Photo", b =>
@@ -94,7 +96,7 @@ namespace WebApp.API.Migrations
 
                     b.HasIndex("AdId");
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photo");
                 });
 
             modelBuilder.Entity("WebApp.API.Models.User", b =>
