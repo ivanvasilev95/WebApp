@@ -3,8 +3,9 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { BsDropdownModule } from 'ngx-bootstrap';
+import { BsDropdownModule, TabsModule } from 'ngx-bootstrap';
 import { JwtModule } from '@auth0/angular-jwt';
+import { NgxGalleryModule } from 'ngx-gallery';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -21,6 +22,8 @@ import { AdService } from './_services/ad.service';
 import { UserAdsComponent } from './user-ads/user-ads.component';
 import { AdComponent } from './ads/ad/ad.component';
 import { AdDetailComponent } from './ads/ad-detail/ad-detail.component';
+import { AdDetailResolver } from './_resolvers/ad-detail.resolver';
+import { AdListResolver } from './_resolvers/ad-list.resolver';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -43,6 +46,7 @@ export function tokenGetter() {
       BrowserModule,
       HttpClientModule,
       FormsModule,
+      NgxGalleryModule,
       RouterModule.forRoot(appRoutes),
       BsDropdownModule.forRoot(),
       JwtModule.forRoot({
@@ -51,13 +55,16 @@ export function tokenGetter() {
             whitelistedDomains: ['localhost:5000'],
             blacklistedRoutes: ['localhost:5000/auth', 'localhost:5000/ads']
          }
-      })
+      }),
+      TabsModule.forRoot()
    ],
    providers: [
       AuthService,
       AlertifyService,
       AuthGuard,
-      AdService
+      AdService,
+      AdDetailResolver,
+      AdListResolver
    ],
    bootstrap: [
       AppComponent

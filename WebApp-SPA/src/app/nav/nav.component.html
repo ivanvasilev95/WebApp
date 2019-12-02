@@ -4,7 +4,7 @@
   
   <ul *ngIf="loggedIn()" class="navbar-nav mr-auto">
     <li class="nav-item" routerLinkActive="active">
-      <a class="nav-link" [routerLink]="['/ad-list']">Ads</a>
+      <a class="nav-link" [routerLink]="['/ads']">Ads</a>
     </li>
     <li class="nav-item" routerLinkActive="active">
       <a class="nav-link" [routerLink]="['/favorites']">Favorites</a>
@@ -20,8 +20,10 @@
     </a>
 
     <div class="dropdown-menu mt-4" *dropdownMenu>
-        <a class="dropdown-item" [routerLink]="['/userAds']"><i class="fa fa-user"></i> My Ads</a>
-        <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="#"><i class=""></i> New Ad</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" [routerLink]="['/user-ads']"><i class=""></i> My Ads</a>
+      <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Edit Profile</a>
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out"></i> Logout</a>

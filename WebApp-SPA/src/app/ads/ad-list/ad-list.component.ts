@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdService } from '../../_services/ad.service';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Ad } from '../../_models/ad';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-ad-list',
@@ -11,12 +12,16 @@ import { Ad } from '../../_models/ad';
 export class AdListComponent implements OnInit {
   ads: Ad[];
 
-  constructor(private adService: AdService, private alertify: AlertifyService) { }
+  constructor(private adService: AdService, private alertify: AlertifyService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.loadAds();
+    this.route.data.subscribe(data => {
+      // tslint:disable-next-line: no-string-literal
+      this.ads = data['ads'];
+    });
   }
 
+  /*
   loadAds() {
     this.adService.getAds().subscribe((ads: Ad[]) => {
       this.ads = ads;
@@ -25,5 +30,5 @@ export class AdListComponent implements OnInit {
       // this.alertify.error(error);
     });
   }
-
+  */
 }

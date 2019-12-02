@@ -5,10 +5,16 @@ import { FavoritesComponent } from './favorites/favorites.component';
 import { MessagesComponent } from './messages/messages.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { UserAdsComponent } from './user-ads/user-ads.component';
+import { AdDetailComponent } from './ads/ad-detail/ad-detail.component';
+import { AdDetailResolver } from './_resolvers/ad-detail.resolver';
+import { AdListResolver } from './_resolvers/ad-list.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'ad-list', component: AdListComponent },
+    { path: 'ads', component: AdListComponent,
+    resolve: {ads: AdListResolver} },
+    { path: 'ads/:id', component: AdDetailComponent,
+    resolve: {ad: AdDetailResolver} },
     {
         path: '',
         runGuardsAndResolvers: 'always',
@@ -16,7 +22,7 @@ export const appRoutes: Routes = [
         children: [
             { path: 'favorites', component: FavoritesComponent },
             { path: 'messages', component: MessagesComponent },
-            { path: 'userAds', component: UserAdsComponent } //
+            { path: 'user-ads', component: UserAdsComponent } //
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' }
