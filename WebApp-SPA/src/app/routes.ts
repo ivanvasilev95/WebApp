@@ -8,6 +8,9 @@ import { UserAdsComponent } from './user-ads/user-ads.component';
 import { AdDetailComponent } from './ads/ad-detail/ad-detail.component';
 import { AdDetailResolver } from './_resolvers/ad-detail.resolver';
 import { AdListResolver } from './_resolvers/ad-list.resolver';
+import { UserEditResolver } from './_resolvers/user-edit.resolver';
+import { UserEditComponent } from './user-edit/user-edit.component';
+import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
@@ -22,7 +25,9 @@ export const appRoutes: Routes = [
         children: [
             { path: 'favorites', component: FavoritesComponent },
             { path: 'messages', component: MessagesComponent },
-            { path: 'user-ads', component: UserAdsComponent } //
+            { path: 'user/edit', component: UserEditComponent,
+            resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
+            { path: 'user/ads', component: UserAdsComponent }
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' }

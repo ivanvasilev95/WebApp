@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <h1>Edit Profile</h1>
+  <hr>
+<div class="row">
+    <div class="col-md-9 personal-info">
+      <h3>Personal info</h3>
+      <div class="col-sm-8">
+          <div *ngIf="editForm.dirty" class="alert alert-info">
+            <strong>Information:</strong> You have made changes.  Any unsaved changes will be lost!
+          </div>
+      </div>
+      <form #editForm="ngForm" id="editForm" (ngSubmit)="updateUser()">
+          <div class="form-group">
+              <label for="username" class="col-lg-3 control-label">Username:</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" name="username" [(ngModel)]="user.username" disabled>
+              </div>
+            </div>
+        <div class="form-group">
+          <label for="fullName" class="col-lg-3 control-label">Full name:</label>
+          <div class="col-lg-8">
+            <input type="text" class="form-control" name="fullName" [(ngModel)]="user.fullName" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email" class="col-lg-3 control-label">Email:</label>
+          <div class="col-lg-8">
+            <input type="text" class="form-control" name="email" [(ngModel)]="user.email" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address" class="col-md-3 control-label">Address:</label>
+          <div class="col-md-8">
+            <textarea class="form-control" name="address" rows="6" [(ngModel)]="user.address"></textarea>
+          </div>
+        </div>
+        <!--
+        <div class="form-group">
+          <label class="col-md-3 control-label">Password:</label>
+          <div class="col-md-8">
+            <input class="form-control" type="password" value="11111122333">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-md-3 control-label">Confirm password:</label>
+          <div class="col-md-8">
+            <input class="form-control" type="password" value="11111122333">
+          </div>
+        </div>
+        -->
+        <div class="form-group">
+          <!--<label class="col-md-3 control-label"></label>-->
+          <div class="col-md-8">
+            <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-primary">Save Changes</button>
+            <!--<input type="button" class="btn btn-primary" value="Save Changes">
+            <span></span>
+            <input type="reset" class="btn btn-default" value="Cancel">-->
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+</div>
+<hr>

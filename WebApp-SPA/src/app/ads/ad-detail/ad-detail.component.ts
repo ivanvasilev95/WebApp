@@ -68,8 +68,7 @@ export class AdDetailComponent implements OnInit {
   }
 
   isNotUsersAd() {
-    return true;
-    // return [logged user id] !== this.ad.userId;
+    return +this.authService.decodedToken.nameid !== this.ad.userId;
   }
 
 }

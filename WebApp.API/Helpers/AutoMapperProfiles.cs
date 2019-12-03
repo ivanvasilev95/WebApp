@@ -17,7 +17,9 @@ namespace WebApp.API.Helpers
                 .ForMember(dest => dest.PhotoUrl, opt => {
                     opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
                 });
-             CreateMap<Photo, PhotosForDetailedDTO>();
+             CreateMap<Photo, PhotosForDetailedDTO>(); // PhotoForDetailedDTO
+             CreateMap<User, UserForDetailedDTO>();
+             CreateMap<UserForUpdateDTO, User>();
          }
     }
 }
