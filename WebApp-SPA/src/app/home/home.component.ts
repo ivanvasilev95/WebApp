@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AdService } from '../_services/ad.service';
+import { Ad } from '../_models/ad';
 
 @Component({
   selector: 'app-home',
@@ -7,10 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   registerMode = false;
+  ads: Ad[];
 
-  constructor() { }
+  constructor(private adService: AdService) { }
 
   ngOnInit() {
+    this.loadAds();
   }
 
   registerToggle() {
@@ -19,5 +23,27 @@ export class HomeComponent implements OnInit {
 
   cancelRegister(registerMode: boolean) {
     this.registerMode = registerMode;
+  }
+
+  loadAds() {
+    this.adService.getAds().subscribe((ads: Ad[]) => {
+      this.ads = ads;
+      this.shuffle(ads);
+    }, error => {
+      console.log(error);
+      // this.alertify.error(error);
+    });
+  }
+
+  shuffle(a) {
+    // tslint:disable-next-line: one-variable-per-declaration
+    let j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
   }
 }

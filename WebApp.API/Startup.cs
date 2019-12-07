@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
+using WebApp.API.Helpers;
 
 namespace WebApp.API
 {
@@ -48,6 +49,7 @@ namespace WebApp.API
                         ValidateAudience = false
                     };
                 });
+            services.AddScoped<LogUserActivity>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

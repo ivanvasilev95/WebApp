@@ -2,7 +2,7 @@
   <div class="row">
     <h1>{{ad.title}}</h1>
   </div>
-  <div class="row">
+  <div class="row mb-4">
     <div class="col-sm-4"> <!-- left part -->
       <div class="card">
         <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail">
@@ -18,14 +18,20 @@
             <strong>Location:</strong> {{ad.location}}
           </div>
           <div>
+            <strong>Category:</strong> {{ad.categoryName}}
+          </div>
+          <div>
             <strong>Added:</strong> {{ad.dateAdded | date}}
           </div>
           <div>
             <strong>Condition: </strong><ng-container *ngIf="ad.isUsed;else Other">used</ng-container><ng-template #Other>not used</ng-template>
           </div>
+          <div>
+            <a [routerLink]="['/user', ad.userId, 'ads']">Vijte vsichki obqvi na tozi potrebitel</a>
+          </div>
         </div>
         <div class="card-footer">
-          <div class="btn-group d-flex">
+          <div class="btn-group d-flex" *ngIf="isAuthorized()">
               <button class="btn btn-primary w-100">Watch</button>
               <button class="btn btn-success w-100">Message</button>
           </div>

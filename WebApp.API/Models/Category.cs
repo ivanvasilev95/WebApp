@@ -6,6 +6,6 @@ namespace WebApp.API.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        ICollection<Ad> Ads { get; set; }
+        public ICollection<Ad> Ads { get; set; }
     }
 }

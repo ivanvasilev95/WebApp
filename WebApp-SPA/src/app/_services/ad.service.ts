@@ -31,4 +31,8 @@ export class AdService {
   getUserAds(): Observable<Ad[]> {
     return this.http.get<Ad[]>(this.baseUrl + 'ads/user'/*, httpOptions*/);
   }
+
+  deleteAd(id) {
+    return this.http.delete(this.baseUrl + 'ads/' + id);
+  }
 }

@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data;
 using WebApp.API.DTOs;
+using WebApp.API.Helpers;
+using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
+    [ServiceFilter(typeof(LogUserActivity))]
     [ApiController]
     [Route("[controller]")]
     public class AdsController : ControllerBase
@@ -36,6 +39,7 @@ namespace WebApp.API.Controllers
         {
             var ad = await _repo.GetAd(id);
             var adToReturn = _mapper.Map<AdForDetailedDTO>(ad);
+            adToReturn.CategoryName = _repo.GetAdCategoryName(adToReturn.Id).Name;
      
             return Ok(adToReturn);
         }
@@ -43,12 +47,25 @@ namespace WebApp.API.Controllers
         [Authorize]
         [HttpGet]
         [Route("user")]
-        public IActionResult GetUserAds(){
+        public IActionResult GetUserAds(){ // GetLoggedUserAds
             int userId = int.Parse(this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value);
             var ads = _repo.GetUserAds(userId);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(ads);
 
             return Ok(adsToReturn);
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Ad>> RemoveAd(int id){
+            var adToDelete = await _repo.GetAd(id);
+            if(adToDelete == null)
+                return NotFound();
+            
+            _repo.Delete(adToDelete);
+            await _repo.SaveAll();
+
+            return adToDelete;
         }
     }
 }

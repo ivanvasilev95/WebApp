@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="row">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+          <h3>{{user?.fullName}}</h3>
+          <p>{{user?.address}}</p>
+          <h6><em>Potrebitel ot {{user?.created | date: 'dd/MM/yyyy'}}</em></h6>
+          <em>Posledno aktiven: {{user?.lastActive | timeAgo}}</em>
+      </div>
+  </div>
+  <hr/>
+  <div class="row">
+    <div *ngFor="let ad of user?.ads" class="col-lg-2 col-md-3 col-sm-6">
+      <ad [ad]="ad"></ad>
+    </div>  
+  </div>
+</div>

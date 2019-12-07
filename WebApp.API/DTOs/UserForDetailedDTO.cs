@@ -13,6 +13,6 @@ namespace WebApp.API.DTOs
         public string Email { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
-        public ICollection<Ad> Ads { get; set; }
+        public ICollection<AdForDetailedDTO> Ads { get; set; } // Ad
     }
 }

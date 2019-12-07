@@ -63,12 +63,17 @@ export class AdDetailComponent implements OnInit {
     });
   }
   */
+
   isAuthorized(): boolean {
-    return this.authService.loggedIn() && this.isNotUsersAd();
+    return this.isLoggedIn() && this.isNotUsersAd();
   }
 
   isNotUsersAd() {
     return +this.authService.decodedToken.nameid !== this.ad.userId;
+  }
+
+  isLoggedIn() {
+    return this.authService.loggedIn();
   }
 
 }

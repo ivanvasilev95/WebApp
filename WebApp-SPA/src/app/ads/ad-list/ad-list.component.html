@@ -1,7 +1,17 @@
-<div class="container mt-5">
-  <div class="row">
+<div class="container mt-4">
+  <form> <!-- search -->
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Search">
+      <div class="input-group-btn">
+        <button class="btn btn-outline-dark" type="submit" style="border-radius: 0 !important;margin-right:1px;">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+  <div class="row mt-4">
     <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
-      <app-ad [ad]="ad"></app-ad>
+      <ad [ad]="ad"></ad>
     </div>  
   </div>
 </div>

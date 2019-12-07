@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
 
 namespace WebApp.API.Controllers
 {
@@ -18,9 +19,11 @@ namespace WebApp.API.Controllers
     {
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
             _config = config;
         }
@@ -28,21 +31,18 @@ namespace WebApp.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
-            // validate request
-
             userForRegisterDTO.Username = userForRegisterDTO.Username.ToLower();
 
-            if(await _repo.UserExists(userForRegisterDTO.Username))
+            if (await _repo.UserExists(userForRegisterDTO.Username))
                 return BadRequest("Username already exists.");
-            
-            var userToCreate = new User
-            {
-                Username = userForRegisterDTO.Username
-            };
+
+            var userToCreate = _mapper.Map<User>(userForRegisterDTO);
 
             var createdUser = await _repo.Register(userToCreate, userForRegisterDTO.Password);
 
-            return StatusCode(201);
+            var userToReturn = _mapper.Map<UserForDetailedDTO>(createdUser);
+
+            return CreatedAtRoute("GetUser", new {controller = "Users", id = createdUser.Id}, userToReturn);
         }
 
         [HttpPost("login")]
@@ -50,10 +50,10 @@ namespace WebApp.API.Controllers
         {
             var userFromRepo = await _repo.Login(userForLoginDTO.Username.ToLower(), userForLoginDTO.Password);
 
-            if(userFromRepo == null)
+            if (userFromRepo == null)
                 return Unauthorized();
 
-            var claims = new[] 
+            var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
                 new Claim(ClaimTypes.Name, userFromRepo.Username)
@@ -74,7 +74,8 @@ namespace WebApp.API.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(new {
+            return Ok(new
+            {
                 token = tokenHandler.WriteToken(token)
             });
         }

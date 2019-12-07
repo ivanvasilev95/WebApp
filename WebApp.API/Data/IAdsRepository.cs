@@ -12,5 +12,6 @@ namespace WebApp.API.Data
          Task<IEnumerable<Ad>> GetAds();
          Task<Ad> GetAd(int id);
          IEnumerable<Ad> GetUserAds(int userId);
+         Category GetAdCategoryName(int categoryId);
     }
 }

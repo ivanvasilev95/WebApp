@@ -7,6 +7,8 @@ export interface Ad {
     price: number;
     dateAdded: Date;
     photoUrl: string;
+    categoryId?: number;
+    categoryName?: string;
     description?: string;
     isUsed?: boolean;
     userId?: number;

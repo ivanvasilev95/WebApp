@@ -18,9 +18,21 @@ export class AdListComponent implements OnInit {
     this.route.data.subscribe(data => {
       // tslint:disable-next-line: no-string-literal
       this.ads = data['ads'];
+      this.shuffle(this.ads);
     });
   }
 
+  shuffle(a) {
+    // tslint:disable-next-line: one-variable-per-declaration
+    let j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+  }
   /*
   loadAds() {
     this.adService.getAds().subscribe((ads: Ad[]) => {

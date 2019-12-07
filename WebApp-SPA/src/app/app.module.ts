@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BsDropdownModule, TabsModule } from 'ngx-bootstrap';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -19,7 +19,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { appRoutes } from './routes';
 import { AuthGuard } from './_guards/auth.guard';
 import { AdService } from './_services/ad.service';
-import { UserAdsComponent } from './user-ads/user-ads.component';
+import { MyAdsComponent } from './ads/my-ads/my-ads.component';
 import { AdComponent } from './ads/ad/ad.component';
 import { AdDetailComponent } from './ads/ad-detail/ad-detail.component';
 import { AdDetailResolver } from './_resolvers/ad-detail.resolver';
@@ -27,6 +27,9 @@ import { AdListResolver } from './_resolvers/ad-list.resolver';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UserEditResolver } from './_resolvers/user-edit.resolver';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
+import { UserAdsComponent } from './ads/user-ads/user-ads.component';
+import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
+import {TimeAgoPipe} from 'time-ago-pipe';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -41,15 +44,19 @@ export function tokenGetter() {
       AdListComponent,
       FavoritesComponent,
       MessagesComponent,
+      MyAdsComponent,
       UserAdsComponent,
       AdComponent,
       AdDetailComponent,
-      UserEditComponent
+      UserEditComponent,
+      AdEditComponent,
+      TimeAgoPipe
    ],
    imports: [
       BrowserModule,
       HttpClientModule,
       FormsModule,
+      ReactiveFormsModule,
       NgxGalleryModule,
       RouterModule.forRoot(appRoutes),
       BsDropdownModule.forRoot(),

@@ -1,0 +1,28 @@
+<!--
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-2 col-md-3 col-sm-6">
+        <p *ngFor="let ad of userAds">{{ad.title}}</p>
+      </div>
+      <p *ngIf="userAds.length == 0">User don't have any ads at this moment.</p>
+    </div>
+  </div>
+-->
+<div class="container mt-4">
+  <h3>My Ads</h3>
+  <hr>
+  <p *ngIf="userAds?.length == 0" style="text-align: center;">User doesn't have any ads at this moment.</p>
+  <div *ngIf="userAds?.length !== 0">
+    <ul class="list-group">
+      <li *ngFor="let ad of userAds" class="list-group-item mt-2">
+        <img src="{{ad.photoUrl}}" alt="{{ad.id}}" height="70" width="70" class="mr-2">
+        {{ad.title}}
+        <div style="float:right;">
+          <button type="button" class="btn btn-outline-info ml-3" [routerLink]="['/ads', ad.id]"><i class="fa fa-eye"></i> Preview</button>
+          <button type="button" class="btn btn-outline-secondary ml-2" [routerLink]="['/user/ad', ad.id, 'edit']"><i class="fa fa-edit"></i> Edit</button>
+          <button type="button" class="btn btn-outline-dark ml-2" (click)="onDelete(ad.id)"><i class="fa fa-trash fa-lg"></i> Delete</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

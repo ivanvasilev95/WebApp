@@ -7,5 +7,7 @@ namespace WebApp.API.Data
     {
          Task<User> GetUser(int id);
          Task<bool> SaveAll();
+
+         string getPhotoUrl(int id);
     }
 }

@@ -4,16 +4,19 @@ import { AdListComponent } from './ads/ad-list/ad-list.component';
 import { FavoritesComponent } from './favorites/favorites.component';
 import { MessagesComponent } from './messages/messages.component';
 import { AuthGuard } from './_guards/auth.guard';
-import { UserAdsComponent } from './user-ads/user-ads.component';
+import { MyAdsComponent } from './ads/my-ads/my-ads.component';
 import { AdDetailComponent } from './ads/ad-detail/ad-detail.component';
 import { AdDetailResolver } from './_resolvers/ad-detail.resolver';
 import { AdListResolver } from './_resolvers/ad-list.resolver';
 import { UserEditResolver } from './_resolvers/user-edit.resolver';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
+import { UserAdsComponent } from './ads/user-ads/user-ads.component';
+import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
+    { path: 'user/:id/ads', component: UserAdsComponent },
     { path: 'ads', component: AdListComponent,
     resolve: {ads: AdListResolver} },
     { path: 'ads/:id', component: AdDetailComponent,
@@ -27,7 +30,8 @@ export const appRoutes: Routes = [
             { path: 'messages', component: MessagesComponent },
             { path: 'user/edit', component: UserEditComponent,
             resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
-            { path: 'user/ads', component: UserAdsComponent }
+            { path: 'user/ads', component: MyAdsComponent },
+            { path: 'user/ad/:id/edit', component: AdEditComponent }
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' }
