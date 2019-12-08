@@ -40,7 +40,7 @@ namespace WebApp.API.Data
 
         public IEnumerable<Ad> GetUserAds(int userId)
         {
-            var ads =  _context.Ads.Include(a => a.Photos).Where(a => a.UserId == userId).ToList();
+            var ads =  _context.Ads.Include(a => a.Photos).Where(a => a.UserId == userId).OrderByDescending(a => a.DateAdded).ToList();
             
             return ads;
         }
@@ -52,6 +52,11 @@ namespace WebApp.API.Data
 
         public Category GetAdCategoryName(int categoryId) {
             return  _context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
+        }
+
+        public IEnumerable<Category> GetCategories() {
+            return _context.Categories.ToList();
+            //return _context.Categories.Include(c => c.Ads).ToList();
         }
     }
 }

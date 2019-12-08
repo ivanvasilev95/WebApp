@@ -15,7 +15,12 @@
   <div *ngIf="userAds?.length !== 0">
     <ul class="list-group">
       <li *ngFor="let ad of userAds" class="list-group-item mt-2">
-        <img src="{{ad.photoUrl}}" alt="{{ad.id}}" height="70" width="70" class="mr-2">
+        <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
+          <img src="{{ad.photoUrl}}" alt="{{ad.id}}" style="height:70px;width:70px" class="img-thumbnail mr-2">
+        </ng-container>
+        <ng-template #NoPhoto>
+          <img src="https://www.tibs.org.tw/images/default.jpg" style="height:70px;width:70px" class="img-thumbnail mr-2">
+        </ng-template>
         {{ad.title}}
         <div style="float:right;">
           <button type="button" class="btn btn-outline-info ml-3" [routerLink]="['/ads', ad.id]"><i class="fa fa-eye"></i> Preview</button>

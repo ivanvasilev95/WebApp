@@ -19,7 +19,13 @@
 </div>-->
 <div class="card mb-4">
   <div class="card-img-wrapper">
-    <img class="card-img-top" src="{{ad.photoUrl}}" alt="{{ad.id}}" style="width:158px;height:120px;">
+    <!--<img class="card-img-top" src="{{ad.photoUrl}}" alt="{{ad.id}}" style="width:158px;height:120px;">-->
+    <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
+      <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top" style="width:158px;height:120px;">
+    </ng-container>
+    <ng-template #NoPhoto>
+      <img src="https://www.tibs.org.tw/images/default.jpg" class="card-img-top" style="width:158px;height:120px;">
+    </ng-template>
   </div>
   <div class="card-body p-1">
     <h6 class="card-title text-center mb-1">{{ad.title}}</h6>

@@ -13,6 +13,7 @@ import { UserEditComponent } from './user-edit/user-edit.component';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
+import { NewAddComponent } from './ads/ad-add/ad-add.component';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
@@ -31,7 +32,8 @@ export const appRoutes: Routes = [
             { path: 'user/edit', component: UserEditComponent,
             resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },
-            { path: 'user/ad/:id/edit', component: AdEditComponent }
+            { path: 'user/ad/:id/edit', component: AdEditComponent },
+            { path: 'ad/new', component: NewAddComponent }
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' }

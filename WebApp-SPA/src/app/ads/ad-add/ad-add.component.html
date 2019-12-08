@@ -1,0 +1,99 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-4">
+      <form [formGroup]="createAdForm" (ngSubmit)="createAd()">
+        <h2 class="text-center text-primary">Add New Ad</h2>
+        <hr>
+        <!-- title -->
+        <div class="form-group">
+          <input type="text" 
+            [ngClass]="{'is-invalid': createAdForm.get('title').errors 
+              && createAdForm.get('title').touched}"
+            class="form-control" 
+            formControlName="title" 
+            placeholder="Title">
+          <div class="invalid-feedback" 
+            *ngIf="createAdForm.get('title').hasError('required') 
+              && createAdForm.get('title').touched">
+              Title is required
+          </div>
+          <div class="invalid-feedback" *ngIf="createAdForm.get('title').hasError('minlength') && createAdForm.get('title').touched">
+            Title must be at least 3 characters
+          </div>
+          <div class="invalid-feedback" *ngIf="createAdForm.get('title').hasError('maxlength') && createAdForm.get('title').touched">
+            Title cannot exceed 15 characters
+          </div>
+        </div>
+        <!-- category -->
+        <div class="form-group">
+          <select class="custom-select" (change)="selectCategory($event)" formControlName="categoryId" [ngClass]="{'is-invalid': createAdForm.get('categoryId').errors && createAdForm.get('categoryId').touched}">
+            <option value="" disabled>Select category</option>
+            <option *ngFor="let category of categories" [ngValue]="category.id">{{category.name}}</option>
+          </select>
+          <div class="invalid-feedback" *ngIf="createAdForm.get('categoryId').hasError('required')">
+            Category is required
+          </div>
+        </div>
+        <!-- price -->
+        <div class="form-group">
+          <input type="number"
+            [ngClass]="{'is-invalid': createAdForm.get('price').errors 
+              && createAdForm.get('price').touched
+              || createAdForm.get('price').touched
+              && createAdForm.hasError('mismatch')}"
+            class="form-control" 
+            formControlName="price" 
+            placeholder="Price">
+          <div class="invalid-feedback" 
+            *ngIf="createAdForm.get('price').hasError('required') 
+              && createAdForm.get('price').touched">
+              Price is required
+          </div>
+          <div class="invalid-feedback" 
+            *ngIf="createAdForm.hasError('mismatch') 
+              && createAdForm.get('price').touched">
+              Price must be positive
+          </div>
+        </div>
+        <!-- location -->
+        <div class="form-group">
+          <input type="text" 
+            [ngClass]="{'is-invalid': createAdForm.get('location').errors 
+              && createAdForm.get('location').touched}"
+            class="form-control" 
+            formControlName="location" 
+            placeholder="Location">
+          <div class="invalid-feedback" 
+            *ngIf="createAdForm.get('location').hasError('required') 
+              && createAdForm.get('location').touched">
+              Location is required
+          </div>
+          <div class="invalid-feedback" *ngIf="createAdForm.get('location').hasError('minlength') && createAdForm.get('location').touched">
+            Location must be at least 3 characters
+          </div>
+          <div class="invalid-feedback" *ngIf="createAdForm.get('location').hasError('maxlength') && createAdForm.get('location').touched">
+            Location cannot exceed 15 characters
+          </div>
+        </div>
+        <!-- descrition -->
+        <div class="form-group">
+          <textarea class="form-control" rows="4" formControlName="description" placeholder="Description" [ngClass]="{'is-invalid': createAdForm.get('description').errors}"></textarea>
+          <div class="invalid-feedback" *ngIf="createAdForm.get('description').hasError('maxlength')">
+            Description cannot exceed 20 characters
+          </div>
+        </div>
+        <!-- isUsed -->
+        <div class="form-group">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" formControlName="isUsed" id="defaultUnchecked">
+            <label class="custom-control-label" for="defaultUnchecked">Is Used</label>
+          </div>
+        </div>
+        <div class="form-group text-center">
+          <button class="btn btn-success" [disabled]="!createAdForm?.valid" type="submit">Create Ad</button>
+          <button class="btn btn-default" type="button" [routerLink]="['/home']">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -49,10 +49,10 @@ namespace WebApp.API.Controllers
 
             _mapper.Map(userForUpdateDTO, userFromRepo);
 
-            if (await _repo.SaveAll())
+            //if (await _repo.SaveAll())
                 return NoContent();
             
-            throw new Exception($"Updating user {id} failed on save.");
+            //throw new Exception($"Updating user {id} failed on save.");
         }
 
     }

@@ -2,23 +2,24 @@
   <div class="row">
     <h1>{{ad.title}}</h1>
   </div>
+  <div>
+    <h5>Категория: {{ad.categoryName}}</h5>
+  </div>
   <div class="row mb-4">
     <div class="col-sm-4"> <!-- left part -->
       <div class="card">
-        <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail">
+        <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
+          <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="height:350px;">
+        </ng-container>
+        <ng-template #NoPhoto>
+          <img src="https://www.tibs.org.tw/images/default.jpg" class="card-img-top img-thumbnail" style="height:350px;">
+        </ng-template>
         <div class="card-body">
           <div>
             <strong>Price:</strong> {{ad.price}} lv.
-            <!--
-            <strong>{{ad.title}}</strong><br>
-            <div>{{ad.price}} lv.</div>
-            -->
           </div>
           <div>
             <strong>Location:</strong> {{ad.location}}
-          </div>
-          <div>
-            <strong>Category:</strong> {{ad.categoryName}}
           </div>
           <div>
             <strong>Added:</strong> {{ad.dateAdded | date}}
@@ -26,7 +27,7 @@
           <div>
             <strong>Condition: </strong><ng-container *ngIf="ad.isUsed;else Other">used</ng-container><ng-template #Other>not used</ng-template>
           </div>
-          <div>
+          <div class="mt-1">
             <a [routerLink]="['/user', ad.userId, 'ads']">Vijte vsichki obqvi na tozi potrebitel</a>
           </div>
         </div>
@@ -54,3 +55,4 @@
       </div>
     </div>
   </div>
+</div>

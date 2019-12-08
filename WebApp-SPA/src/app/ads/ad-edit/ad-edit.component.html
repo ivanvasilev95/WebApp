@@ -1,3 +1,76 @@
-<p>
-  <button (click)="logAd()">log ad</button>
-</p>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-sm-4">
+        <h1>Edit Ad</h1>
+    </div>
+    <div class="col-sm-8">
+      <div *ngIf="editForm.dirty" class="alert alert-info">
+        <strong>Information:</strong> You have made changes.  Any unsaved changes will be lost!
+      </div>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-sm-4"> <!-- left part -->
+      <div class="card">
+        <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
+          <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
+        </ng-container>
+        <ng-template #NoPhoto>
+          <img src="https://www.tibs.org.tw/images/default.jpg" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
+        </ng-template>
+        <div class="card-body">
+            <div>
+              <strong>Title:</strong> {{ad.title}}
+            </div>
+          <div>
+            <strong>Price:</strong> {{ad.price}} lv.
+          </div>
+          <div>
+            <strong>Location:</strong> {{ad.location}}
+          </div>
+          <div>
+            <strong>Category:</strong> {{ad.categoryName}}
+          </div>
+          <div>
+            <strong>Added:</strong> {{ad.dateAdded | date}}
+          </div>
+          <div>
+            <strong>Condition: </strong><ng-container *ngIf="ad.isUsed;else Other">used</ng-container><ng-template #Other>not used</ng-template>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="btn-group d-flex">
+            <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-success btn-block">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-8"> <!-- right part -->
+      <div class="tab-panel">
+        <tabset class="ad-tabset">
+            <tab heading="Details">
+                <form #editForm="ngForm" id="editForm" name="editForm" (ngSubmit)="updateAd()">
+                    <h4>Title</h4>
+                    <input type="text" class="form-control" name="title" [(ngModel)]="ad.title">
+                    <h4 class="mt-2">Category</h4>
+                    <select class="form-control" [(ngModel)]="ad.categoryId" name="categoryId" (change)="onCategorySelect()">
+                      <option *ngFor="let category of categories" [ngValue]="category.id">{{category.name}}</option>
+                    </select>
+                    <h4 class="mt-2">Location</h4>
+                    <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
+                    <h4 class="mt-2">Price</h4>
+                    <input type="number" class="form-control" name="price" [(ngModel)]="ad.price">
+                    <h4 class="mt-2">Is Used <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h4>
+                    <h4>Description</h4>
+                    <textarea class="form-control" name="description" rows="4" 
+                      [(ngModel)]="ad.description"></textarea>
+                </form>
+            </tab>
+            <tab heading="Photos">
+              <p>Photo edit will go here</p>
+            </tab>
+        </tabset>
+      </div>
+    </div>
+  </div>
+</div>

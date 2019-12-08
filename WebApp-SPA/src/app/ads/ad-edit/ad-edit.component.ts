@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AdService } from 'src/app/_services/ad.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Ad } from 'src/app/_models/ad';
+import { Category } from 'src/app/_models/category';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-ad-edit',
@@ -11,11 +13,14 @@ import { Ad } from 'src/app/_models/ad';
 })
 export class AdEditComponent implements OnInit {
   ad: Ad;
+  categories: Category[];
+  @ViewChild('editForm', {static: false}) editForm: NgForm;
 
   constructor(private adService: AdService, private route: ActivatedRoute, private alertify: AlertifyService) { }
 
   ngOnInit() {
     this.getAd();
+    this.getCategories();
   }
 
   getAd() {
@@ -25,14 +30,22 @@ export class AdEditComponent implements OnInit {
   }
 
   updateAd() {
-    // this.adService.UpdateAd(adId).subscribe(next => {
-      // this.alertify.success('Ad updated successfully');
-      // reset form
-    // }, error => {
-      // this.alertify.error(error);
-    // });
+    this.adService.updateAd(this.ad.id, this.ad).subscribe(next => {
+      this.alertify.success('Ad updated successfully');
+      this.editForm.reset(this.ad);
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  getCategories() {
+    this.adService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
+    error => this.alertify.error(error));
+  }
+
+  onCategorySelect() {
+    this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name;
   }
 
   logAd() { console.log(this.ad); }
-
 }

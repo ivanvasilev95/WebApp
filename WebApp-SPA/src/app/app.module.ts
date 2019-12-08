@@ -30,6 +30,7 @@ import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import {TimeAgoPipe} from 'time-ago-pipe';
+import { NewAddComponent } from './ads/ad-add/ad-add.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -50,6 +51,7 @@ export function tokenGetter() {
       AdDetailComponent,
       UserEditComponent,
       AdEditComponent,
+      NewAddComponent,
       TimeAgoPipe
    ],
    imports: [

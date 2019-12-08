@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -34,14 +35,39 @@ namespace WebApp.API.Controllers
             return Ok(adsToReturn);
         }
         
-        [HttpGet("{id}")]
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateAd(AdForCreateDTO adForCreateDTO)
+        {
+            var adToCreate = _mapper.Map<Ad>(adForCreateDTO);
+            _repo.Add(adToCreate);
+            var adToReturn = _mapper.Map<AdForDetailedDTO>(adToCreate);
+            await _repo.SaveAll();
+
+            return CreatedAtRoute("GetAd", new {controller = "Ads", id = adToCreate.Id}, adToReturn);
+        }
+
+        [HttpGet("{id}", Name = "GetAd")]
         public async Task<IActionResult> GetAd(int id)
         {
             var ad = await _repo.GetAd(id);
             var adToReturn = _mapper.Map<AdForDetailedDTO>(ad);
-            adToReturn.CategoryName = _repo.GetAdCategoryName(adToReturn.Id).Name;
+            adToReturn.CategoryName = _repo.GetAdCategoryName(adToReturn.CategoryId).Name;
      
             return Ok(adToReturn);
+        }
+        
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Ad>> RemoveAd(int id){
+            var adToDelete = await _repo.GetAd(id);
+            if(adToDelete == null)
+                return NotFound();
+            
+            _repo.Delete(adToDelete);
+            await _repo.SaveAll();
+
+            return adToDelete;
         }
 
         [Authorize]
@@ -55,17 +81,26 @@ namespace WebApp.API.Controllers
             return Ok(adsToReturn);
         }
 
-        [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Ad>> RemoveAd(int id){
-            var adToDelete = await _repo.GetAd(id);
-            if(adToDelete == null)
-                return NotFound();
-            
-            _repo.Delete(adToDelete);
-            await _repo.SaveAll();
+        [HttpGet]
+        [Route("categories")]
+        public IActionResult GetAdCategories(){
+            var categories = _repo.GetCategories();
 
-            return adToDelete;
+            return Ok(categories);
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAd(int id, AdForUpdateDTO adForUpdateDTO)
+        {
+            var adFromRepo = await _repo.GetAd(id);
+
+            _mapper.Map(adForUpdateDTO, adFromRepo);
+
+            //if (await _repo.SaveAll())
+                return NoContent();
+            
+            //throw new Exception($"Updating ad {id} failed on save.");
         }
     }
 }
