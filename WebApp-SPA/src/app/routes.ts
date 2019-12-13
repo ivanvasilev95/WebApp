@@ -14,6 +14,7 @@ import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import { NewAddComponent } from './ads/ad-add/ad-add.component';
+import { MessagesResolver } from './_resolvers/messages.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
@@ -28,12 +29,15 @@ export const appRoutes: Routes = [
         canActivate: [AuthGuard],
         children: [
             { path: 'favorites', component: FavoritesComponent },
-            { path: 'messages', component: MessagesComponent },
+            { path: 'messages', component: MessagesComponent,
+            resolve: {messages: MessagesResolver} },
             { path: 'user/edit', component: UserEditComponent,
             resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },
             { path: 'user/ad/:id/edit', component: AdEditComponent },
-            { path: 'ad/new', component: NewAddComponent }
+            { path: 'ad/new', component: NewAddComponent },
+            { path: 'ads/:id/:senderId', component: AdDetailComponent,
+            resolve: {ad: AdDetailResolver} },
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' }

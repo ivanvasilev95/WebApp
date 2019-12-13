@@ -27,6 +27,8 @@ namespace WebApp.API.Helpers
             CreateMap<Ad, AdForDetailedDTO>();
             CreateMap<AdForUpdateDTO, Ad>();
             CreateMap<AdForCreateDTO, Ad>();
+            CreateMap<MessageForCreationDTO, Message>().ReverseMap();
+            CreateMap<Message, MessageToReturnDTO>();
          }
     }
 }

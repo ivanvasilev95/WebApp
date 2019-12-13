@@ -26,11 +26,13 @@ import { AdDetailResolver } from './_resolvers/ad-detail.resolver';
 import { AdListResolver } from './_resolvers/ad-list.resolver';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UserEditResolver } from './_resolvers/user-edit.resolver';
+import { MessagesResolver } from './_resolvers/messages.resolver';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import {TimeAgoPipe} from 'time-ago-pipe';
 import { NewAddComponent } from './ads/ad-add/ad-add.component';
+import { AdMessagesComponent } from './ads/ad-messages/ad-messages.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -52,6 +54,7 @@ export function tokenGetter() {
       UserEditComponent,
       AdEditComponent,
       NewAddComponent,
+      AdMessagesComponent,
       TimeAgoPipe
    ],
    imports: [
@@ -79,6 +82,7 @@ export function tokenGetter() {
       AdDetailResolver,
       AdListResolver,
       UserEditResolver,
+      MessagesResolver,
       PreventUnsavedChanges
    ],
    bootstrap: [

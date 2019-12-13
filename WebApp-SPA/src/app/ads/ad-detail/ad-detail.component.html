@@ -34,22 +34,26 @@
         <div class="card-footer">
           <div class="btn-group d-flex" *ngIf="isAuthorized()">
               <button class="btn btn-primary w-100">Watch</button>
-              <button class="btn btn-success w-100">Message</button>
+              <button class="btn btn-success w-100" (click)="selectTab(2)">Message</button>
           </div>
         </div>
       </div>
     </div>
     <div class="col-sm-8"> <!-- right part -->
       <div class="tab-panel">
-        <tabset class="ad-tabset">
+        <tabset class="ad-tabset" #adTabs>
             <tab heading="Description">
               <p>{{ad.description}}</p>
             </tab>
             <tab heading="Photos">
-              <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+              <p *ngIf="galleryImages.length == 0">No images available</p>
+              <ngx-gallery *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
-            <tab heading="Messages" *ngIf="isAuthorized()">
-              <p>Messages will go here</p>
+            <tab heading="Messages" *ngIf="senderId !== null"> <!-- *ngIf="isAuthorized()" -->
+              <app-ad-messages [adId]="ad.id" [recipientId]="senderId"></app-ad-messages>
+            </tab>
+            <tab heading="Messages" *ngIf="senderId === null && isAuthorized()">
+              <app-ad-messages [adId]="ad.id" [recipientId]="ad.userId"></app-ad-messages> <!-- [ad]="ad" -->
             </tab>
         </tabset>
       </div>

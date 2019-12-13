@@ -15,5 +15,7 @@ namespace WebApp.API.Models
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
         public ICollection<Ad> Ads { get; set; }
+        public ICollection<Message> MessagesSent { get; set; }
+        public ICollection<Message> MessagesReceived { get; set; }
     }
 }

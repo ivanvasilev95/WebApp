@@ -1,23 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Ad } from 'src/app/_models/ad';
 import { AdService } from 'src/app/_services/ad.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
+import { TabsetComponent } from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-ad-detail',
   templateUrl: './ad-detail.component.html',
   styleUrls: ['./ad-detail.component.css']
 })
-export class AdDetailComponent implements OnInit {
+export class AdDetailComponent implements OnInit, AfterViewInit {
   ad: Ad;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
+  @ViewChild('adTabs', {static: false}) adTabs: TabsetComponent;
+  senderId: number;
 
-  constructor(private adService: AdService, private authService: AuthService,
-              private alertify: AlertifyService, private route: ActivatedRoute) { }
+  constructor(private adService: AdService, public authService: AuthService,
+              private alertify: AlertifyService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -37,6 +40,20 @@ export class AdDetailComponent implements OnInit {
     ];
 
     this.galleryImages = this.getImages();
+
+    if (this.route.snapshot.paramMap.get('senderId') == null || this.route.snapshot.paramMap.get('senderId') === undefined) {
+      this.senderId = null;
+    } else {
+    this.senderId = +this.route.snapshot.paramMap.get('senderId');
+    }
+  }
+
+  ngAfterViewInit() {
+    this.route.queryParams.subscribe(params => {
+      // tslint:disable-next-line: no-string-literal
+      const selectedTab = params['tab'];
+      this.adTabs.tabs[selectedTab > 0 && selectedTab !== undefined ? selectedTab : 0].active = true;
+    });
   }
 
   getImages() {
@@ -76,4 +93,7 @@ export class AdDetailComponent implements OnInit {
     return this.authService.loggedIn();
   }
 
+  selectTab(tabId: number) {
+    this.adTabs.tabs[tabId].active = true;
+  }
 }
