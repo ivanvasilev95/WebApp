@@ -17,5 +17,6 @@ namespace WebApp.API.Models
         public ICollection<Ad> Ads { get; set; }
         public ICollection<Message> MessagesSent { get; set; }
         public ICollection<Message> MessagesReceived { get; set; }
+        public ICollection<Like> Likes { get; set; }
     }
 }

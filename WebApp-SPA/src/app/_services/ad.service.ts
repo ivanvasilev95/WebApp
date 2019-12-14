@@ -48,4 +48,20 @@ export class AdService {
   createAd(ad: Ad) {
     return this.http.post(this.baseUrl + 'ads', ad);
   }
+
+  addToFavorites(id: number, adId: number) {
+    return this.http.post(this.baseUrl + 'users/' + id + '/like/' + adId, {});
+  }
+
+  getAdLikesCount(id: number) {
+    return this.http.get(this.baseUrl + 'ads/' + id + '/likes');
+  }
+
+  getUserFavorites(userId: number) {
+    return this.http.get(this.baseUrl + 'ads/user/' + userId + '/favorites');
+  }
+
+  removeAd(userId: number, adId: number) {
+    return this.http.delete(this.baseUrl + 'ads/user/' + userId + '/removes/' + adId);
+  }
 }

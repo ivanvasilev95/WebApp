@@ -1,4 +1,5 @@
-<div class="container mt-4">
+<p *ngIf="ads?.length == 0">There are no ads uploaded at this time.</p>
+<div *ngIf="ads?.length !== 0" class="container mt-4">
   <form> <!-- search -->
     <div class="input-group">
       <input type="text" class="form-control" placeholder="Search">

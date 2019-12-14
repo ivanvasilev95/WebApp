@@ -7,12 +7,13 @@
       <button class="btn btn-info btn-lg">Learn more</button>
     </div>
     <hr/>
-    <div class="row mt-3">
-    <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
-        <ad [ad]="ad"></ad>
+    <p *ngIf="ads?.length == 0">There are no ads uploaded at this moment. Please, come back later.</p>
+    <div *ngIf="ads?.length !== 0" class="row mt-3">
+      <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
+          <ad [ad]="ad"></ad>
+      </div>
     </div>
-  </div>
-  <div class="row"><a [routerLink]="['/ads']">Vij poveche</a></div>
+    <div *ngIf="ads?.length !== 0" class="row" style="margin-left:5px;"><a [routerLink]="['/ads']">Vij poveche</a></div>
   </div>
 
   <div *ngIf="registerMode" class="container">

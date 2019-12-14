@@ -18,5 +18,6 @@ namespace WebApp.API.Models
         public int CategoryId { get; set; }
         public ICollection<Photo> Photos { get; set; }
         public ICollection<Message> Messages { get; set; }
+        public ICollection<Like> Likes { get; set; }
     }
 }

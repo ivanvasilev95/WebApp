@@ -27,13 +27,16 @@
           <div>
             <strong>Condition: </strong><ng-container *ngIf="ad.isUsed;else Other">used</ng-container><ng-template #Other>not used</ng-template>
           </div>
-          <div class="mt-1">
+          <div *ngIf="isLoggedIn() && !isNotUsersAd()">
+            <strong>Added to Favorites: </strong> {{adLikesCount}}
+          </div>
+          <div class="mt-2">
             <a [routerLink]="['/user', ad.userId, 'ads']">Vijte vsichki obqvi na tozi potrebitel</a>
           </div>
         </div>
         <div class="card-footer">
           <div class="btn-group d-flex" *ngIf="isAuthorized()">
-              <button class="btn btn-primary w-100">Watch</button>
+              <button class="btn btn-primary w-100" (click)="addToFavorites(ad.id)">Add to Favorites</button>
               <button class="btn btn-success w-100" (click)="selectTab(2)">Message</button>
           </div>
         </div>
@@ -49,7 +52,7 @@
               <p *ngIf="galleryImages.length == 0">No images available</p>
               <ngx-gallery *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
-            <tab heading="Messages" *ngIf="senderId !== null"> <!-- *ngIf="isAuthorized()" -->
+            <tab heading="Messages" *ngIf="senderId !== null"> <!-- *ngIf="senderId !== null && isLoggedIn()" -->
               <app-ad-messages [adId]="ad.id" [recipientId]="senderId"></app-ad-messages>
             </tab>
             <tab heading="Messages" *ngIf="senderId === null && isAuthorized()">

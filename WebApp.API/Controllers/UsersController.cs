@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data;
 using WebApp.API.DTOs;
 using WebApp.API.Helpers;
+using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
@@ -17,23 +18,25 @@ namespace WebApp.API.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _repo;
+        private readonly IUserRepository _userRepo;
+        private readonly IAdsRepository _adsRepo;
         private readonly IMapper _mapper;
         
-        public UsersController(IUserRepository repo, IMapper mapper)
+        public UsersController(IUserRepository userRepo, IAdsRepository adsRepo, IMapper mapper)
         {
-            _repo = repo;
+            _userRepo = userRepo;
+            _adsRepo = adsRepo;
             _mapper = mapper;
         }
 
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await _repo.GetUser(id);
+            var user = await _userRepo.GetUser(id);
 
             var userToReturn = _mapper.Map<UserForDetailedDTO>(user);
             foreach(var ad in userToReturn.Ads)
-                ad.PhotoUrl = _repo.getPhotoUrl(ad.Id);
+                ad.PhotoUrl = _userRepo.getPhotoUrl(ad.Id);
 
             return Ok(userToReturn);
         }
@@ -45,7 +48,7 @@ namespace WebApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
             
-            var userFromRepo = await _repo.GetUser(id);
+            var userFromRepo = await _userRepo.GetUser(id);
 
             _mapper.Map(userForUpdateDTO, userFromRepo);
 
@@ -55,5 +58,39 @@ namespace WebApp.API.Controllers
             //throw new Exception($"Updating user {id} failed on save.");
         }
 
+        [HttpPost("{id}/like/{adId}")]
+        public async Task<IActionResult> LikeAd(int id, int adId)
+        {
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            
+            var like = await _adsRepo.GetLike(id, adId);
+            if (like != null) {
+                return BadRequest("You've already added this ad to Favorites");
+            }
+            
+            /*
+            if(await _adsRepo.GetAd(adId) == null)
+                return NotFound();
+            */
+
+            Ad ad = await _adsRepo.GetAd(adId);
+            if(ad == null)
+                return NotFound();
+            if(ad.UserId == id)
+                return BadRequest("You cannot add your own ads to Favorites");
+
+            like = new Like {
+                UserId = id,
+                AdId = adId
+            };
+
+            _adsRepo.Add<Like>(like);
+
+            if(await _adsRepo.SaveAll())
+                return Ok();
+            
+            return BadRequest("Failed to add this ad to Favorites");
+;        }
     }
 }

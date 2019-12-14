@@ -37,8 +37,4 @@ export class MyAdsComponent implements OnInit {
       });
     }
   }
-
-  log() {
-    console.log(this.userAds);
-  }
 }

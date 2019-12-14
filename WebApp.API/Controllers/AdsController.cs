@@ -26,6 +26,13 @@ namespace WebApp.API.Controllers
             _repo = repo;
         }
         
+        [HttpGet("{id}/likes")]
+        public IActionResult GetLikesCount(int id){
+            int count = _repo.GetAdLikesCount(id);
+            
+            return Ok(count);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAds()
         {
@@ -71,12 +78,40 @@ namespace WebApp.API.Controllers
         }
 
         [Authorize]
+        [HttpDelete("user/{userId}/removes/{adId}")]
+        public async Task<ActionResult<Like>> RemoveAdFromFavorites(int userId, int adId) {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+                
+            var likeToRemove = await _repo.GetLike(userId, adId);
+            if(likeToRemove == null)
+                return NotFound();
+
+            _repo.Delete(likeToRemove);
+            await _repo.SaveAll();
+
+            return likeToRemove;
+        }
+
+        [Authorize]
         [HttpGet]
         [Route("user")]
         public IActionResult GetUserAds(){ // GetLoggedUserAds
             int userId = int.Parse(this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value);
             var ads = _repo.GetUserAds(userId);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(ads);
+
+            return Ok(adsToReturn);
+        }
+
+        [Authorize]
+        [HttpGet("user/{userId}/favorites")]
+        public IActionResult GetUserFavorites(int userId){
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+
+            var userFavoriteAds = _repo.GetUserFavorites(userId);
+            var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(userFavoriteAds);
 
             return Ok(adsToReturn);
         }

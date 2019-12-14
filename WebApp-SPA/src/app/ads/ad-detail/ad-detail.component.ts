@@ -17,7 +17,8 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
   @ViewChild('adTabs', {static: false}) adTabs: TabsetComponent;
-  senderId: number;
+  senderId: number; // should have been recipientId
+  adLikesCount: number;
 
   constructor(private adService: AdService, public authService: AuthService,
               private alertify: AlertifyService, private route: ActivatedRoute, private router: Router) { }
@@ -46,6 +47,8 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     } else {
     this.senderId = +this.route.snapshot.paramMap.get('senderId');
     }
+
+    this.getAdLikesCount();
   }
 
   ngAfterViewInit() {
@@ -53,6 +56,12 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
       // tslint:disable-next-line: no-string-literal
       const selectedTab = params['tab'];
       this.adTabs.tabs[selectedTab > 0 && selectedTab !== undefined ? selectedTab : 0].active = true;
+    });
+  }
+
+  getAdLikesCount() {
+    this.adService.getAdLikesCount(this.ad.id).subscribe((count: number) => {
+      this.adLikesCount = count;
     });
   }
 
@@ -67,6 +76,16 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
       });
     }
     return imageUrls;
+  }
+
+  addToFavorites(adId: number) {
+    this.adService.addToFavorites(this.authService.decodedToken.nameid, adId).subscribe(data => {
+      this.alertify.success('You have added ' + this.ad.title + ' to favorites');
+      // this.getAdLikesCount();
+    }, error => {
+      // this.alertify.error(error);
+      this.alertify.error('This ad has already beed added to Favorites');
+    });
   }
 
   /*
@@ -85,11 +104,11 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     return this.isLoggedIn() && this.isNotUsersAd();
   }
 
-  isNotUsersAd() {
+  isNotUsersAd(): boolean {
     return +this.authService.decodedToken.nameid !== this.ad.userId;
   }
 
-  isLoggedIn() {
+  isLoggedIn(): boolean {
     return this.authService.loggedIn();
   }
 

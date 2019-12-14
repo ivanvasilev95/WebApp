@@ -14,5 +14,8 @@ namespace WebApp.API.Data
          IEnumerable<Ad> GetUserAds(int userId);
          Category GetAdCategoryName(int categoryId);
          IEnumerable<Category> GetCategories();
+         Task<Like> GetLike(int userId, int adId);
+         int GetAdLikesCount(int adId);
+         IEnumerable<Ad> GetUserFavorites(int userId);
     }
 }

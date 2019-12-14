@@ -58,5 +58,24 @@ namespace WebApp.API.Data
             return _context.Categories.ToList();
             //return _context.Categories.Include(c => c.Ads).ToList();
         }
+
+        public async Task<Like> GetLike(int userId, int adId)
+        {
+            return await _context.Likes.FirstOrDefaultAsync(u => u.UserId == userId && u.AdId == adId);
+        }
+
+        public int GetAdLikesCount(int adId)
+        {
+            return _context.Likes.Where(l => l.AdId == adId).Count();
+        }
+
+        public IEnumerable<Ad> GetUserFavorites(int userId)
+        {
+            //var userFavorites = _context.Likes.Where(u => u.UserId == userId).Select(i => i.AdId);
+            var user = _context.Users.Include(x => x.Likes).FirstOrDefault(u => u.Id == userId);
+            var userFavorites = user.Likes.Where(u => u.UserId == userId).Select(i => i.AdId); // where clause probably not needed
+            
+            return _context.Ads.Include(p => p.Photos).Where(a => userFavorites.Contains(a.Id));  
+        }
     }
 }
