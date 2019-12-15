@@ -1,15 +1,27 @@
 <p *ngIf="ads?.length == 0">There are no ads uploaded at this time.</p>
 <div *ngIf="ads?.length !== 0" class="container mt-4">
-  <form> <!-- search -->
+  <!--<form (ngSubmit)="search()">--> <!-- search -->
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="Search">
-      <div class="input-group-btn">
-        <button class="btn btn-outline-dark" type="submit" style="border-radius: 0 !important;margin-right:1px;">
+      <input #searchBar type="text" style="margin-right:4px;" class="form-control" placeholder="Търсене..." (change)="search()">
+      <!--<div class="input-group-btn">
+        <button class="btn btn-outline-dark" type="submit" style="border-radius: 0 !important;margin-right:3px;">
           <i class="fa fa-search"></i>
         </button>
-      </div>
+      </div>-->
+      <select class="form-control" style="margin-right:4px;" (change)="onCategorySelect($event)">
+        <!--<option value="" disabled>Изберете категория</option>-->
+        <option [value]="0">Избери категория</option>
+        <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+      </select>
+      <select class="form-control" (change)="onSortSelect($event)">
+        <option value="" disabled>Сортирай по</option>
+        <option value="newest">Най-нови</option>
+        <option value="cheapest">Най-евтини</option>
+        <option value="expensive">Най-скъпи</option>
+      </select>
     </div>
-  </form>
+  <!--</form>-->
+  <hr>
   <div class="row mt-4">
     <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
       <ad [ad]="ad"></ad>

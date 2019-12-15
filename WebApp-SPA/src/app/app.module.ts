@@ -33,6 +33,7 @@ import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import {TimeAgoPipe} from 'time-ago-pipe';
 import { NewAddComponent } from './ads/ad-add/ad-add.component';
 import { AdMessagesComponent } from './ads/ad-messages/ad-messages.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -72,7 +73,8 @@ export function tokenGetter() {
             blacklistedRoutes: ['localhost:5000/auth', 'localhost:5000/ads']
          }
       }),
-      TabsModule.forRoot()
+      TabsModule.forRoot(),
+      BrowserAnimationsModule
    ],
    providers: [
       AuthService,

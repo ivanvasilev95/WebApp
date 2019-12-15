@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AdService } from '../../_services/ad.service';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Ad } from '../../_models/ad';
 import { ActivatedRoute } from '@angular/router';
+import { Category } from 'src/app/_models/category';
 
 @Component({
   selector: 'app-ad-list',
@@ -11,6 +12,12 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AdListComponent implements OnInit {
   ads: Ad[];
+  categories: Category[];
+  // tslint:disable-next-line: no-inferrable-types
+  categoryId: number = 0;
+  // tslint:disable-next-line: no-inferrable-types
+  sortCriteria: string = '';
+  @ViewChild('searchBar', {static: false}) searchBar: ElementRef;
 
   constructor(private adService: AdService, private alertify: AlertifyService, private route: ActivatedRoute) { }
 
@@ -20,6 +27,7 @@ export class AdListComponent implements OnInit {
       this.ads = data['ads'];
       this.shuffle(this.ads);
     });
+    this.getCategories();
   }
 
   shuffle(a) {
@@ -33,6 +41,106 @@ export class AdListComponent implements OnInit {
     }
     return a;
   }
+
+  getCategories() {
+    this.adService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
+    error => this.alertify.error(error));
+  }
+
+  search() {
+    if (this.searchBar.nativeElement.value.replace(/\s/g, '').length) {
+      console.log(this.searchBar.nativeElement.value);
+    } else {
+      // input contains only whitespace
+    }
+
+    if (this.categoryId !== 0) {
+      console.log(this.categoryId);
+    }
+
+    if (this.sortCriteria !== '') {
+      console.log(this.sortCriteria);
+    }
+}
+
+  onCategorySelect(e) {
+    this.categoryId = +e.target.value;
+
+    if (this.categoryId === 0) {
+      // all categories
+    } else {
+      console.log(this.categoryId);
+    }
+
+    if (this.searchBar.nativeElement.value.replace(/\s/g, '').length) {
+      console.log(this.searchBar.nativeElement.value);
+    }
+
+    if (this.sortCriteria !== '') {
+      console.log(this.sortCriteria);
+    }
+  }
+
+  onSortSelect(e) {
+    this.sortCriteria = e.target.value;
+    console.log(this.sortCriteria);
+
+    if (this.searchBar.nativeElement.value.replace(/\s/g, '').length) {
+      console.log(this.searchBar.nativeElement.value);
+    }
+
+    if (this.categoryId !== 0) {
+      console.log(this.categoryId);
+    }
+  }
+
+  /*
+  search() {
+    if (this.searchBar.nativeElement.value !== '') {
+      console.log(this.searchBar.nativeElement.value);
+
+      if (this.categoryId !== 0) {
+        console.log(this.categoryId);
+      }
+
+      if (this.sortCriteria !== '') {
+        console.log(this.sortCriteria);
+      }
+    }
+  }
+
+  onCategorySelect(e) {
+    this.categoryId = +e.target.value;
+
+    if (this.categoryId === 0) {
+      // all categories
+    } else {
+      console.log(this.categoryId);
+    }
+
+    if (this.searchBar.nativeElement.value !== '') {
+      console.log(this.searchBar.nativeElement.value);
+    }
+
+    if (this.sortCriteria !== '') {
+      console.log(this.sortCriteria);
+    }
+  }
+
+  onSortSelect(e) {
+    this.sortCriteria = e.target.value;
+    console.log(this.sortCriteria);
+
+    if (this.searchBar.nativeElement.value !== '') {
+      console.log(this.searchBar.nativeElement.value);
+    }
+
+    if (this.categoryId !== 0) {
+      console.log(this.categoryId);
+    }
+  }
+  */
+
   /*
   loadAds() {
     this.adService.getAds().subscribe((ads: Ad[]) => {
