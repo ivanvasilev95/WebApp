@@ -60,14 +60,19 @@
                     <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
                     <h4 class="mt-2">Price</h4>
                     <input type="number" class="form-control" name="price" [(ngModel)]="ad.price">
-                    <h4 class="mt-2">Is Used <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h4>
-                    <h4>Description</h4>
+                    <!--<h4 class="mt-2">Is Used <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h4>-->
+                    <h4 class="mt-2">Condition</h4>
+                    <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
+                      <option [ngValue]="true">used</option>
+                      <option [ngValue]="false">not used</option>
+                    </select>
+                    <h4 class="mt-2">Description</h4>
                     <textarea class="form-control" name="description" rows="4" 
                       [(ngModel)]="ad.description"></textarea>
                 </form>
             </tab>
             <tab heading="Photos">
-              <p>Photo edit will go here</p>
+              <photo-editor [photos]="ad.photos" [adId]="ad.id" (getAdPhotoChange)="updateMainPhoto($event)"></photo-editor>
             </tab>
         </tabset>
       </div>

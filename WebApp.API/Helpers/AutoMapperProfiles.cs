@@ -28,6 +28,8 @@ namespace WebApp.API.Helpers
             CreateMap<AdForCreateDTO, Ad>();
             CreateMap<MessageForCreationDTO, Message>().ReverseMap();
             CreateMap<Message, MessageToReturnDTO>();
+            CreateMap<Photo, PhotoForReturnDTO>();
+            CreateMap<PhotoForCreationDTO, Photo>();
          }
     }
 }

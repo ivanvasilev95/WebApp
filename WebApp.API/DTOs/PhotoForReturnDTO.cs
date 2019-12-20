@@ -1,12 +1,10 @@
-namespace WebApp.API.Models
+namespace WebApp.API.DTOs
 {
-    public class Photo
+    public class PhotoForReturnDTO
     {
         public int Id { get; set; }
         public string Url { get; set; }
         public bool IsMain { get; set; }
         public string PublicId { get; set; }
-        public Ad Ad { get; set; }
-        public int AdId { get; set; }
     }
 }

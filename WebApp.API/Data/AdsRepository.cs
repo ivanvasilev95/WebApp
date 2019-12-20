@@ -77,5 +77,15 @@ namespace WebApp.API.Data
             
             return _context.Ads.Include(p => p.Photos).Where(a => userFavorites.Contains(a.Id));  
         }
+
+        public async Task<Photo> GetPhoto(int id)
+        {
+            return await _context.Photos.FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<Photo> GetMainPhotoForAd(int adId)
+        {
+            return await _context.Photos.Where(p => p.AdId == adId).FirstOrDefaultAsync(p => p.IsMain);
+        }
     }
 }

@@ -145,5 +145,13 @@ namespace WebApp.API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("user/unread")]
+        public IActionResult GetUnreadMessages(){
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int count = _userRepo.GetUnreadMessagesCount(userId);
+            
+            return Ok(count);
+        }
     }
 }

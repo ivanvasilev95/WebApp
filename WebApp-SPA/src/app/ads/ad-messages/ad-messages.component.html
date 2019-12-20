@@ -6,7 +6,7 @@
   
       <ul class="chat">
         <li *ngFor="let message of messages">
-          <!-- to them -->
+          <!-- from them -->
           <div *ngIf="message.senderId == recipientId">
             <div class="chat-body">
               <div class="header">
@@ -15,20 +15,29 @@
                   <span class="fa fa-clock-o">{{message.messageSent | timeAgo}}</span>
                 </small>
               </div>
-              <p>{{message.content}}</p>
+              <p *ngIf="!message.senderDeleted">{{message.content}}</p>
+              <p *ngIf="message.senderDeleted"><i>[message removed]</i></p>
             </div>
           </div>
-          <!-- to me -->
+          <!-- from me -->
           <div *ngIf="message.senderId != recipientId">
             <div class="chat-body">
               <div class="header">
+                <strong class="primary-font">{{message.senderUsername}}</strong>
+                <small class="text-muted float-right">
+                  <span class="fa fa-clock-o">{{message.messageSent | timeAgo}}</span>
+                  <span *ngIf="message.isRead" class="text-success"> (Read {{message.dateRead | timeAgo}})</span>
+                  <span *ngIf="message.recipientDeleted" class="text-danger"> (deleted)</span>
+                </small>
+                <!--
                   <small class="text-muted">
                     <span class="fa fa-clock-o">{{message.messageSent | timeAgo}}</span>
-                    <!--<span *ngIf="!message.isRead" class="text-danger">(unread)</span>-->
+                    // <span *ngIf="!message.isRead" class="text-danger">(unread)</span>
                     <span *ngIf="message.isRead" class="text-success">(Read {{message.dateRead | timeAgo}})</span>
                     <span *ngIf="message.recipientDeleted" class="text-danger"> (deleted)</span>
                   </small>
                 <strong class="primary-font float-right">{{message.senderUsername}}</strong>
+                -->
               </div>
               <p>{{message.content}}</p>
             </div>

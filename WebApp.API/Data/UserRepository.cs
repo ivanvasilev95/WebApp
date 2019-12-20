@@ -69,7 +69,7 @@ namespace WebApp.API.Data
                     messages = messages.Where(u => u.SenderId == messageParams.UserId && u.SenderDeleted == false);
                     break;
                 default:
-                    messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.RecipientDeleted == false /* && u.Ad.UserId == messageParams.UserId && u.IsRead == false*/);
+                    messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.RecipientDeleted == false /*&& u.IsRead == false*/ /*&& u.Ad.UserId == messageParams.UserId && u.IsRead == false*/);
                     break;
             }
 
@@ -90,6 +90,11 @@ namespace WebApp.API.Data
                 .ToListAsync();
 
             return messages;
+        }
+
+        public int GetUnreadMessagesCount(int userId)
+        {
+            return _context.Messages.Where(m => m.RecipientId == userId && m.IsRead == false && m.SenderDeleted == false && m.RecipientDeleted == false).Count();
         }
     }
 }

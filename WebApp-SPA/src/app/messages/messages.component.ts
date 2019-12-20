@@ -31,6 +31,22 @@ export class MessagesComponent implements OnInit {
   deleteMessage(id: number) {
     this.alertify.confirm('Are you sure you want to delete this message', () => {
       this.userService.deleteMessage(id).subscribe(() => {
+        const msgIndex = this.messages.findIndex(m => m.id === id);
+        if (this.messages[msgIndex].isRead === false) {
+          this.authService.unreadMsgCnt--;
+        }
+        this.messages.splice(msgIndex, 1);
+        this.alertify.success('Message has been deleted');
+      }, error => {
+        this.alertify.error('Failed to delete the message');
+      });
+    });
+  }
+
+  /*
+  deleteMessage(id: number) {
+    this.alertify.confirm('Are you sure you want to delete this message', () => {
+      this.userService.deleteMessage(id).subscribe(() => {
         this.messages.splice(this.messages.findIndex(m => m.id === id), 1);
         this.alertify.success('Message has been deleted');
       }, error => {
@@ -38,4 +54,5 @@ export class MessagesComponent implements OnInit {
       });
     });
   }
+  */
 }

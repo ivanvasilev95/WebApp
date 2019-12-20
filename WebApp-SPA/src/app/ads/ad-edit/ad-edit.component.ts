@@ -47,5 +47,7 @@ export class AdEditComponent implements OnInit {
     this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name;
   }
 
-  logAd() { console.log(this.ad); }
+  updateMainPhoto(photoUrl) {
+    this.ad.photoUrl = photoUrl;
+  }
 }

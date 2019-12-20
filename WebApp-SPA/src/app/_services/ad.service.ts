@@ -64,4 +64,12 @@ export class AdService {
   removeAd(userId: number, adId: number) {
     return this.http.delete(this.baseUrl + 'ads/user/' + userId + '/removes/' + adId);
   }
+
+  setMainPhoto(adId: number, id: number) {
+    return this.http.post(this.baseUrl + 'ads/' + adId + '/photos/' + id + '/SetMain', {});
+  }
+
+  deletePhoto(adId: number, id: number) {
+    return this.http.delete(this.baseUrl + 'ads/' + adId + 'photos' + id);
+  }
 }

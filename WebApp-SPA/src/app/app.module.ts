@@ -34,6 +34,8 @@ import {TimeAgoPipe} from 'time-ago-pipe';
 import { NewAddComponent } from './ads/ad-add/ad-add.component';
 import { AdMessagesComponent } from './ads/ad-messages/ad-messages.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PhotoEditorComponent } from './ads/photo-editor/photo-editor.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -56,6 +58,7 @@ export function tokenGetter() {
       AdEditComponent,
       NewAddComponent,
       AdMessagesComponent,
+      PhotoEditorComponent,
       TimeAgoPipe
    ],
    imports: [
@@ -74,7 +77,8 @@ export function tokenGetter() {
          }
       }),
       TabsModule.forRoot(),
-      BrowserAnimationsModule
+      BrowserAnimationsModule,
+      FileUploadModule
    ],
    providers: [
       AuthService,

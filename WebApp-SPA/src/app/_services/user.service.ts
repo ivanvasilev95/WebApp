@@ -60,4 +60,8 @@ export class UserService {
   markAsRead(id: number) {
     this.http.post(this.baseUrl + 'messages/' + id + '/read', {}).subscribe();
   }
+
+  getUnreadMessagesCount() {
+    return this.http.get(this.baseUrl + 'messages/user/unread');
+  }
 }

@@ -13,6 +13,7 @@ namespace WebApp.API.Data
         Task<Message> GetMessage(int id);
         //Task<IEnumerable<Message>> GetMessagesForAd(MessageParams messageParams); // int id // Task<PagedList<Message>>
         IEnumerable<Message> GetMessagesForUser(MessageParams messageParams); // Task<PagedList<Message>>
-        Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId, int adId); 
+        Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId, int adId);
+        int GetUnreadMessagesCount(int userId); 
     }
 }

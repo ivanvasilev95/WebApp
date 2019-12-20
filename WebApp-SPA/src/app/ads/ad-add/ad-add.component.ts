@@ -46,6 +46,16 @@ export class NewAddComponent implements OnInit {
     }
   }
 
+  get condition() {
+    return this.createAdForm.get('isUsed');
+  }
+
+  selectCondition(e) {
+    this.condition.setValue(e.target.value === 'true', {
+      onlySelf: true
+    });
+  }
+
   createNewAdForm() {
     this.createAdForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
@@ -53,7 +63,8 @@ export class NewAddComponent implements OnInit {
       description: ['', Validators.maxLength(20)],
       location: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
       price: ['', Validators.required],
-      isUsed: [false]
+      isUsed: ['', Validators.required]
+      // isUsed: [false]
     }, {validator: this.priceValidator});
   }
 

@@ -17,5 +17,7 @@ namespace WebApp.API.Data
          Task<Like> GetLike(int userId, int adId);
          int GetAdLikesCount(int adId);
          IEnumerable<Ad> GetUserFavorites(int userId);
+         Task<Photo> GetPhoto(int id);
+        Task<Photo> GetMainPhotoForAd(int adId);
     }
 }

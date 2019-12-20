@@ -12,6 +12,7 @@ export class AuthService {
   baseURL = environment.apiUrl + 'auth/';
   jwtHelper = new JwtHelperService();
   decodedToken: any;
+  unreadMsgCnt: number;
 
   constructor(private http: HttpClient) { }
 
@@ -24,6 +25,9 @@ export class AuthService {
             localStorage.setItem('token', user.token);
             this.decodedToken = this.jwtHelper.decodeToken(user.token);
           }
+          this.http.get(environment.apiUrl + 'messages/user/unread').subscribe((count: number) => {
+            this.unreadMsgCnt = count;
+          });
         })
       );
   }
