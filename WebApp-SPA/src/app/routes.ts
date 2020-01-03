@@ -15,14 +15,20 @@ import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import { NewAddComponent } from './ads/ad-add/ad-add.component';
 import { MessagesResolver } from './_resolvers/messages.resolver';
+import { LoginComponent } from './login/login.component';
+import { NewAdGuard } from './_guards/new-ad.guard';
+import { AboutComponent } from './about/about.component';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
+    { path: 'about', component: AboutComponent },
+    { path: 'login', component: LoginComponent },
     { path: 'user/:id/ads', component: UserAdsComponent },
     { path: 'ads', component: AdListComponent,
     resolve: {ads: AdListResolver} },
     { path: 'ads/:id', component: AdDetailComponent,
     resolve: {ad: AdDetailResolver} },
+    { path: 'ad/new', component: NewAddComponent, runGuardsAndResolvers: 'always', canActivate: [NewAdGuard] },
     {
         path: '',
         runGuardsAndResolvers: 'always',
@@ -35,7 +41,6 @@ export const appRoutes: Routes = [
             resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },
             { path: 'user/ad/:id/edit', component: AdEditComponent },
-            { path: 'ad/new', component: NewAddComponent },
             { path: 'ads/:id/:senderId', component: AdDetailComponent,
             resolve: {ad: AdDetailResolver} },
         ]

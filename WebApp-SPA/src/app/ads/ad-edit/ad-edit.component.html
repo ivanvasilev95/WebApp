@@ -1,11 +1,11 @@
 <div class="container mt-4">
   <div class="row">
     <div class="col-sm-4">
-        <h1>Edit Ad</h1>
+        <h4>Редакция на обява</h4>
     </div>
     <div class="col-sm-8">
       <div *ngIf="editForm.dirty" class="alert alert-info">
-        <strong>Information:</strong> You have made changes.  Any unsaved changes will be lost!
+        <strong>Информация:</strong> Вие направихте промени. Всички незапазени промени ще бъдат изтрити!
       </div>
     </div>
   </div>
@@ -20,27 +20,27 @@
         </ng-template>
         <div class="card-body">
             <div>
-              <strong>Title:</strong> {{ad.title}}
+              <strong>Заглавие:</strong> {{ad.title}}
             </div>
           <div>
-            <strong>Price:</strong> {{ad.price}} lv.
+            <strong>Цена:</strong> {{ad.price}} лв.
           </div>
           <div>
-            <strong>Location:</strong> {{ad.location}}
+            <strong>Населено място:</strong> {{ad.location}}
           </div>
           <div>
-            <strong>Category:</strong> {{ad.categoryName}}
+            <strong>Категория:</strong> {{ad.categoryName}}
           </div>
           <div>
-            <strong>Added:</strong> {{ad.dateAdded | date}}
+            <strong>Добавена:</strong> {{ad.dateAdded | date}}
           </div>
           <div>
-            <strong>Condition: </strong><ng-container *ngIf="ad.isUsed;else Other">used</ng-container><ng-template #Other>not used</ng-template>
+            <strong>Състояние: </strong><ng-container *ngIf="ad.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
           </div>
         </div>
         <div class="card-footer">
           <div class="btn-group d-flex">
-            <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-success btn-block">Save Changes</button>
+            <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-success btn-block">Редакция на обява</button>
           </div>
         </div>
       </div>
@@ -48,30 +48,30 @@
     <div class="col-sm-8"> <!-- right part -->
       <div class="tab-panel">
         <tabset class="ad-tabset">
-            <tab heading="Details">
+            <tab heading="Детайли">
                 <form #editForm="ngForm" id="editForm" name="editForm" (ngSubmit)="updateAd()">
-                    <h4>Title</h4>
+                    <h5>Заглавие на обявата</h5>
                     <input type="text" class="form-control" name="title" [(ngModel)]="ad.title">
-                    <h4 class="mt-2">Category</h4>
+                    <h5 class="mt-2">Категория</h5>
                     <select class="form-control" [(ngModel)]="ad.categoryId" name="categoryId" (change)="onCategorySelect()">
                       <option *ngFor="let category of categories" [ngValue]="category.id">{{category.name}}</option>
                     </select>
-                    <h4 class="mt-2">Location</h4>
+                    <h5 class="mt-2">Населено място</h5>
                     <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
-                    <h4 class="mt-2">Price</h4>
+                    <h5 class="mt-2">Цена</h5>
                     <input type="number" class="form-control" name="price" [(ngModel)]="ad.price">
                     <!--<h4 class="mt-2">Is Used <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h4>-->
-                    <h4 class="mt-2">Condition</h4>
+                    <h5 class="mt-2">Състояние</h5>
                     <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
-                      <option [ngValue]="true">used</option>
-                      <option [ngValue]="false">not used</option>
+                      <option [ngValue]="true">използвано</option>
+                      <option [ngValue]="false">ново</option>
                     </select>
-                    <h4 class="mt-2">Description</h4>
-                    <textarea class="form-control" name="description" rows="4" 
+                    <h5 class="mt-2">Описание</h5>
+                    <textarea class="form-control" name="description" rows="3" 
                       [(ngModel)]="ad.description"></textarea>
                 </form>
             </tab>
-            <tab heading="Photos">
+            <tab heading="Снимки">
               <photo-editor [photos]="ad.photos" [adId]="ad.id" (getAdPhotoChange)="updateMainPhoto($event)"></photo-editor>
             </tab>
         </tabset>

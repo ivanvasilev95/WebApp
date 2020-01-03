@@ -85,12 +85,12 @@ namespace WebApp.API.Controllers
             var ad = await _adsRepo.GetAd(messageForCreationDTO.AdId);
 
             if (ad == null)
-                return BadRequest("Could not find ad");
+                return BadRequest("Обявата не е намерена");
 
             var recipient = await _userRepo.GetUser(messageForCreationDTO.RecipientId);
 
             if (recipient == null)
-                return BadRequest("Could not find user");
+                return BadRequest("Потребителят не е намерен");
 
             var message = _mapper.Map<Message>(messageForCreationDTO);
 
@@ -102,7 +102,7 @@ namespace WebApp.API.Controllers
                 return CreatedAtRoute("GetMessage", new { controller = "Messages", id = message.Id }, messageToReturn);
             }
 
-            throw new Exception("Creating the message failed on save");
+            throw new Exception("Грешка при запазване на съобщението");
         }
 
         [HttpPost("{id}")]
@@ -126,7 +126,7 @@ namespace WebApp.API.Controllers
             if (await _userRepo.SaveAll())
                 return NoContent();
 
-            throw new Exception("Error deleting the message");
+            throw new Exception("Грешка при изтриване на съобщението");
         }
 
         [HttpPost("{id}/read")]

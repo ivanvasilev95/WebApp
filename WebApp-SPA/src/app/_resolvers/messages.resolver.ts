@@ -18,7 +18,7 @@ export class MessagesResolver implements Resolve<Message[]> {
         // tslint:disable-next-line: no-string-literal
         return this.userService.getMessages(/*this.messageContainer*/).pipe(
             catchError(error => {
-                this.alertify.error('Problem retrieving messages');
+                this.alertify.error('Проблем с получаването на данните');
                 this.router.navigate(['']);
                 return of(null);
             })

@@ -36,6 +36,9 @@ import { AdMessagesComponent } from './ads/ad-messages/ad-messages.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PhotoEditorComponent } from './ads/photo-editor/photo-editor.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { LoginComponent } from './login/login.component';
+import { NewAdGuard } from './_guards/new-ad.guard';
+import { AboutComponent } from './about/about.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -59,7 +62,9 @@ export function tokenGetter() {
       NewAddComponent,
       AdMessagesComponent,
       PhotoEditorComponent,
-      TimeAgoPipe
+      TimeAgoPipe,
+      LoginComponent,
+      AboutComponent
    ],
    imports: [
       BrowserModule,
@@ -84,6 +89,7 @@ export function tokenGetter() {
       AuthService,
       AlertifyService,
       AuthGuard,
+      NewAdGuard,
       AdService,
       AdDetailResolver,
       AdListResolver,

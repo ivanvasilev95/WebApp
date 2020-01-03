@@ -34,7 +34,7 @@ namespace WebApp.API.Controllers
             userForRegisterDTO.Username = userForRegisterDTO.Username.ToLower();
 
             if (await _repo.UserExists(userForRegisterDTO.Username))
-                return BadRequest("Username already exists.");
+                return BadRequest("Потребителско име е заето.");
 
             var userToCreate = _mapper.Map<User>(userForRegisterDTO);
 

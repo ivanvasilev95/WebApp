@@ -1,8 +1,9 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+// import { Location } from '@angular/common';
 import { User } from '../_models/user';
 
 @Component({
@@ -11,12 +12,11 @@ import { User } from '../_models/user';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  @Output() cancelRegister = new EventEmitter();
   registerForm: FormGroup;
   user: User;
 
   constructor(private authService: AuthService, private router: Router,
-              private alertify: AlertifyService, private fb: FormBuilder) { }
+              private alertify: AlertifyService, private fb: FormBuilder/*, private location: Location*/) { }
 
   ngOnInit() {
     this.createRegisterForm();
@@ -40,9 +40,9 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.user = Object.assign({}, this.registerForm.value);
       this.authService.register(this.user).subscribe(() => {
-        this.alertify.success('Registration successful');
+        this.alertify.success('Регистрацията е направена успешно');
       }, error => {
-        this.alertify.error(error);
+        this.alertify.error('Имаше грешка от страна на сървъра при опита за регистрация');
       }, () => {
         this.authService.login(this.user).subscribe(() => {
           this.router.navigate(['']);
@@ -50,19 +50,9 @@ export class RegisterComponent implements OnInit {
       });
     }
   }
-
   /*
-  register() {
-    this.authService.register(this.model).subscribe(() => {
-      this.alertify.success('registration successful');
-      // this.cancelRegister.emit(false); // redirect to home
-    }, error => {
-      console.log(error);
-      // this.alertify.error(error);
-    });
+  cancel() {
+    this.location.back();
   }
   */
-  cancel() {
-    this.cancelRegister.emit(false);
-  }
 }

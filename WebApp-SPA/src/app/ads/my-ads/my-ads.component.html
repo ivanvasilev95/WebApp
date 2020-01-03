@@ -9,9 +9,9 @@
   </div>
 -->
 <div class="container mt-4">
-  <h3>My Ads</h3>
+  <h4>Моите обяви</h4>
   <hr>
-  <p *ngIf="userAds?.length == 0" style="text-align: center;">User doesn't have any ads at this moment.</p>
+  <p *ngIf="userAds?.length == 0" style="text-align: center;">Все още нямате добавени обяви.</p>
   <div *ngIf="userAds?.length !== 0">
     <ul class="list-group">
       <li *ngFor="let ad of userAds" class="list-group-item mt-2">
@@ -23,9 +23,9 @@
         </ng-template>
         {{ad.title}}
         <div style="float:right;">
-          <button type="button" class="btn btn-outline-info ml-3" [routerLink]="['/ads', ad.id]"><i class="fa fa-eye"></i> Preview</button>
-          <button type="button" class="btn btn-outline-secondary ml-2" [routerLink]="['/user/ad', ad.id, 'edit']"><i class="fa fa-edit"></i> Edit</button>
-          <button type="button" class="btn btn-outline-dark ml-2" (click)="onDelete(ad.id)"><i class="fa fa-trash fa-lg"></i> Delete</button>
+          <button type="button" class="btn btn-outline-info ml-3" [routerLink]="['/ads', ad.id]"><i class="fa fa-eye"></i> Преглед</button>
+          <button type="button" class="btn btn-outline-secondary ml-2" [routerLink]="['/user/ad', ad.id, 'edit']"><i class="fa fa-edit"></i> Редакция</button>
+          <button type="button" class="btn btn-outline-dark ml-2" (click)="onDelete(ad.id)"><i class="fa fa-trash fa-lg"></i> Изтрий</button>
         </div>
       </li>
     </ul>

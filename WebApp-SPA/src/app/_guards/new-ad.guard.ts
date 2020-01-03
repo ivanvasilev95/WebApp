@@ -6,16 +6,15 @@ import { AlertifyService } from '../_services/alertify.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router, private alertify: AlertifyService) {}
+export class NewAdGuard implements CanActivate {
+  constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean {
     if (this.authService.loggedIn()) {
       return true;
     }
 
-    this.alertify.error('Нямате право на достъп до тази страница');
-    this.router.navigate(['/home']);
+    this.router.navigate(['/login']);
     return false;
   }
 }

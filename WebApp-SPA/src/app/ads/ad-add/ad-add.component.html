@@ -2,7 +2,7 @@
   <div class="row justify-content-center">
     <div class="col-4">
       <form [formGroup]="createAdForm" (ngSubmit)="createAd()">
-        <h2 class="text-center text-primary">Add New Ad</h2>
+        <h2 class="text-center text-primary">Добави обява</h2>
         <hr>
         <!-- title -->
         <div class="form-group">
@@ -11,27 +11,27 @@
               && createAdForm.get('title').touched}"
             class="form-control" 
             formControlName="title" 
-            placeholder="Title">
+            placeholder="Заглавие на обявата">
           <div class="invalid-feedback" 
             *ngIf="createAdForm.get('title').hasError('required') 
               && createAdForm.get('title').touched">
-              Title is required
+              Заглавието е задължително
           </div>
           <div class="invalid-feedback" *ngIf="createAdForm.get('title').hasError('minlength') && createAdForm.get('title').touched">
-            Title must be at least 3 characters
+            Заглавието трябва да бъде поне 3 символа
           </div>
           <div class="invalid-feedback" *ngIf="createAdForm.get('title').hasError('maxlength') && createAdForm.get('title').touched">
-            Title cannot exceed 15 characters
+            Заглавието не трябва да надвишава 15 символа
           </div>
         </div>
         <!-- category -->
         <div class="form-group">
           <select class="custom-select" (change)="selectCategory($event)" formControlName="categoryId" [ngClass]="{'is-invalid': createAdForm.get('categoryId').errors && createAdForm.get('categoryId').touched}">
-            <option value="" disabled>Select category</option>
+            <option value="" disabled>Избери категория</option>
             <option *ngFor="let category of categories" [ngValue]="category.id">{{category.name}}</option>
           </select>
           <div class="invalid-feedback" *ngIf="createAdForm.get('categoryId').hasError('required')">
-            Category is required
+            Категорията е задължителна
           </div>
         </div>
         <!-- condition -->
@@ -45,12 +45,12 @@
         -->
         <div class="form-group">
           <select class="custom-select" (change)="selectCondition($event)" formControlName="isUsed" [ngClass]="{'is-invalid': createAdForm.get('isUsed').errors && createAdForm.get('isUsed').touched}">
-            <option value="" disabled>Select condition</option>
-            <option [value]="true">used</option>
-            <option [value]="false">not used</option>
+            <option value="" disabled>Избери състояние</option>
+            <option [value]="true">използвано</option>
+            <option [value]="false">ново</option>
           </select>
           <div class="invalid-feedback" *ngIf="createAdForm.get('isUsed').hasError('required')">
-            Condition is required
+            Състоянието е задължително
           </div>
         </div>
         <!-- price -->
@@ -62,16 +62,16 @@
               && createAdForm.hasError('mismatch')}"
             class="form-control" 
             formControlName="price" 
-            placeholder="Price">
+            placeholder="Цена">
           <div class="invalid-feedback" 
             *ngIf="createAdForm.get('price').hasError('required') 
               && createAdForm.get('price').touched">
-              Price is required
+              Цената е задължителна
           </div>
           <div class="invalid-feedback" 
             *ngIf="createAdForm.hasError('mismatch') 
               && createAdForm.get('price').touched">
-              Price must be positive
+              Цената трябва да бъде положително число
           </div>
         </div>
         <!-- location -->
@@ -81,29 +81,29 @@
               && createAdForm.get('location').touched}"
             class="form-control" 
             formControlName="location" 
-            placeholder="Location">
+            placeholder="Населено място">
           <div class="invalid-feedback" 
             *ngIf="createAdForm.get('location').hasError('required') 
               && createAdForm.get('location').touched">
-              Location is required
+              Полето "Населено място" е задължително
           </div>
           <div class="invalid-feedback" *ngIf="createAdForm.get('location').hasError('minlength') && createAdForm.get('location').touched">
-            Location must be at least 3 characters
+            Полето "Населено място" трябва да бъде поне 3 символа
           </div>
           <div class="invalid-feedback" *ngIf="createAdForm.get('location').hasError('maxlength') && createAdForm.get('location').touched">
-            Location cannot exceed 15 characters
+            Полето "Населено място" не трябва да надвишава 15 символа
           </div>
         </div>
         <!-- descrition -->
         <div class="form-group">
-          <textarea class="form-control" rows="4" formControlName="description" placeholder="Description" [ngClass]="{'is-invalid': createAdForm.get('description').errors}"></textarea>
+          <textarea class="form-control" rows="4" formControlName="description" placeholder="Описание" [ngClass]="{'is-invalid': createAdForm.get('description').errors}"></textarea>
           <div class="invalid-feedback" *ngIf="createAdForm.get('description').hasError('maxlength')">
-            Description cannot exceed 20 characters
+            Описанието не трябва да надвишава 20 символа
           </div>
         </div>
         <div class="form-group text-center">
-          <button class="btn btn-success" [disabled]="!createAdForm?.valid" type="submit">Create Ad</button>
-          <button class="btn btn-default" type="button" [routerLink]="['/home']">Cancel</button>
+          <button class="btn btn-success" [disabled]="!createAdForm?.valid" type="submit">Добавяне на обява</button>
+          <button class="btn btn-default" type="button" (click)="cancel()">Отказ</button>
         </div>
       </form>
     </div>

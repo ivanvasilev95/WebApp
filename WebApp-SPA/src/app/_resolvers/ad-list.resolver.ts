@@ -14,7 +14,7 @@ export class AdListResolver implements Resolve<Ad[]> {
         // tslint:disable-next-line: no-string-literal
         return this.adService.getAds().pipe(
             catchError(error => {
-                this.alertify.error('Problem retrieving data');
+                this.alertify.error('Проблем с получаването на данните');
                 this.router.navigate(['']);
                 return of(null);
             })

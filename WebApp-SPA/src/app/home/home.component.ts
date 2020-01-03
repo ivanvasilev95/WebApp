@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdService } from '../_services/ad.service';
 import { Ad } from '../_models/ad';
+import { AlertifyService } from '../_services/alertify.service';
 
 @Component({
   selector: 'app-home',
@@ -8,30 +9,21 @@ import { Ad } from '../_models/ad';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  registerMode = false;
   ads: Ad[];
 
-  constructor(private adService: AdService) { }
+  constructor(private adService: AdService, private alertify: AlertifyService) { }
 
   ngOnInit() {
     this.loadAds();
   }
 
-  registerToggle() {
-    this.registerMode = true;
-  }
-
-  cancelRegister(registerMode: boolean) {
-    this.registerMode = registerMode;
-  }
-
   loadAds() {
     this.adService.getAds().subscribe((ads: Ad[]) => {
       this.ads = ads;
-      this.shuffle(ads);
+      this.shuffle(this.ads);
     }, error => {
-      console.log(error);
-      // this.alertify.error(error);
+      // console.log(error);
+      this.alertify.error('Грешка при зареждане на обявите');
     });
   }
 

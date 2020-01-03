@@ -66,7 +66,7 @@ namespace WebApp.API.Controllers
             
             var like = await _adsRepo.GetLike(id, adId);
             if (like != null) {
-                return BadRequest("You've already added this ad to Favorites");
+                return BadRequest("Обявата вече е добавена в Наблюдавани");
             }
             
             /*
@@ -78,7 +78,7 @@ namespace WebApp.API.Controllers
             if(ad == null)
                 return NotFound();
             if(ad.UserId == id)
-                return BadRequest("You cannot add your own ads to Favorites");
+                return BadRequest("Не може да добавяте собствени обяви в Наблюдавани");
 
             like = new Like {
                 UserId = id,
@@ -90,7 +90,7 @@ namespace WebApp.API.Controllers
             if(await _adsRepo.SaveAll())
                 return Ok();
             
-            return BadRequest("Failed to add this ad to Favorites");
+            return BadRequest("Грешка при добавяне на обявата в Наблюдавани");
 ;        }
     }
 }

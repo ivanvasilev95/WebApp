@@ -18,7 +18,7 @@ namespace WebApp.API.DTOs
         [Required]
         public string Email { get; set; }
         [Required]
-        [StringLength(8, MinimumLength = 6, ErrorMessage = "You must specify password between 6 and 12 characters.")]
+        [StringLength(12, MinimumLength = 6, ErrorMessage = "Паролата трябва да бъде между 6 и 12 символа.")]
         public string Password { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }

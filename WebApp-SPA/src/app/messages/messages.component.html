@@ -3,45 +3,45 @@
   <div class="row">
     <div class="btn-group">
       <button class="btn btn-primary" name="unread" ngDefaultControl [(ngModel)]="messageContainer" btnRadio="Unread" (click)="loadMessages()">
-        <i class="fa fa-envelope"></i> Unread
+        <i class="fa fa-envelope"></i> Непрочетени
       </button>
       <button class="btn btn-primary" name="inbox" ngDefaultControl [(ngModel)]="messageContainer" btnRadio="Inbox" (click)="loadMessages()">
-        <i class="fa fa-envelope-open"></i> Inbox
+        <i class="fa fa-envelope-open"></i> Получени
       </button>
       <button class="btn btn-primary" name="outbox" ngDefaultControl [(ngModel)]="messageContainer" btnRadio="Outbox" (click)="loadMessages()">
-        <i class="fa fa-paper-plane"></i> Outbox
+        <i class="fa fa-paper-plane"></i> Изпратени
       </button>
     </div>
   </div>
  
   <div class="row" *ngIf="messages?.length == 0">
-    <p style="padding-top:10px;">No new messages</p>
+    <p style="padding-top:10px;">Нямате съобщения</p>
   </div>
   
   <div class="row" *ngIf="messages?.length > 0">
-    <table class="table table-hover" style="cursor: pointer">
+    <table class="table table-hover" style="cursor: pointer;border: 1px solid gainsboro;">
       <tr>
-          <th style="width: 40%">Message</th>
-          <th style="width: 40%">Ad</th>
-        <th style="width: 20%">From / To</th>
-        <th style="width: 20%">Sent / Received</th>
-        <th style="width: 20%"></th>
+        <th style="width: 10%">Подател</th>
+        <th style="width: 20%">Обява</th>
+        <th style="width: 60%">Съобщение</th>
+        <th style="width: 35%">Дата</th>
+        <th style="width: 10%"></th>
       </tr>
-      <tr *ngFor="let message of messages" [routerLink]="['/ads', message.adId, message.senderId]" [queryParams]="{tab: 2}">
+      <tr [style.background-color]="!message.isRead ? '#eee' : 'null'" *ngFor="let message of messages" [routerLink]="['/ads', message.adId, message.senderId]" [queryParams]="{tab: 2}">
         <!-- messageContainer == 'Outbox' ? message.recipientId : message.senderId]" -->
-        <td>{{message.content}}</td>
-        <td>{{message.adTitle}}</td>
         <td>
           <div *ngIf="messageContainer != 'Outbox'">
-            <strong>{{message.senderUsername}}</strong>
+            {{message.senderUsername}}
           </div>
           <div *ngIf="messageContainer == 'Outbox'">
-            <strong>{{message.recipientUsername }}</strong>
+            {{message.recipientUsername }}
           </div>
         </td>
+        <td>{{message.adTitle}}</td>
+        <td>{{message.content}}</td>
         <td>{{message.messageSent | timeAgo}}</td>
         <td>
-          <button class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(message.id)">Delete</button>
+          <button class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(message.id)">Изтрий</button>
         </td>
       </tr>
     </table>

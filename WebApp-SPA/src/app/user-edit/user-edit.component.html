@@ -1,35 +1,35 @@
 <div class="container mt-4">
-  <h1>Edit Profile</h1>
+  <h4>Редакция на профил</h4>
   <hr>
 <div class="row">
     <div class="col-md-9 personal-info">
-      <h3>Personal info</h3>
+      <h5>Лична информация</h5>
       <div class="col-sm-8">
           <div *ngIf="editForm.dirty" class="alert alert-info">
-            <strong>Information:</strong> You have made changes.  Any unsaved changes will be lost!
+            <strong>Информация:</strong> Вие направихте промени.  Всички незапазени промени ще бъдат изтрити!
           </div>
       </div>
-      <form #editForm="ngForm" id="editForm" (ngSubmit)="updateUser()">
+      <form #editForm="ngForm" id="editForm" (ngSubmit)="updateUser()" style="padding-top:5px;">
           <div class="form-group">
-              <label for="username" class="col-lg-3 control-label">Username:</label>
+              <label for="username" class="col-lg-3 control-label">Потребителско име:</label>
               <div class="col-lg-8">
                 <input type="text" class="form-control" name="username" [(ngModel)]="user.username" disabled>
               </div>
             </div>
         <div class="form-group">
-          <label for="fullName" class="col-lg-3 control-label">Full name:</label>
+          <label for="fullName" class="col-lg-3 control-label">Твоето име:</label>
           <div class="col-lg-8">
             <input type="text" class="form-control" name="fullName" [(ngModel)]="user.fullName" required>
           </div>
         </div>
         <div class="form-group">
-          <label for="email" class="col-lg-3 control-label">Email:</label>
+          <label for="email" class="col-lg-3 control-label">Имейл адрес:</label>
           <div class="col-lg-8">
             <input type="text" class="form-control" name="email" [(ngModel)]="user.email" required>
           </div>
         </div>
         <div class="form-group">
-          <label for="address" class="col-md-3 control-label">Address:</label>
+          <label for="address" class="col-md-3 control-label">Населено място:</label>
           <div class="col-md-8">
             <textarea class="form-control" name="address" rows="6" [(ngModel)]="user.address"></textarea>
           </div>
@@ -51,7 +51,7 @@
         <div class="form-group">
           <!--<label class="col-md-3 control-label"></label>-->
           <div class="col-md-8">
-            <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-primary">Save Changes</button>
+            <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-primary">Запази</button>
             <!--<input type="button" class="btn btn-primary" value="Save Changes">
             <span></span>
             <input type="reset" class="btn btn-default" value="Cancel">-->

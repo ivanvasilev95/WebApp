@@ -1,0 +1,49 @@
+<div class="tab-panel" style="text-align: center; margin-top: 60px; margin-left: 25%; margin-right: 25%;">
+  <tabset class="ad-tabset" [justified]="true">
+    <tab heading="Вход">
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="form-group">
+          <input type="text" 
+            [ngClass]="{'is-invalid': loginForm.get('username').errors 
+              && loginForm.get('username').touched}"
+            class="form-control" 
+            formControlName="username" 
+            placeholder="Потребителско име">
+          <div class="invalid-feedback" 
+            *ngIf="loginForm.get('username').hasError('required') 
+              && loginForm.get('username').touched">
+              Потребителското име е задължително
+          </div>
+        </div>
+
+        <div class="form-group">
+          <input type="password" 
+            [ngClass]="{'is-invalid': loginForm.get('password').errors 
+              && loginForm.get('password').touched}"
+            class="form-control" 
+            formControlName="password" 
+            placeholder="Парола">
+          <div class="invalid-feedback" 
+            *ngIf="loginForm.get('password').hasError('required') 
+              && loginForm.get('password').touched">
+              Полето Парола е задължително
+          </div>
+        </div>
+
+        <span class="form-group text-center">
+          <button class="btn btn-success" [disabled]="!loginForm.valid" type="submit">Вход</button>
+        </span>
+      </form>
+      <!--
+      <form #loginForm="ngForm" class="form-inline my-2 my-lg-0" (submit)="login()" style="display: inline-block;">
+        <div class="form-group"><input class="form-control mr-sm-2" type="text" name="username" placeholder="Потребителско име" required [(ngModel)]="model.username"></div>
+        <div class="form-group"><input class="form-control mr-sm-2" type="password" name="password" placeholder="Парола" required [(ngModel)]="model.password"></div>
+        <div class="form-group"><button [disabled]="!loginForm.valid" class="btn btn-success my-2 my-sm-0" type="submit">Вход</button></div>
+      </form>
+      -->
+    </tab>
+    <tab heading="Регистрация">
+      <app-register></app-register>
+    </tab>
+  </tabset>
+</div>

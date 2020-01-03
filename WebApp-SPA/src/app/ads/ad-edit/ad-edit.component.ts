@@ -31,7 +31,7 @@ export class AdEditComponent implements OnInit {
 
   updateAd() {
     this.adService.updateAd(this.ad.id, this.ad).subscribe(next => {
-      this.alertify.success('Ad updated successfully');
+      this.alertify.success('Обявата е редактирана успешно');
       this.editForm.reset(this.ad);
     }, error => {
       this.alertify.error(error);

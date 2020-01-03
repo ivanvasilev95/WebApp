@@ -76,7 +76,7 @@ namespace WebApp.API.Controllers
                 return CreatedAtRoute("GetPhoto", new {id = photo.Id}, photoToReturn);
             }
             
-            return BadRequest("Could not add the photo");
+            return BadRequest("Не може да се добави снимката");
         }
 
         [HttpPost("{id}/SetMain")]
@@ -84,12 +84,12 @@ namespace WebApp.API.Controllers
             var ad = await _repo.GetAd(adId);
 
             if(!ad.Photos.Any(p => p.Id == id))
-                return BadRequest("Invalid ad photo id");
+                return BadRequest("Обявата няма снимка с такова id");
             
             var photoFromRepo = await _repo.GetPhoto(id);
 
             if(photoFromRepo.IsMain)
-                return BadRequest("This photo is already set as main");
+                return BadRequest("Тази снимка вече е зададена като главна");
             
             var currentMainPhoto = await _repo.GetMainPhotoForAd(adId);
             currentMainPhoto.IsMain = false;
@@ -99,7 +99,7 @@ namespace WebApp.API.Controllers
             if(await _repo.SaveAll())
                 return NoContent();
             
-            return BadRequest("Could not set photo as main");
+            return BadRequest("Не може да се зададе снимката като главна");
         }
 
         [HttpDelete("{id}")]
@@ -107,12 +107,12 @@ namespace WebApp.API.Controllers
             var ad = await _repo.GetAd(adId);
 
             if(!ad.Photos.Any(p => p.Id == id))
-                return BadRequest("Invalid ad photo id");
+                return BadRequest("Обявата няма снимка с такова id");
             
             var photoFromRepo = await _repo.GetPhoto(id);
 
             if(photoFromRepo.IsMain)
-                return BadRequest("This photo is already set as main");
+                return BadRequest("Тази снимка вече е зададена като главна");
             
             if(photoFromRepo.PublicId != null)
             {
@@ -131,7 +131,7 @@ namespace WebApp.API.Controllers
             if(await _repo.SaveAll())
                 return Ok();
             
-            return BadRequest("Failed to delete the photo");
+            return BadRequest("Грешка при изтриване на снимката");
         }
     }
 }

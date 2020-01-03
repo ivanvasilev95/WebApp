@@ -80,11 +80,11 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
 
   addToFavorites(adId: number) {
     this.adService.addToFavorites(this.authService.decodedToken.nameid, adId).subscribe(data => {
-      this.alertify.success('You have added ' + this.ad.title + ' to favorites');
+      this.alertify.success('Вие добавихте ' + this.ad.title + ' в Наблюдавани');
       // this.getAdLikesCount();
     }, error => {
       // this.alertify.error(error);
-      this.alertify.error('This ad has already beed added to Favorites');
+      this.alertify.error('Грешка при добавяне на обявата в Наблюдавани');
     });
   }
 

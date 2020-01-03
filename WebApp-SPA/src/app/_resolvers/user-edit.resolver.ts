@@ -18,7 +18,7 @@ export class UserEditResolver implements Resolve<User> {
         // tslint:disable-next-line: no-string-literal
         return this.userService.getUser(this.authService.decodedToken.nameid).pipe(
             catchError(error => {
-                this.alertify.error('Problem retrieving your data');
+                this.alertify.error('Проблем с получаването на данните');
                 this.router.navigate(['']);
                 return of(null);
             })

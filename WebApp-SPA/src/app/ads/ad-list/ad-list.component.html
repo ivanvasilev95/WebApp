@@ -1,8 +1,8 @@
-<p *ngIf="ads?.length == 0">There are no ads uploaded at this time.</p>
+<p *ngIf="ads?.length == 0" style="padding-top: 250px;text-align: center;">За момента няма публикувани обяви.</p>
 <div *ngIf="ads?.length !== 0" class="container mt-4">
   <!--<form (ngSubmit)="search()">--> <!-- search -->
     <div class="input-group">
-      <input #searchBar type="text" style="margin-right:4px;" class="form-control" placeholder="Търсене..." (change)="search()">
+      <input #searchBar type="text" style="margin-right:4px;" class="form-control" placeholder="Търси" (change)="search()">
       <!--<div class="input-group-btn">
         <button class="btn btn-outline-dark" type="submit" style="border-radius: 0 !important;margin-right:3px;">
           <i class="fa fa-search"></i>
@@ -14,7 +14,7 @@
         <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
       </select>
       <select class="form-control" (change)="onSortSelect($event)">
-        <option value="" disabled>Сортирай по</option>
+        <option value="">Сортирай по</option>
         <option value="newest">Най-нови</option>
         <option value="cheapest">Най-евтини</option>
         <option value="expensive">Най-скъпи</option>

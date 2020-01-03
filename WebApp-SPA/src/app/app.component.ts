@@ -17,9 +17,9 @@ export class AppComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       this.authService.decodedToken = this.jwtHelper.decodeToken(token);
+      this.userService.getUnreadMessagesCount().subscribe((count: number) => {
+        this.authService.unreadMsgCnt = count;
+      });
     }
-    this.userService.getUnreadMessagesCount().subscribe((count: number) => {
-      this.authService.unreadMsgCnt = count;
-    });
   }
 }

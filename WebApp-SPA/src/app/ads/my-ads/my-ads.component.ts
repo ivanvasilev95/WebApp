@@ -21,16 +21,16 @@ export class MyAdsComponent implements OnInit {
     this.adService.getUserAds().subscribe((userAds: Ad[]) => {
       this.userAds = userAds;
     }, error => {
-      console.log(error);
-      // this.alertify.error(error);
+      // console.log(error);
+      this.alertify.error('Неуспешно зареждане на обявите');
     });
   }
 
   onDelete(adId) {
-    if (confirm('Are you sure you want to delete this ad?')) {
+    if (confirm('Сигурни ли сте, че искате да изтриете тази обява?')) {
       this.adService.deleteAd(adId).subscribe(res => {
         this.loadUserAds();
-        this.alertify.success('Ad deleted successfully');
+        this.alertify.success('Обявата е премахната успешно');
       }, error => {
         console.log(error);
         // this.alertify.error(error);

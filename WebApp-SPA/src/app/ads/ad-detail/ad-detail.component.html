@@ -16,28 +16,28 @@
         </ng-template>
         <div class="card-body">
           <div>
-            <strong>Price:</strong> {{ad.price}} lv.
+            <strong>Цена:</strong> {{ad.price}} лв.
           </div>
           <div>
-            <strong>Location:</strong> {{ad.location}}
+            <strong>Населено място:</strong> {{ad.location}}
           </div>
           <div>
-            <strong>Added:</strong> {{ad.dateAdded | date}}
+            <strong>Добавена:</strong> {{ad.dateAdded | date}}
           </div>
           <div>
-            <strong>Condition: </strong><ng-container *ngIf="ad.isUsed;else Other">used</ng-container><ng-template #Other>not used</ng-template>
+            <strong>Състояние: </strong><ng-container *ngIf="ad.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
           </div>
           <div *ngIf="isLoggedIn() && !isNotUsersAd()">
-            <strong>Added to Favorites: </strong> {{adLikesCount}}
+            <strong>Наблюдаващи: </strong> {{adLikesCount}}
           </div>
           <div class="mt-2">
-            <a [routerLink]="['/user', ad.userId, 'ads']">Vijte vsichki obqvi na tozi potrebitel</a>
+            <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
           </div>
         </div>
         <div class="card-footer">
           <div class="btn-group d-flex" *ngIf="isAuthorized()">
-              <button class="btn btn-primary w-100" (click)="addToFavorites(ad.id)">Add to Favorites</button>
-              <button class="btn btn-success w-100" (click)="selectTab(2)">Message</button>
+              <button class="btn btn-primary w-100" (click)="addToFavorites(ad.id)">Наблюдавай</button>
+              <button class="btn btn-success w-100" (click)="selectTab(2)">Изпрати съобщение</button>
           </div>
         </div>
       </div>
@@ -45,17 +45,17 @@
     <div class="col-sm-8"> <!-- right part -->
       <div class="tab-panel">
         <tabset class="ad-tabset" #adTabs>
-            <tab heading="Description">
+            <tab heading="Описание">
               <p>{{ad.description}}</p>
             </tab>
-            <tab heading="Photos">
-              <p *ngIf="galleryImages.length == 0">No images available</p>
+            <tab heading="Снимки">
+              <p *ngIf="galleryImages.length == 0">Няма налични снимки</p>
               <ngx-gallery *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
-            <tab heading="Messages" *ngIf="senderId !== null"> <!-- *ngIf="senderId !== null && isLoggedIn()" -->
+            <tab heading="Съобщения" *ngIf="senderId !== null"> <!-- *ngIf="senderId !== null && isLoggedIn()" -->
               <app-ad-messages [adId]="ad.id" [recipientId]="senderId"></app-ad-messages>
             </tab>
-            <tab heading="Messages" *ngIf="senderId === null && isAuthorized()">
+            <tab heading="Съобщения" *ngIf="senderId === null && isAuthorized()">
               <app-ad-messages [adId]="ad.id" [recipientId]="ad.userId"></app-ad-messages> <!-- [ad]="ad" -->
             </tab>
         </tabset>

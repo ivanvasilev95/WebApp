@@ -6,6 +6,7 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { AdService } from 'src/app/_services/ad.service';
 import { Category } from 'src/app/_models/category';
 import { AuthService } from 'src/app/_services/auth.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-ad-add',
@@ -18,7 +19,7 @@ export class NewAddComponent implements OnInit {
   createAdForm: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router, private alertify: AlertifyService,
-              private adService: AdService, private authService: AuthService) { }
+              private adService: AdService, private authService: AuthService, private location: Location) { }
 
   ngOnInit() {
     this.getCategories();
@@ -79,12 +80,16 @@ export class NewAddComponent implements OnInit {
       this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name;
       console.log(this.ad);
       this.adService.createAd(this.ad).subscribe(() => {
-        this.alertify.success('Ad successfully created.');
+        this.alertify.success('Обявата е създадена успешно.');
       }, error => {
         this.alertify.error(error);
       }, () => {
         this.router.navigate(['/user/ads']);
       });
     }
+  }
+
+  cancel() {
+    this.location.back();
   }
 }

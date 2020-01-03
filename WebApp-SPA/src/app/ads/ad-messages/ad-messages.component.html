@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-body">
       <div *ngIf="messages?.length === 0">
-        No messages yet... send a message by using the message box below
+        Изпратете съобщение като използвате полето отдолу
       </div>
   
       <ul class="chat">
@@ -16,7 +16,7 @@
                 </small>
               </div>
               <p *ngIf="!message.senderDeleted">{{message.content}}</p>
-              <p *ngIf="message.senderDeleted"><i>[message removed]</i></p>
+              <p *ngIf="message.senderDeleted"><i>[съобщението е премахнато]</i></p>
             </div>
           </div>
           <!-- from me -->
@@ -26,8 +26,9 @@
                 <strong class="primary-font">{{message.senderUsername}}</strong>
                 <small class="text-muted float-right">
                   <span class="fa fa-clock-o">{{message.messageSent | timeAgo}}</span>
-                  <span *ngIf="message.isRead" class="text-success"> (Read {{message.dateRead | timeAgo}})</span>
-                  <span *ngIf="message.recipientDeleted" class="text-danger"> (deleted)</span>
+                  <span *ngIf="message.isRead" class="text-success"> (прочетено)</span>
+                  <!--<span *ngIf="message.isRead" class="text-success"> (Read {{message.dateRead | timeAgo}})</span>-->
+                  <span *ngIf="message.recipientDeleted" class="text-danger"> (премахнато)</span>
                 </small>
                 <!--
                   <small class="text-muted">
@@ -55,9 +56,9 @@
             name="content"
             required
             class="form-control input-sm"
-            placeholder="send a private message">
+            placeholder="Изпратете съобщение">
           <div class="input-group-append">
-            <button [disabled]="!messageForm.valid" class="btn btn-primary">Send</button>
+            <button [disabled]="!messageForm.valid" class="btn btn-primary">Изпрати</button>
           </div>
         </div>
       </form>

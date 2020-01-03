@@ -1,26 +1,19 @@
 <div class="container mt-5">
-  <div *ngIf="!registerMode" style="text-align: center">
+  <div style="text-align: center;">
     <h1>Web Bazar</h1>
-    <p class="lead">Come on in to find whatever you want... All you need to do is sign up!</p>
-    <div class="text-center">
-      <button class="btn btn-primary btn-lg mr-2" (click)="registerToggle()">Register</button>
-      <button class="btn btn-info btn-lg">Learn more</button>
-    </div>
+    <!-- Come on in to find whatever you want... All you need to do is sign up -->
+    <p class="lead">Безплатни обяви без лимити.</p>
+    <div class="text-center"><img src="https://retohercules.com/images/website-icons-png.png" height="200" width="200"/></div>
+    <!--<div class="text-center">
+      <button class="btn btn-info btn-lg" [routerLink]="['/about']">Научи повече</button>
+    </div>-->
     <hr/>
-    <p *ngIf="ads?.length == 0">There are no ads uploaded at this moment. Please, come back later.</p>
+    <!--<p *ngIf="ads?.length == 0">За момента няма налични обяви. Моля, върнете се по-късно.</p>-->
     <div *ngIf="ads?.length !== 0" class="row mt-3">
       <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
           <ad [ad]="ad"></ad>
       </div>
     </div>
-    <div *ngIf="ads?.length !== 0" class="row" style="margin-left:5px;"><a [routerLink]="['/ads']">Vij poveche</a></div>
-  </div>
-
-  <div *ngIf="registerMode" class="container">
-    <div class="row justify-content-center">
-      <div class="col-4">
-        <app-register (cancelRegister)="cancelRegister($event)"></app-register>
-      </div>
-    </div>
+    <div *ngIf="ads?.length !== 0" class="row" style="margin-left:5px;"><a [routerLink]="['/ads']">Виж всички <i class="fa fa-angle-right"></i></a></div>
   </div>
 </div>
