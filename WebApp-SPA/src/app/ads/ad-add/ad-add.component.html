@@ -91,14 +91,14 @@
             Полето "Населено място" трябва да бъде поне 3 символа
           </div>
           <div class="invalid-feedback" *ngIf="createAdForm.get('location').hasError('maxlength') && createAdForm.get('location').touched">
-            Полето "Населено място" не трябва да надвишава 15 символа
+            Полето "Населено място" не трябва да надвишава 35 символа
           </div>
         </div>
         <!-- descrition -->
         <div class="form-group">
           <textarea class="form-control" rows="4" formControlName="description" placeholder="Описание" [ngClass]="{'is-invalid': createAdForm.get('description').errors}"></textarea>
           <div class="invalid-feedback" *ngIf="createAdForm.get('description').hasError('maxlength')">
-            Описанието не трябва да надвишава 20 символа
+            Описанието не трябва да надвишава 250 символа
           </div>
         </div>
         <div class="form-group text-center">

@@ -70,6 +70,6 @@ export class AdService {
   }
 
   deletePhoto(adId: number, id: number) {
-    return this.http.delete(this.baseUrl + 'ads/' + adId + 'photos' + id);
+    return this.http.delete(this.baseUrl + 'ads/' + adId + '/photos/' + id);
   }
 }

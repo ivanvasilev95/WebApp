@@ -1,6 +1,6 @@
-<div class="container mt-4">
+<div class="container mt-3">
   <div class="row">
-    <h1>{{ad.title}}</h1>
+    <h3>{{ad.title}}</h3>
   </div>
   <div>
     <h5>Категория: {{ad.categoryName}}</h5>
@@ -50,7 +50,7 @@
             </tab>
             <tab heading="Снимки">
               <p *ngIf="galleryImages.length == 0">Няма налични снимки</p>
-              <ngx-gallery *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+              <ngx-gallery style="margin-left:120px;margin-top:13px;" *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
             <tab heading="Съобщения" *ngIf="senderId !== null"> <!-- *ngIf="senderId !== null && isLoggedIn()" -->
               <app-ad-messages [adId]="ad.id" [recipientId]="senderId"></app-ad-messages>

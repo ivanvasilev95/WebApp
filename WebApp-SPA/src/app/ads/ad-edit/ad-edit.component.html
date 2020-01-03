@@ -4,7 +4,7 @@
         <h4>Редакция на обява</h4>
     </div>
     <div class="col-sm-8">
-      <div *ngIf="editForm.dirty" class="alert alert-info">
+      <div *ngIf="editForm?.dirty" class="alert alert-info">
         <strong>Информация:</strong> Вие направихте промени. Всички незапазени промени ще бъдат изтрити!
       </div>
     </div>
@@ -12,7 +12,7 @@
   <div class="row mb-4">
     <div class="col-sm-4"> <!-- left part -->
       <div class="card">
-        <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
+        <ng-container *ngIf="ad?.photoUrl !== null;else NoPhoto">
           <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
         </ng-container>
         <ng-template #NoPhoto>
@@ -35,12 +35,12 @@
             <strong>Добавена:</strong> {{ad.dateAdded | date}}
           </div>
           <div>
-            <strong>Състояние: </strong><ng-container *ngIf="ad.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
+            <strong>Състояние: </strong><ng-container *ngIf="ad?.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
           </div>
         </div>
         <div class="card-footer">
           <div class="btn-group d-flex">
-            <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-success btn-block">Редакция на обява</button>
+            <button [disabled]="!editForm?.dirty" form="editForm" class="btn btn-success btn-block">Редакция на обява</button>
           </div>
         </div>
       </div>
@@ -50,23 +50,23 @@
         <tabset class="ad-tabset">
             <tab heading="Детайли">
                 <form #editForm="ngForm" id="editForm" name="editForm" (ngSubmit)="updateAd()">
-                    <h5>Заглавие на обявата</h5>
+                    <h6>Заглавие на обявата</h6>
                     <input type="text" class="form-control" name="title" [(ngModel)]="ad.title">
-                    <h5 class="mt-2">Категория</h5>
+                    <h6 class="mt-2">Категория</h6>
                     <select class="form-control" [(ngModel)]="ad.categoryId" name="categoryId" (change)="onCategorySelect()">
                       <option *ngFor="let category of categories" [ngValue]="category.id">{{category.name}}</option>
                     </select>
-                    <h5 class="mt-2">Населено място</h5>
+                    <h6 class="mt-2">Населено място</h6>
                     <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
-                    <h5 class="mt-2">Цена</h5>
+                    <h6 class="mt-2">Цена</h6>
                     <input type="number" class="form-control" name="price" [(ngModel)]="ad.price">
                     <!--<h4 class="mt-2">Is Used <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h4>-->
-                    <h5 class="mt-2">Състояние</h5>
+                    <h6 class="mt-2">Състояние</h6>
                     <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
                       <option [ngValue]="true">използвано</option>
                       <option [ngValue]="false">ново</option>
                     </select>
-                    <h5 class="mt-2">Описание</h5>
+                    <h6 class="mt-2">Описание</h6>
                     <textarea class="form-control" name="description" rows="3" 
                       [(ngModel)]="ad.description"></textarea>
                 </form>

@@ -61,8 +61,8 @@ export class NewAddComponent implements OnInit {
     this.createAdForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
       categoryId: ['', Validators.required],
-      description: ['', Validators.maxLength(20)],
-      location: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
+      description: ['', Validators.maxLength(250)],
+      location: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
       price: ['', Validators.required],
       isUsed: ['', Validators.required]
       // isUsed: [false]

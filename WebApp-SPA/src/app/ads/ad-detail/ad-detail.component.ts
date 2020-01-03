@@ -31,8 +31,8 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
 
     this.galleryOptions = [
       {
-        width: '500px',
-        height: '500px',
+        width: '465px',
+        height: '465px',
         imagePercent: 100,
         thumbnailsColumns: 4,
         imageAnimation: NgxGalleryAnimation.Slide,
