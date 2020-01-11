@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { BsDropdownModule, TabsModule } from 'ngx-bootstrap';
+import { BsDropdownModule, TabsModule, TooltipModule } from 'ngx-bootstrap';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgxGalleryModule } from 'ngx-gallery';
 
@@ -82,6 +82,7 @@ export function tokenGetter() {
          }
       }),
       TabsModule.forRoot(),
+      TooltipModule.forRoot(),
       BrowserAnimationsModule,
       FileUploadModule
    ],
@@ -95,7 +96,8 @@ export function tokenGetter() {
       AdListResolver,
       UserEditResolver,
       MessagesResolver,
-      PreventUnsavedChanges
+      PreventUnsavedChanges // ,
+      // UserService
    ],
    bootstrap: [
       AppComponent

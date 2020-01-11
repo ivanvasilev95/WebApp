@@ -5,6 +5,7 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Ad } from 'src/app/_models/ad';
 import { Category } from 'src/app/_models/category';
 import { NgForm } from '@angular/forms';
+import { TabsetComponent } from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-ad-edit',
@@ -15,6 +16,8 @@ export class AdEditComponent implements OnInit {
   ad: Ad;
   categories: Category[];
   @ViewChild('editForm', {static: false}) editForm: NgForm;
+  @ViewChild('descriptionForm', {static: false}) descriptionForm: NgForm; //
+  @ViewChild('adTabs', {static: false}) adTabs: TabsetComponent; //
 
   constructor(private adService: AdService, private route: ActivatedRoute, private alertify: AlertifyService) { }
 
@@ -33,6 +36,7 @@ export class AdEditComponent implements OnInit {
     this.adService.updateAd(this.ad.id, this.ad).subscribe(next => {
       this.alertify.success('Обявата е редактирана успешно');
       this.editForm.reset(this.ad);
+      this.descriptionForm.reset(this.ad); //
     }, error => {
       this.alertify.error(error);
     });

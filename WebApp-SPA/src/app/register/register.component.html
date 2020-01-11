@@ -8,13 +8,13 @@
       placeholder="Потребителско име">
     <div class="invalid-feedback" 
       *ngIf="registerForm.get('username').hasError('required') 
-        && registerForm.get('username').touched">
+        && registerForm.get('username').touched" style="text-align: left;">
         Потребителското име е задължително
     </div>
-    <div class="invalid-feedback" *ngIf="registerForm.get('username').hasError('minlength') && registerForm.get('username').touched">
+    <div class="invalid-feedback" *ngIf="registerForm.get('username').hasError('minlength') && registerForm.get('username').touched" style="text-align: left;">
         Потребителското име трябва да бъде поне 4 символа
     </div>
-    <div class="invalid-feedback" *ngIf="registerForm.get('username').hasError('maxlength') && registerForm.get('username').touched">
+    <div class="invalid-feedback" *ngIf="registerForm.get('username').hasError('maxlength') && registerForm.get('username').touched" style="text-align: left;">
         Потребителското име не трябва да надвишава 10 символа
     </div>
   </div>
@@ -22,10 +22,10 @@
   <div class="form-group">
     <input [ngClass]="{'is-invalid': registerForm.get('fullName').errors && registerForm.get('fullName').touched}" class="form-control"
       placeholder="Твоето име" formControlName="fullName">
-    <div class="invalid-feedback" *ngIf="registerForm.get('fullName').touched && registerForm.get('fullName').hasError('required')">
+    <div class="invalid-feedback" *ngIf="registerForm.get('fullName').touched && registerForm.get('fullName').hasError('required')" style="text-align: left;">
         Твоето име е задължително
     </div>
-    <div class="invalid-feedback" *ngIf="registerForm.get('fullName').hasError('minlength') && registerForm.get('fullName').touched">
+    <div class="invalid-feedback" *ngIf="registerForm.get('fullName').hasError('minlength') && registerForm.get('fullName').touched" style="text-align: left;">
         Твоето име трябва да съдържа поне 2 символа
     </div>
   </div>
@@ -33,8 +33,8 @@
   <div class="form-group">
     <input [ngClass]="{'is-invalid': registerForm.get('email').errors && registerForm.get('email').touched}" class="form-control"
       placeholder="Имейл адрес" formControlName="email">
-      <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('required')">Полето е задължително</div>
-      <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('email')">Полето трябва да съдържа валиден имейл адрес</div>
+      <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('required')" style="text-align: left;">Полето "Имейл" е задължително</div>
+      <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('email')" style="text-align: left;">Полето "Имейл" трябва да съдържа валиден имейл адрес</div>
   </div>
       
   <div class="form-group">
@@ -46,17 +46,17 @@
       placeholder="Парола">
     <div class="invalid-feedback" 
       *ngIf="registerForm.get('password').hasError('required') 
-        && registerForm.get('password').touched">
-        Полето Парола е задължително
+        && registerForm.get('password').touched" style="text-align: left;">
+        Полето "Парола" е задължително
     </div>
     <div class="invalid-feedback" 
       *ngIf="registerForm.get('password').hasError('minlength') 
-        && registerForm.get('password').touched">
+        && registerForm.get('password').touched" style="text-align: left;">
         Паролата трябва да бъде поне 6 символа
     </div>
     <div class="invalid-feedback" 
       *ngIf="registerForm.get('password').hasError('maxlength') 
-        && registerForm.get('password').touched">
+        && registerForm.get('password').touched" style="text-align: left;">
         Паролата не трябва да навдишава 12 символа
     </div>
   </div>
@@ -73,12 +73,12 @@
         placeholder="Потвърди парола">
       <div class="invalid-feedback" 
         *ngIf="registerForm.get('confirmPassword').hasError('required') 
-          && registerForm.get('confirmPassword').touched">
-          Полето е задължително
+          && registerForm.get('confirmPassword').touched" style="text-align: left;">
+          Полето "Потвърди парола" е задължително
       </div>
       <div class="invalid-feedback" 
         *ngIf="registerForm.hasError('mismatch') 
-          && registerForm.get('confirmPassword').touched && registerForm.get('confirmPassword').value != ''">
+          && registerForm.get('confirmPassword').touched && registerForm.get('confirmPassword').value != ''" style="text-align: left;">
           Двете пароли трябва да съвпадат
       </div>
     </div>

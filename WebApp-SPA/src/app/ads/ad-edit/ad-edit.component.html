@@ -19,14 +19,20 @@
           <img src="https://www.tibs.org.tw/images/default.jpg" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
         </ng-template>
         <div class="card-body">
-            <div>
-              <strong>Заглавие:</strong> {{ad.title}}
-            </div>
           <div>
+            <strong>Заглавие:</strong> {{ad.title}}
+          </div>
+          <div *ngIf="ad.price == null">
+            <strong>Цена:</strong> По договаряне
+          </div>
+          <div *ngIf="ad.price != null && ad.price == 0">
+            <strong>Цена:</strong> Безплатно
+          </div>
+          <div *ngIf="ad.price != null && ad.price != 0">
             <strong>Цена:</strong> {{ad.price}} лв.
           </div>
           <div>
-            <strong>Населено място:</strong> {{ad.location}}
+            <strong>Адрес:</strong> {{ad.location}}
           </div>
           <div>
             <strong>Категория:</strong> {{ad.categoryName}}
@@ -34,20 +40,21 @@
           <div>
             <strong>Добавена:</strong> {{ad.dateAdded | date}}
           </div>
-          <div>
+          <div *ngIf="ad?.isUsed!=null">
             <strong>Състояние: </strong><ng-container *ngIf="ad?.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
           </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" *ngIf="!this.adTabs.tabs[2].active">
           <div class="btn-group d-flex">
-            <button [disabled]="!editForm?.dirty" form="editForm" class="btn btn-success btn-block">Редакция на обява</button>
+            <button *ngIf="this.adTabs.tabs[0].active" [disabled]="!editForm?.dirty" form="editForm" class="btn btn-success btn-block">Редакция</button>
+            <button *ngIf="this.adTabs.tabs[1].active" [disabled]="!descriptionForm?.dirty" form="descriptionForm" class="btn btn-success btn-block">Редакция</button>
           </div>
         </div>
       </div>
     </div>
     <div class="col-sm-8"> <!-- right part -->
       <div class="tab-panel">
-        <tabset class="ad-tabset">
+        <tabset class="ad-tabset" #adTabs>
             <tab heading="Детайли">
                 <form #editForm="ngForm" id="editForm" name="editForm" (ngSubmit)="updateAd()">
                     <h6>Заглавие на обявата</h6>
@@ -56,20 +63,24 @@
                     <select class="form-control" [(ngModel)]="ad.categoryId" name="categoryId" (change)="onCategorySelect()">
                       <option *ngFor="let category of categories" [ngValue]="category.id">{{category.name}}</option>
                     </select>
-                    <h6 class="mt-2">Населено място</h6>
+                    <h6 class="mt-2">Адрес</h6>
                     <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
                     <h6 class="mt-2">Цена</h6>
-                    <input type="number" class="form-control" name="price" [(ngModel)]="ad.price">
+                    <input type="number" class="form-control" name="price" [(ngModel)]="ad.price" min="0" oninput="validity.valid||(value='');">
                     <!--<h4 class="mt-2">Is Used <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h4>-->
                     <h6 class="mt-2">Състояние</h6>
                     <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
+                      <option [ngValue]=null></option>
                       <option [ngValue]="true">използвано</option>
                       <option [ngValue]="false">ново</option>
                     </select>
-                    <h6 class="mt-2">Описание</h6>
-                    <textarea class="form-control" name="description" rows="3" 
-                      [(ngModel)]="ad.description"></textarea>
                 </form>
+            </tab>
+            <tab heading="Описание">
+              <form #descriptionForm="ngForm" id="descriptionForm" name="descriptionForm" (ngSubmit)="updateAd()">
+                <textarea class="form-control" name="description" rows="10" 
+                      [(ngModel)]="ad.description" pre></textarea>
+              </form>
             </tab>
             <tab heading="Снимки">
               <photo-editor [photos]="ad.photos" [adId]="ad.id" (getAdPhotoChange)="updateMainPhoto($event)"></photo-editor>

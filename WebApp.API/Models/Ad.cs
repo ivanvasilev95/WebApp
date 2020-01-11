@@ -9,8 +9,8 @@ namespace WebApp.API.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public string Location { get; set; }
-        public double Price { get; set; }
-        public bool IsUsed { get; set; }
+        public double? Price { get; set; }
+        public bool? IsUsed { get; set; }
         public DateTime DateAdded { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }

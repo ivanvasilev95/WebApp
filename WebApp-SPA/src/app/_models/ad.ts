@@ -4,7 +4,7 @@ export interface Ad {
     id: number;
     title: string;
     location: string;
-    price: number;
+    price?: number;
     dateAdded: Date;
     photoUrl: string;
     categoryId?: number;

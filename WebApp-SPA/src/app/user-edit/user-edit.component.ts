@@ -33,6 +33,9 @@ export class UserEditComponent implements OnInit {
   }
 
   updateUser() {
+    if (this.user.fullName === '') { this.user.fullName = null; }
+    if (this.user.email === '') { this.user.email = null; }
+    if (this.user.address === '') { this.user.address = null; }
     this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(next => {
       this.alertify.success('Профилът е редактиран успешно');
       this.editForm.reset(this.user);

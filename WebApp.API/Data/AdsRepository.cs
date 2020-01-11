@@ -50,7 +50,7 @@ namespace WebApp.API.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public Category GetAdCategoryName(int categoryId) {
+        public Category GetAdCategory(int categoryId) {
             return  _context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
         }
 

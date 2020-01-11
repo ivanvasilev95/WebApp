@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-body">
       <div *ngIf="messages?.length === 0">
-        Изпратете съобщение като използвате полето отдолу
+        <i>Изпратете съобщение като използвате полето отдолу</i>
       </div>
   
       <ul class="chat">
@@ -12,7 +12,7 @@
               <div class="header">
                 <strong class="primary-font">{{message.senderUsername}}</strong>
                 <small class="text-muted float-right">
-                  <span class="fa fa-clock-o">{{message.messageSent | timeAgo}}</span>
+                  <span class="fa fa-clock-o"> {{message.messageSent | timeAgo}}</span>
                 </small>
               </div>
               <p *ngIf="!message.senderDeleted">{{message.content}}</p>
@@ -25,10 +25,10 @@
               <div class="header">
                 <strong class="primary-font">{{message.senderUsername}}</strong>
                 <small class="text-muted float-right">
-                  <span class="fa fa-clock-o">{{message.messageSent | timeAgo}}</span>
-                  <span *ngIf="message.isRead" class="text-success"> (прочетено)</span>
+                  <span class="fa fa-clock-o"> {{message.messageSent | timeAgo}}</span>
+                  <span *ngIf="message.isRead && !message.recipientDeleted" class="text-success"> (прочетено)</span>
                   <!--<span *ngIf="message.isRead" class="text-success"> (Read {{message.dateRead | timeAgo}})</span>-->
-                  <span *ngIf="message.recipientDeleted" class="text-danger"> (премахнато)</span>
+                  <span *ngIf="message.recipientDeleted" class="text-danger"> (изтрито)</span>
                 </small>
                 <!--
                   <small class="text-muted">
@@ -45,25 +45,23 @@
           </div>
         </li>
       </ul>
-  
     </div>
   
     <div class="card-footer">
       <form #messageForm="ngForm" (ngSubmit)="messageForm.valid && sendMessage()">
         <div class="input-group">
-          <input type="text"
+          <!--<input type="text" rolls="3"
             [(ngModel)]="newMessage.content"
             name="content"
             required
             class="form-control input-sm"
-            placeholder="Изпратете съобщение">
+            placeholder="Изпратете съобщение">-->
+            <textarea name="content" class="form-control" rows="2" placeholder="Изпратете съобщение" [(ngModel)]="newMessage.content"></textarea>
           <div class="input-group-append">
             <button [disabled]="!messageForm.valid" class="btn btn-primary">Изпрати</button>
           </div>
         </div>
       </form>
     </div>
-  
-  
   </div>
   

@@ -3,9 +3,9 @@ import { Ad } from './ad';
 export interface User {
   id: number;
   username: string;
-  password?: string;
+  password: string;
   fullName: string;
-  address: number;
+  address: string;
   email: string;
   created: Date;
   lastActive: Date;

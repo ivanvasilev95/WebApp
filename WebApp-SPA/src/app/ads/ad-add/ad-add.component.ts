@@ -59,12 +59,12 @@ export class NewAddComponent implements OnInit {
 
   createNewAdForm() {
     this.createAdForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       categoryId: ['', Validators.required],
-      description: ['', Validators.maxLength(250)],
+      description: ['', Validators.maxLength(1000)],
       location: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
-      price: ['', Validators.required],
-      isUsed: ['', Validators.required]
+      price: [''],
+      isUsed: [null]
       // isUsed: [false]
     }, {validator: this.priceValidator});
   }
@@ -78,13 +78,15 @@ export class NewAddComponent implements OnInit {
       this.ad = Object.assign({}, this.createAdForm.value);
       this.ad.userId = +this.authService.decodedToken.nameid;
       this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name;
-      console.log(this.ad);
-      this.adService.createAd(this.ad).subscribe(() => {
+
+      this.adService.createAd(this.ad).subscribe((ad: Ad) => {
         this.alertify.success('Обявата е създадена успешно.');
+        this.router.navigate(['/user/ad/' + ad.id + '/edit']);
       }, error => {
-        this.alertify.error(error);
-      }, () => {
-        this.router.navigate(['/user/ads']);
+        this.alertify.error('Грешка при създаване на обявата.');
+        // this.alertify.error(error);
+      // }, () => {
+        // this.router.navigate(['/user/ads']);
       });
     }
   }

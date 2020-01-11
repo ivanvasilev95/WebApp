@@ -12,7 +12,7 @@ namespace WebApp.API.Data
          Task<IEnumerable<Ad>> GetAds();
          Task<Ad> GetAd(int id);
          IEnumerable<Ad> GetUserAds(int userId);
-         Category GetAdCategoryName(int categoryId);
+         Category GetAdCategory(int categoryId);
          IEnumerable<Category> GetCategories();
          Task<Like> GetLike(int userId, int adId);
          int GetAdLikesCount(int adId);

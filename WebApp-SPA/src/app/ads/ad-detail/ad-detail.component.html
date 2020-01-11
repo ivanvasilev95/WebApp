@@ -1,9 +1,9 @@
 <div class="container mt-3">
-  <div class="row">
-    <h3>{{ad.title}}</h3>
+  <div>
+    <h4>{{ad.title}}</h4>
   </div>
   <div>
-    <h5>Категория: {{ad.categoryName}}</h5>
+    <h6><i>Категория: {{ad.categoryName}}</i></h6>
   </div>
   <div class="row mb-4">
     <div class="col-sm-4"> <!-- left part -->
@@ -15,29 +15,38 @@
           <img src="https://www.tibs.org.tw/images/default.jpg" class="card-img-top img-thumbnail" style="height:350px;">
         </ng-template>
         <div class="card-body">
-          <div>
+          <div *ngIf="ad.price == null">
+            <strong>Цена:</strong> По договаряне
+          </div>
+          <div *ngIf="ad.price != null && ad.price == 0">
+            <strong>Цена:</strong> Безплатно
+          </div>
+          <div *ngIf="ad.price != null && ad.price != 0">
             <strong>Цена:</strong> {{ad.price}} лв.
           </div>
           <div>
-            <strong>Населено място:</strong> {{ad.location}}
+            <strong>Адрес:</strong> {{ad.location}}
           </div>
           <div>
             <strong>Добавена:</strong> {{ad.dateAdded | date}}
           </div>
-          <div>
+          <div *ngIf="ad.isUsed!=null">
             <strong>Състояние: </strong><ng-container *ngIf="ad.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
           </div>
-          <div *ngIf="isLoggedIn() && !isNotUsersAd()">
-            <strong>Наблюдаващи: </strong> {{adLikesCount}}
+          <div class="mt-1" *ngIf="isLoggedIn() && !isNotUsersAd()">
+            <i>Наблюдаващи обявата: {{adLikesCount}}</i>
           </div>
-          <div class="mt-2">
+          <div class="mt-2" *ngIf="isLoggedIn() && isNotUsersAd()">
+            <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
+          </div>
+          <div class="mt-2" *ngIf="!isLoggedIn()">
             <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
           </div>
         </div>
         <div class="card-footer">
           <div class="btn-group d-flex" *ngIf="isAuthorized()">
-              <button class="btn btn-primary w-100" (click)="addToFavorites(ad.id)">Наблюдавай</button>
-              <button class="btn btn-success w-100" (click)="selectTab(2)">Изпрати съобщение</button>
+              <button class="btn btn-primary w-100" (click)="addToFavorites(ad.id)" style="height:36.5px;">Наблюдавай</button>
+              <button class="btn btn-success w-100" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button>
           </div>
         </div>
       </div>
@@ -46,7 +55,9 @@
       <div class="tab-panel">
         <tabset class="ad-tabset" #adTabs>
             <tab heading="Описание">
-              <p>{{ad.description}}</p>
+              <textarea class="form-control" name="description" rows="15" 
+                      [(ngModel)]="ad.description" disabled style="background-color:#FFF !important;color:black;"></textarea>
+              <!--<div style="text-align: justify;"><pre>{{ad.description}}</pre></div>-->
             </tab>
             <tab heading="Снимки">
               <p *ngIf="galleryImages.length == 0">Няма налични снимки</p>

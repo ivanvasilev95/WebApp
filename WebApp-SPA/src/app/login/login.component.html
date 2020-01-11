@@ -11,7 +11,7 @@
             placeholder="Потребителско име">
           <div class="invalid-feedback" 
             *ngIf="loginForm.get('username').hasError('required') 
-              && loginForm.get('username').touched">
+              && loginForm.get('username').touched" style="text-align: left;">
               Потребителското име е задължително
           </div>
         </div>
@@ -25,8 +25,8 @@
             placeholder="Парола">
           <div class="invalid-feedback" 
             *ngIf="loginForm.get('password').hasError('required') 
-              && loginForm.get('password').touched">
-              Полето Парола е задължително
+              && loginForm.get('password').touched" style="text-align: left;">
+              Полето "Парола" е задължително
           </div>
         </div>
 

@@ -16,10 +16,8 @@ namespace WebApp.API.DTOs
         public string Description { get; set; }
         [Required]
         public string Location { get; set; }
-        [Required]
-        public double Price { get; set; }
-        [Required]
-        public bool IsUsed { get; set; }
+        public double? Price { get; set; }
+        public bool? IsUsed { get; set; }
         public DateTime DateAdded { get; set; }
         public int UserId { get; set; }
         public int CategoryId { get; set; }
