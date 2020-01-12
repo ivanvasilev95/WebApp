@@ -23,8 +23,8 @@
       <tr>
         <th style="width: 10%">Подател</th>
         <th style="width: 20%">Обява</th>
-        <th style="width: 60%">Съобщение</th>
-        <th style="width: 35%">Дата</th>
+        <th style="width: 55%">Съобщение</th>
+        <th style="width: 40%">Дата</th>
         <th style="width: 10%"></th>
       </tr>
       <tr [style.background-color]="!message.isRead ? '#eee' : 'null'" *ngFor="let message of messages" [routerLink]="['/ads', message.adId, message.senderId]" [queryParams]="{tab: 2}">
@@ -38,7 +38,7 @@
           </div>
         </td>
         <td>{{message.adTitle}}</td>
-        <td>{{message.content}}</td>
+        <td style="text-align: justify;">{{message.content}}</td>
         <td>{{message.messageSent | timeAgo}}</td>
         <td>
           <button class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(message.id)">Изтрий</button>
