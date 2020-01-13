@@ -77,7 +77,7 @@ export class NewAddComponent implements OnInit {
     if (this.createAdForm.valid) {
       this.ad = Object.assign({}, this.createAdForm.value);
       this.ad.userId = +this.authService.decodedToken.nameid;
-      this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name;
+      this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name; // maybe not necessary
 
       this.adService.createAd(this.ad).subscribe((ad: Ad) => {
         this.alertify.success('Обявата е създадена успешно.');

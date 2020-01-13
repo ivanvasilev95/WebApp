@@ -59,6 +59,7 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetAd")]
         public async Task<IActionResult> GetAd(int id)
         {
+            // validate id
             var ad = await _repo.GetAd(id);
             var adToReturn = _mapper.Map<AdForDetailedDTO>(ad);
             adToReturn.CategoryName = _repo.GetAdCategory(adToReturn.CategoryId).Name;
