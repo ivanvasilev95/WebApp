@@ -34,10 +34,12 @@ namespace WebApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAds()
+        public async Task<IActionResult> GetAds([FromQuery]UserParams userParams)
         {
-            var ads = await _repo.GetAds();
+            var ads = await _repo.GetAds(userParams);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(ads);
+
+            Response.AddPagination(ads.CurrentPage, ads.PageSize, ads.TotalCount, ads.TotalPages);
 
             return Ok(adsToReturn);
         }

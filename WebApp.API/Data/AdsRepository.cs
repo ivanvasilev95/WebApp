@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using WebApp.API.Helpers;
 using WebApp.API.Models;
 
 namespace WebApp.API.Data
@@ -31,11 +32,11 @@ namespace WebApp.API.Data
             return ad;
         }
 
-        public async Task<IEnumerable<Ad>> GetAds()
+        public async Task<PagedList<Ad>> GetAds(UserParams userParams)
         {
-            var ads = await _context.Ads.Include(a => a.Photos).ToListAsync();
+            var ads = _context.Ads.Include(a => a.Photos);
 
-            return ads;
+            return await PagedList<Ad>.CreateAsync(ads, userParams.PageNumber, userParams.PageSize);
         }
 
         public IEnumerable<Ad> GetUserAds(int userId)

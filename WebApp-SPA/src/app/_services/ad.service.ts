@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Ad } from '../_models/ad';
 import { Observable } from 'rxjs';
 import { Category } from '../_models/category';
+import { PaginatedResult } from '../_models/pagination';
+import { map } from 'rxjs/operators';
 
 /*
 const httpOptions = {
@@ -21,8 +23,25 @@ export class AdService {
 
   constructor(private http: HttpClient) { }
 
-  getAds(): Observable<Ad[]> {
-    return this.http.get<Ad[]>(this.baseUrl + 'ads');
+  getAds(page?, itemsPerPage?): Observable<PaginatedResult<Ad[]>> {
+    const paginatedResult: PaginatedResult<Ad[]> = new PaginatedResult<Ad[]>();
+
+    let params = new HttpParams();
+    if (page != null && itemsPerPage != null) {
+      params = params.append('pageNumber', page);
+      params = params.append('pageSize', itemsPerPage);
+    }
+
+    return this.http.get<Ad[]>(this.baseUrl + 'ads', { observe: 'response', params})
+    .pipe(
+      map(response => {
+        paginatedResult.result = response.body;
+        if (response.headers.get('Pagination') != null) {
+          paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
+        }
+        return paginatedResult;
+      })
+    );
   }
 
   getAd(id: number): Observable<Ad> {

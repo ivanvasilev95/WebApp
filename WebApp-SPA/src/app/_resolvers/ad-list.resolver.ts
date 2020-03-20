@@ -8,11 +8,14 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AdListResolver implements Resolve<Ad[]> {
+    pageNumber = 1;
+    pageSize = 5;
+
     constructor(private adService: AdService, private router: Router, private alertify: AlertifyService) {}
 
     resolve(route: ActivatedRouteSnapshot): Observable<Ad[]> {
         // tslint:disable-next-line: no-string-literal
-        return this.adService.getAds().pipe(
+        return this.adService.getAds(this.pageNumber, this.pageSize).pipe(
             catchError(error => {
                 this.alertify.error('Проблем с получаването на данните');
                 this.router.navigate(['']);

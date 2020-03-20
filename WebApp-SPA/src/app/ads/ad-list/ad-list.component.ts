@@ -4,6 +4,7 @@ import { AlertifyService } from '../../_services/alertify.service';
 import { Ad } from '../../_models/ad';
 import { ActivatedRoute } from '@angular/router';
 import { Category } from 'src/app/_models/category';
+import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
 
 @Component({
   selector: 'app-ad-list',
@@ -12,6 +13,8 @@ import { Category } from 'src/app/_models/category';
 })
 export class AdListComponent implements OnInit {
   ads: Ad[];
+  pagination: Pagination;
+
   categories: Category[];
   // tslint:disable-next-line: no-inferrable-types
   categoryId: number = 0;
@@ -24,8 +27,10 @@ export class AdListComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe(data => {
       // tslint:disable-next-line: no-string-literal
-      this.ads = data['ads'];
+      this.ads = data['ads'].result;
       this.shuffle(this.ads);
+      // tslint:disable-next-line: no-string-literal
+      this.pagination = data['ads'].pagination;
     });
     this.getCategories();
   }
@@ -40,6 +45,22 @@ export class AdListComponent implements OnInit {
         a[j] = x;
     }
     return a;
+  }
+
+  pageChanged(event: any) {
+    this.pagination.currentPage = event.page;
+    this.loadAds();
+  }
+
+  loadAds() {
+    this.adService.getAds(this.pagination.currentPage, this.pagination.itemsPerPage)
+      .subscribe((res: PaginatedResult<Ad[]>) => {
+      this.ads = res.result;
+      this.pagination = res.pagination;
+    }, error => {
+      console.log(error);
+      // this.alertify.error(error);
+    });
   }
 
   getCategories() {
@@ -138,17 +159,6 @@ export class AdListComponent implements OnInit {
     if (this.categoryId !== 0) {
       console.log(this.categoryId);
     }
-  }
-  */
-
-  /*
-  loadAds() {
-    this.adService.getAds().subscribe((ads: Ad[]) => {
-      this.ads = ads;
-    }, error => {
-      console.log(error);
-      // this.alertify.error(error);
-    });
   }
   */
 }
