@@ -54,15 +54,20 @@ namespace WebApp.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMessages(/*int userId,*/
-            [FromQuery]MessageParams messageParams) // async Task<IActionResult>
+        public async Task<IActionResult> GetMessages(/*int userId,*/
+            [FromQuery]MessageParams messageParams)
         {
             //if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             //return Unauthorized();
-            messageParams.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var messagesFromRepo = _userRepo.GetMessagesForUser(messageParams);
-            var messages = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messagesFromRepo);
 
+            messageParams.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
+            var messagesFromRepo = await _userRepo.GetMessagesForUser(messageParams);
+            var messages = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messagesFromRepo);
+            
+            Response.AddPagination(messagesFromRepo.CurrentPage, messagesFromRepo.PageSize,
+                messagesFromRepo.TotalCount, messagesFromRepo.TotalPages);
+            
             return Ok(messages);
         }
 

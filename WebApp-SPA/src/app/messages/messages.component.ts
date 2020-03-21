@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 import { Ad } from '../_models/ad';
 import { AlertifyService } from '../_services/alertify.service';
+import { Pagination, PaginatedResult } from '../_models/pagination';
 
 @Component({
   selector: 'app-messages',
@@ -13,6 +14,7 @@ import { AlertifyService } from '../_services/alertify.service';
 })
 export class MessagesComponent implements OnInit {
   messages: Message[];
+  pagination: Pagination;
   messageContainer: 'Unread';
 
   constructor(private userService: UserService, private authService: AuthService,
@@ -21,11 +23,26 @@ export class MessagesComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe(data => {
       // tslint:disable-next-line: no-string-literal
-      this.messages = data['messages'];
+      this.messages = data['messages'].result;
+      // tslint:disable-next-line: no-string-literal
+      this.pagination = data['messages'].pagination;
     });
   }
 
   loadMessages() {
+    this.userService.getMessages(this.pagination.currentPage,
+      this.pagination.itemsPerPage, this.messageContainer)
+      .subscribe((res: PaginatedResult<Message[]>) => {
+        this.messages = res.result;
+        this.pagination = res.pagination;
+      }, error => {
+        this.alertify.error(error);
+      });
+  }
+
+  pageChanged(event: any): void {
+    this.pagination.currentPage = event.page;
+    this.loadMessages();
   }
 
   deleteMessage(id: number) {

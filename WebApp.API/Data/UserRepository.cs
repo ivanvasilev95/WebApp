@@ -44,7 +44,7 @@ namespace WebApp.API.Data
         }
         */
 
-        public IEnumerable<Message> GetMessagesForUser(MessageParams messageParams) // PagedList
+        public async Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams)
         {
             var messages = _context.Messages
                 .Include(u => u.Sender)
@@ -63,19 +63,19 @@ namespace WebApp.API.Data
             switch(messageParams.MessageContainer) 
             {
                 case "Inbox":
-                    messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.RecipientDeleted == false);
+                    messages = messages.Where(u => u.RecipientId == messageParams.UserId /*&& u.RecipientDeleted == false*/);
                     break;
                 case "Outbox":
-                    messages = messages.Where(u => u.SenderId == messageParams.UserId && u.SenderDeleted == false);
+                    messages = messages.Where(u => u.SenderId == messageParams.UserId /*&& u.SenderDeleted == false*/);
                     break;
                 default:
-                    messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.RecipientDeleted == false /*&& u.IsRead == false*/ /*&& u.Ad.UserId == messageParams.UserId && u.IsRead == false*/);
+                    messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.IsRead == false /*&& u.RecipientDeleted == false*/ /*&& u.Ad.UserId == messageParams.UserId && u.IsRead == false*/);
                     break;
             }
 
             messages = messages.OrderByDescending(u => u.MessageSent);
 
-            return messages;
+            return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
         }
 
         public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId, int adId)

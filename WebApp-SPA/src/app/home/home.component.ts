@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdService } from '../_services/ad.service';
 import { Ad } from '../_models/ad';
 import { AlertifyService } from '../_services/alertify.service';
+import { PaginatedResult } from '../_models/pagination';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,8 @@ import { AlertifyService } from '../_services/alertify.service';
 })
 export class HomeComponent implements OnInit {
   ads: Ad[];
+  pageNumber = 1;
+  pageSize = 10;
 
   constructor(private adService: AdService, private alertify: AlertifyService) { }
 
@@ -18,8 +21,8 @@ export class HomeComponent implements OnInit {
   }
 
   loadAds() {
-    this.adService.getAds().subscribe((ads: Ad[]) => {
-      this.ads = ads;
+    this.adService.getAds(this.pageNumber, this.pageSize).subscribe((ads: PaginatedResult<Ad[]>) => {
+      this.ads = ads.result;
       this.shuffle(this.ads);
     }, error => {
       // console.log(error);
