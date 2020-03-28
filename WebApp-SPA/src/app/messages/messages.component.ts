@@ -55,7 +55,7 @@ export class MessagesComponent implements OnInit {
         this.messages.splice(msgIndex, 1);
         this.alertify.success('Съобщението беше изтрито успешно');
       }, error => {
-        this.alertify.error('Неуспешно изтриване');
+        this.alertify.error(error); // 'Неуспешно изтриване'
       });
     });
   }

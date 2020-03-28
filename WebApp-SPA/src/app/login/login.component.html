@@ -1,6 +1,6 @@
 <div class="tab-panel" style="text-align: center; margin-top: 60px; margin-left: 25%; margin-right: 25%;">
   <tabset class="ad-tabset" [justified]="true">
-    <tab heading="Вход">
+    <tab heading="Вход" (deselect)="this.loginForm.reset()">
       <form [formGroup]="loginForm" (ngSubmit)="login()">
         <div class="form-group">
           <input type="text" 
@@ -42,8 +42,8 @@
       </form>
       -->
     </tab>
-    <tab heading="Регистрация">
-      <app-register></app-register>
+    <tab heading="Регистрация" (deselect)="register.registerForm.reset()">
+      <app-register #register></app-register>
     </tab>
   </tabset>
 </div>

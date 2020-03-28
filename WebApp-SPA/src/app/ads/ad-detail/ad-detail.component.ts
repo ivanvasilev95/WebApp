@@ -83,8 +83,8 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
       this.alertify.success('Вие добавихте ' + this.ad.title + ' в Наблюдавани');
       // this.getAdLikesCount();
     }, error => {
-      // this.alertify.error(error);
-      this.alertify.error('Грешка при добавяне на обявата в Наблюдавани');
+      this.alertify.error(error);
+      // this.alertify.error('Грешка при добавяне на обявата в Наблюдавани');
     });
   }
 

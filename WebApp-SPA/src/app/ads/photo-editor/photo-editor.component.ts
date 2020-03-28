@@ -73,7 +73,7 @@ export class PhotoEditorComponent implements OnInit {
         this.photos.splice(this.photos.findIndex(p => p.id === id), 1);
         this.alertify.success('Снимката беше изтрита');
       }, error => {
-        this.alertify.error('Изтриването беше неуспешно');
+        this.alertify.error(error); // 'Изтриването беше неуспешно'
       });
     });
   }

@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit {
       this.authService.register(this.user).subscribe(() => {
         this.alertify.success('Регистрацията е направена успешно');
       }, error => {
-        this.alertify.error('Имаше грешка от страна на сървъра при опита за регистрация');
+        this.alertify.error(error); // 'Имаше грешка от страна на сървъра при опита за регистрация'
       }, () => {
         this.authService.login(this.user).subscribe(() => {
           this.router.navigate(['']);

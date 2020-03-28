@@ -32,8 +32,7 @@ export class MyAdsComponent implements OnInit {
         this.loadUserAds();
         this.alertify.success('Обявата е премахната успешно');
       }, error => {
-        console.log(error);
-        // this.alertify.error(error);
+        this.alertify.error(error);
       });
     }
   }

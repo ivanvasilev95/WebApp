@@ -34,7 +34,7 @@ namespace WebApp.API.Controllers
             userForRegisterDTO.Username = userForRegisterDTO.Username.ToLower();
 
             if (await _repo.UserExists(userForRegisterDTO.Username))
-                return BadRequest("Потребителско име е заето.");
+                return BadRequest("Потребителското име е заето.");
 
             var userToCreate = _mapper.Map<User>(userForRegisterDTO);
 
@@ -51,7 +51,7 @@ namespace WebApp.API.Controllers
             var userFromRepo = await _repo.Login(userForLoginDTO.Username.ToLower(), userForLoginDTO.Password);
 
             if (userFromRepo == null)
-                return Unauthorized();
+                return Unauthorized("Невалиден имейл или парола");
 
             var claims = new[]
             {

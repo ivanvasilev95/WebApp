@@ -1,34 +1,28 @@
-<p *ngIf="ads?.length == 0" style="padding-top: 250px;text-align: center;">За момента няма публикувани обяви.</p>
-<div *ngIf="ads?.length !== 0" class="container mt-4">
-  <!--<form (ngSubmit)="search()">--> <!-- search -->
-    <div class="input-group">
-      <input #searchBar type="text" style="margin-right:4px;" class="form-control" placeholder="Филтрирай по име или адрес на обява" (change)="search()">
-      <!--<div class="input-group-btn">
-        <button class="btn btn-outline-dark" type="submit" style="border-radius: 0 !important;margin-right:3px;">
-          <i class="fa fa-search"></i>
-        </button>
-      </div>-->
-      <select class="form-control" style="margin-right:4px;" (change)="onCategorySelect($event)">
-        <!--<option value="" disabled>Изберете категория</option>-->
-        <option [value]="0">Избери категория</option>
-        <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
-      </select>
-      <select class="form-control" (change)="onSortSelect($event)">
-        <option value="">Сортирай по</option>
-        <option value="newest">Най-нови</option>
-        <option value="cheapest">Най-евтини</option>
-        <option value="expensive">Най-скъпи</option>
-      </select>
-    </div>
-  <!--</form>-->
+<div class="container mt-4">
+  <div class="input-group">
+    <input type="text" [(ngModel)]="searchText" style="margin-right:4px;" class="form-control" placeholder="Филтрирай по име или адрес на обява" (input)="filterAds()">
+    <select class="form-control" style="margin-right:4px;" [(ngModel)]="categoryId" (change)="filterAds()">
+      <option [value]="0">Всички категории</option>
+      <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+    </select>
+    <select class="form-control" [(ngModel)]="sortCriteria" (change)="filterAds()">
+      <!--<option value="" disabled>Сортирай по</option>-->
+      <option value="newest">Най-нови</option>
+      <option value="cheapest">Най-евтини</option>
+      <option value="expensive">Най-скъпи</option>
+      <option value="negotiation">По договаряне</option>
+    </select>
+  </div>
   <hr>
-  <div class="row mt-4">
+  <p *ngIf="ads?.length == 0" style="text-align: center;">Няма намерени обяви.</p>
+  <div *ngIf="ads?.length !== 0" class="row mt-4">
     <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
       <ad [ad]="ad"></ad>
     </div>  
   </div>
 </div>
 <div class="d-flex justify-content-center mt-2">
+  <!--
   <pagination [boundaryLinks]="true" 
               [totalItems]="pagination.totalItems"
               [itemsPerPage]="pagination.itemsPerPage"
@@ -36,4 +30,5 @@
               (pageChanged)="pageChanged($event)"
             previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
   </pagination>
+  -->
 </div>

@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
         this.alertify.success('Успешен вход');
         this.router.navigate(['/user/ads']);
       }, error => {
-        this.alertify.error('Невалиден имейл или парола');
+        this.alertify.error(error); //'Невалиден имейл или парола'
       });
     }
   }

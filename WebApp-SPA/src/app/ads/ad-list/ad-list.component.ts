@@ -13,14 +13,16 @@ import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
 })
 export class AdListComponent implements OnInit {
   ads: Ad[];
+  adsToFilter: Ad[];
+  categories: Category[];
   pagination: Pagination;
 
-  categories: Category[];
   // tslint:disable-next-line: no-inferrable-types
-  categoryId: number = 0;
+  searchText: string = '';
   // tslint:disable-next-line: no-inferrable-types
-  sortCriteria: string = '';
-  @ViewChild('searchBar', {static: false}) searchBar: ElementRef;
+  categoryId: string = '0';
+  // tslint:disable-next-line: no-inferrable-types
+  sortCriteria: string = 'newest';
 
   constructor(private adService: AdService, private alertify: AlertifyService, private route: ActivatedRoute) { }
 
@@ -28,11 +30,59 @@ export class AdListComponent implements OnInit {
     this.route.data.subscribe(data => {
       // tslint:disable-next-line: no-string-literal
       this.ads = data['ads'].result;
-      this.shuffle(this.ads);
       // tslint:disable-next-line: no-string-literal
       this.pagination = data['ads'].pagination;
+      this.shuffle(this.ads);
+      this.adsToFilter = this.ads.map(x => Object.assign({}, x));
     });
     this.getCategories();
+    this.sortAds();
+  }
+
+  filterAds() {
+    this.filterByCategory(this.adsToFilter);
+    this.filterByNameOrAddress(this.ads);
+    this.sortAds();
+  }
+
+  filterByCategory(ads) {
+    if (+this.categoryId !== 0) {
+      this.ads = ads.filter(ad => ad.categoryId === +this.categoryId);
+    } else { // all categories
+      this.ads = ads.map(x => Object.assign({}, x));
+    }
+  }
+
+  filterByNameOrAddress(ads) {
+    if (this.searchText.replace(/\s/g, '').length) {
+      this.searchText = this.searchText.trim().toLowerCase();
+      this.ads = ads.filter(ad => ad.title.toLowerCase().includes(this.searchText) || ad.location.toLowerCase().includes(this.searchText));
+    } else { // input contains only whitespace
+      this.ads = ads.map(x => Object.assign({}, x));
+    }
+  }
+
+  sortAds() {
+    switch (this.sortCriteria) {
+      case 'newest': {
+        this.ads.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime());
+        break;
+      }
+      case 'cheapest': {
+        this.ads = this.ads.filter(ad => ad.price !== null);
+        this.ads.sort((a, b) => a.price - b.price);
+        break;
+      }
+      case 'expensive': {
+        this.ads = this.ads.filter(ad => ad.price !== null);
+        this.ads.sort((a, b) => b.price - a.price);
+        break;
+      }
+      default: { // po dogovarqne
+        this.ads = this.ads.filter(ad => ad.price === null);
+        break;
+      }
+    }
   }
 
   shuffle(a) {
@@ -58,8 +108,7 @@ export class AdListComponent implements OnInit {
       this.ads = res.result;
       this.pagination = res.pagination;
     }, error => {
-      console.log(error);
-      // this.alertify.error(error);
+      this.alertify.error(error);
     });
   }
 
@@ -67,98 +116,4 @@ export class AdListComponent implements OnInit {
     this.adService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
     error => this.alertify.error(error));
   }
-
-  search() {
-    if (this.searchBar.nativeElement.value.replace(/\s/g, '').length) {
-      console.log(this.searchBar.nativeElement.value);
-    } else {
-      // input contains only whitespace
-    }
-
-    if (this.categoryId !== 0) {
-      console.log(this.categoryId);
-    }
-
-    if (this.sortCriteria !== '') {
-      console.log(this.sortCriteria);
-    }
-}
-
-  onCategorySelect(e) {
-    this.categoryId = +e.target.value;
-
-    if (this.categoryId === 0) {
-      // all categories
-    } else {
-      console.log(this.categoryId);
-    }
-
-    if (this.searchBar.nativeElement.value.replace(/\s/g, '').length) {
-      console.log(this.searchBar.nativeElement.value);
-    }
-
-    if (this.sortCriteria !== '') {
-      console.log(this.sortCriteria);
-    }
-  }
-
-  onSortSelect(e) {
-    this.sortCriteria = e.target.value;
-    console.log(this.sortCriteria);
-
-    if (this.searchBar.nativeElement.value.replace(/\s/g, '').length) {
-      console.log(this.searchBar.nativeElement.value);
-    }
-
-    if (this.categoryId !== 0) {
-      console.log(this.categoryId);
-    }
-  }
-
-  /*
-  search() {
-    if (this.searchBar.nativeElement.value !== '') {
-      console.log(this.searchBar.nativeElement.value);
-
-      if (this.categoryId !== 0) {
-        console.log(this.categoryId);
-      }
-
-      if (this.sortCriteria !== '') {
-        console.log(this.sortCriteria);
-      }
-    }
-  }
-
-  onCategorySelect(e) {
-    this.categoryId = +e.target.value;
-
-    if (this.categoryId === 0) {
-      // all categories
-    } else {
-      console.log(this.categoryId);
-    }
-
-    if (this.searchBar.nativeElement.value !== '') {
-      console.log(this.searchBar.nativeElement.value);
-    }
-
-    if (this.sortCriteria !== '') {
-      console.log(this.sortCriteria);
-    }
-  }
-
-  onSortSelect(e) {
-    this.sortCriteria = e.target.value;
-    console.log(this.sortCriteria);
-
-    if (this.searchBar.nativeElement.value !== '') {
-      console.log(this.searchBar.nativeElement.value);
-    }
-
-    if (this.categoryId !== 0) {
-      console.log(this.categoryId);
-    }
-  }
-  */
 }

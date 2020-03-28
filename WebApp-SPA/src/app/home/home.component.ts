@@ -25,8 +25,7 @@ export class HomeComponent implements OnInit {
       this.ads = ads.result;
       this.shuffle(this.ads);
     }, error => {
-      // console.log(error);
-      this.alertify.error('Грешка при зареждане на обявите');
+      this.alertify.error(error); // 'Грешка при зареждане на обявите'
     });
   }
 

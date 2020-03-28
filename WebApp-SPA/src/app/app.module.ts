@@ -39,6 +39,7 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { LoginComponent } from './login/login.component';
 import { NewAdGuard } from './_guards/new-ad.guard';
 import { AboutComponent } from './about/about.component';
+import { ErrorInterceptorProvider } from './_services/error.interceptor';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -97,8 +98,9 @@ export function tokenGetter() {
       AdListResolver,
       UserEditResolver,
       MessagesResolver,
-      PreventUnsavedChanges // ,
+      PreventUnsavedChanges, // ,
       // UserService
+      ErrorInterceptorProvider
    ],
    bootstrap: [
       AppComponent
