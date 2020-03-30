@@ -9,11 +9,13 @@ export class ErrorInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             catchError(error => {
                 if (error instanceof HttpErrorResponse) {
-                    if (error.status === 401 || error.status === 400) {
+                    if (error.status === 401 || error.status === 400 || error.status === 404) {
+                        if (typeof error.error === 'object') {
+                            return throwError('Грешка на сървъра'); // error.error.errors.id[0]
+                        }
                         return throwError(error.error);
                     }
                     const applicationError = error.headers.get('Application-Error');
-                    console.log('error');
                     if (applicationError) {
                         return throwError(applicationError);
                     }

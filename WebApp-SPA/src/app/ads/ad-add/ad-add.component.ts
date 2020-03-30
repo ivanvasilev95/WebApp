@@ -52,9 +52,21 @@ export class NewAddComponent implements OnInit {
   }
 
   selectCondition(e) {
+    /*
     this.condition.setValue(e.target.value === 'true', {
       onlySelf: true
     });
+    */
+    // tslint:disable-next-line: quotemark
+    if (e.target.value === "null") {
+      this.condition.setValue(null, {
+        onlySelf: true
+      });
+    } else {
+      this.condition.setValue(e.target.value, {
+        onlySelf: true
+      });
+    }
   }
 
   createNewAdForm() {

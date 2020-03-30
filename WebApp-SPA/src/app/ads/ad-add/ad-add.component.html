@@ -44,14 +44,16 @@
         </div>
         -->
         <div class="form-group">
-          <select class="custom-select" (change)="selectCondition($event)" formControlName="isUsed" [ngClass]="{'is-invalid': createAdForm.get('isUsed').errors && createAdForm.get('isUsed').touched}">
-            <option [value]=null>Избери състояние</option> <!--disabled-->
-            <option [value]="true">използвано</option>
-            <option [value]="false">ново</option>
+          <select class="custom-select" (change)="selectCondition($event)" formControlName="isUsed"> <!-- [ngClass]="{'is-invalid': createAdForm.get('isUsed').errors && createAdForm.get('isUsed').touched}" -->
+            <option value="null">Избери състояние</option> <!--disabled-->
+            <option value="true">използвано</option>
+            <option value="false">ново</option>
           </select>
+          <!--
           <div class="invalid-feedback" *ngIf="createAdForm.get('isUsed').hasError('required')">
             Състоянието е задължително
           </div>
+          -->
         </div>
         <!-- price -->
         <div class="form-group">

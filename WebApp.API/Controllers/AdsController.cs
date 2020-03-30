@@ -61,8 +61,9 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetAd")]
         public async Task<IActionResult> GetAd(int id)
         {
-            // validate id
             var ad = await _repo.GetAd(id);
+            if (ad == null)
+                return NotFound("Обявата не е намерена");
             var adToReturn = _mapper.Map<AdForDetailedDTO>(ad);
             adToReturn.CategoryName = _repo.GetAdCategory(adToReturn.CategoryId).Name;
      

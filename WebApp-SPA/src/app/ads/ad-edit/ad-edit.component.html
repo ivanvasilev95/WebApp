@@ -67,13 +67,15 @@
                     <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
                     <h6 class="mt-2">Цена</h6>
                     <input type="number" class="form-control" name="price" [(ngModel)]="ad.price" min="0" oninput="validity.valid||(value='');">
-                    <!--<h4 class="mt-2">Is Used <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h4>-->
-                    <h6 class="mt-2">Състояние</h6>
-                    <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
-                      <option [ngValue]=null></option>
-                      <option [ngValue]="true">използвано</option>
-                      <option [ngValue]="false">ново</option>
-                    </select>
+                    <!--<h6 *ngIf="ad.isUsed!==null" class="mt-2">Състояние <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h6>-->
+                    <div *ngIf="ad.isUsed!==null">
+                      <h6 class="mt-2">Състояние</h6>
+                      <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
+                        <!--<option [ngValue]=null></option>-->
+                        <option [ngValue]="true">използвано</option>
+                        <option [ngValue]="false">ново</option>
+                      </select>
+                    </div>
                 </form>
             </tab>
             <tab heading="Описание">

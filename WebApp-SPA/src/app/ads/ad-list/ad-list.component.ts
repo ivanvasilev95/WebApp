@@ -32,7 +32,7 @@ export class AdListComponent implements OnInit {
       this.ads = data['ads'].result;
       // tslint:disable-next-line: no-string-literal
       this.pagination = data['ads'].pagination;
-      this.shuffle(this.ads);
+      // this.shuffle(this.ads); // unnecessary
       this.adsToFilter = this.ads.map(x => Object.assign({}, x));
     });
     this.getCategories();
