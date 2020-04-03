@@ -23,13 +23,19 @@ export class AdService {
 
   constructor(private http: HttpClient) { }
 
-  getAds(page?, itemsPerPage?): Observable<PaginatedResult<Ad[]>> {
+  getAds(page?, itemsPerPage?, userParams?): Observable<PaginatedResult<Ad[]>> {
     const paginatedResult: PaginatedResult<Ad[]> = new PaginatedResult<Ad[]>();
 
     let params = new HttpParams();
     if (page != null && itemsPerPage != null) {
       params = params.append('pageNumber', page);
       params = params.append('pageSize', itemsPerPage);
+    }
+
+    if (userParams != null) {
+      params = params.append('searchText', userParams.searchText);
+      params = params.append('categoryId', userParams.categoryId);
+      params = params.append('sortCriteria', userParams.sortCriteria);
     }
 
     return this.http.get<Ad[]>(this.baseUrl + 'ads', { observe: 'response', params})

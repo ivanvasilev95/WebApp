@@ -1,11 +1,11 @@
 <div class="container mt-4">
   <div class="input-group">
-    <input type="text" [(ngModel)]="searchText" style="margin-right:4px;" class="form-control" placeholder="Филтрирай по име или адрес на обява" (input)="filterAds()">
-    <select class="form-control" style="margin-right:4px;" [(ngModel)]="categoryId" (change)="filterAds()">
+    <input type="text" [(ngModel)]="userParams.searchText" style="margin-right:4px;" class="form-control" placeholder="Филтрирай по име или адрес на обява" (input)="filterByNameOrAddress()">
+    <select class="form-control" style="margin-right:4px;" [(ngModel)]="userParams.categoryId" (change)="loadAds(true)">
       <option [value]="0">Всички категории</option>
       <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
     </select>
-    <select class="form-control" [(ngModel)]="sortCriteria" (change)="filterAds()">
+    <select class="form-control" [(ngModel)]="userParams.sortCriteria" (change)="loadAds(true)">
       <!--<option value="" disabled>Сортирай по</option>-->
       <option value="newest">Най-нови</option>
       <option value="cheapest">Най-евтини</option>

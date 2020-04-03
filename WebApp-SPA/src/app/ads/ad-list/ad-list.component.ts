@@ -13,19 +13,67 @@ import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
 })
 export class AdListComponent implements OnInit {
   ads: Ad[];
-  adsToFilter: Ad[];
+  // adsToFilter: Ad[];
   categories: Category[];
   pagination: Pagination;
-
-  // tslint:disable-next-line: no-inferrable-types
-  searchText: string = '';
-  // tslint:disable-next-line: no-inferrable-types
-  categoryId: string = '0';
-  // tslint:disable-next-line: no-inferrable-types
-  sortCriteria: string = 'newest';
+  userParams: any = {};
 
   constructor(private adService: AdService, private alertify: AlertifyService, private route: ActivatedRoute) { }
 
+  ngOnInit() {
+    this.route.data.subscribe(data => {
+      // tslint:disable-next-line: no-string-literal
+      this.ads = data['ads'].result;
+      // tslint:disable-next-line: no-string-literal
+      this.pagination = data['ads'].pagination;
+    });
+
+    this.getCategories();
+
+    this.userParams.searchText = '';
+    this.userParams.categoryId = 0;
+    this.userParams.sortCriteria = 'newest';
+  }
+
+  pageChanged(event: any) {
+    this.pagination.currentPage = event.page;
+    this.loadAds(false);
+  }
+
+  loadAds(flag: boolean) {
+    if (flag === true) { // return to first page
+      this.pagination.currentPage = 1;
+    }
+    this.adService.getAds(this.pagination.currentPage, this.pagination.itemsPerPage, this.userParams)
+      .subscribe((res: PaginatedResult<Ad[]>) => {
+      this.ads = res.result;
+      this.pagination = res.pagination;
+    }, error => {
+      this.alertify.error(error);
+    });
+  }
+
+  getCategories() {
+    this.adService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
+    error => this.alertify.error(error));
+  }
+
+  filterByNameOrAddress() {
+    if (this.userParams.searchText.replace(/\s/g, '').length) {
+      this.userParams.searchText = this.userParams.searchText.trim().toLowerCase();
+    }
+    this.loadAds(true);
+  }
+
+  /*
+  // tslint:disable-next-line: no-inferrable-types
+  // searchText: string = '';
+  // tslint:disable-next-line: no-inferrable-types
+  // categoryId: string = '0';
+  // tslint:disable-next-line: no-inferrable-types
+  // sortCriteria: string = 'newest';
+
+  // front-end sorting and filtering implementation
   ngOnInit() {
     this.route.data.subscribe(data => {
       // tslint:disable-next-line: no-string-literal
@@ -96,24 +144,5 @@ export class AdListComponent implements OnInit {
     }
     return a;
   }
-
-  pageChanged(event: any) {
-    this.pagination.currentPage = event.page;
-    this.loadAds();
-  }
-
-  loadAds() {
-    this.adService.getAds(this.pagination.currentPage, this.pagination.itemsPerPage)
-      .subscribe((res: PaginatedResult<Ad[]>) => {
-      this.ads = res.result;
-      this.pagination = res.pagination;
-    }, error => {
-      this.alertify.error(error);
-    });
-  }
-
-  getCategories() {
-    this.adService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
-    error => this.alertify.error(error));
-  }
+  */
 }
