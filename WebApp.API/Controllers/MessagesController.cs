@@ -12,7 +12,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [ServiceFilter(typeof(LogUserActivity))]
     [ApiController]
     [Route("[controller]")]

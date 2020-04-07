@@ -10,53 +10,74 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApp.API.Controllers
-{
+{   
+    [AllowAnonymous]
     [ApiController]
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
+        public AuthController(IConfiguration config,
+            IMapper mapper,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
             _mapper = mapper;
-            _repo = repo;
+            _userManager = userManager;
+            _signInManager = signInManager;
             _config = config;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
-            userForRegisterDTO.Username = userForRegisterDTO.Username.ToLower();
-
-            if (await _repo.UserExists(userForRegisterDTO.Username))
-                return BadRequest("Потребителското име е заето.");
-
             var userToCreate = _mapper.Map<User>(userForRegisterDTO);
 
-            var createdUser = await _repo.Register(userToCreate, userForRegisterDTO.Password);
+            var result = await _userManager.CreateAsync(userToCreate, userForRegisterDTO.Password);
 
-            var userToReturn = _mapper.Map<UserForDetailedDTO>(createdUser);
+            var userToReturn = _mapper.Map<UserForDetailedDTO>(userToCreate);
 
-            return CreatedAtRoute("GetUser", new {controller = "Users", id = createdUser.Id}, userToReturn);
+            if (result.Succeeded) {
+                return CreatedAtRoute("GetUser",
+                    new {controller = "Users", id = userToCreate.Id}, userToReturn);
+            }
+            
+            return BadRequest(result.Errors);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
         {
-            var userFromRepo = await _repo.Login(userForLoginDTO.Username.ToLower(), userForLoginDTO.Password);
+            var user = await _userManager.FindByNameAsync(userForLoginDTO.Username);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDTO.Password, false);
 
-            if (userFromRepo == null)
-                return Unauthorized("Невалиден имейл или парола");
+            if (result.Succeeded) {
+                // var appUser = await _userManager.Users//.Include(u => u.Ads)
+                    // .FirstOrDefaultAsync(u => u.NormalizedUserName == userForLoginDTO.Username.ToUpper());
+                return Ok(new
+                {
+                    token = GenerateJwtToken(user)
+                });
+            }
 
+            return Unauthorized("Невалиден имейл или парола");  
+        }
+
+        private string GenerateJwtToken(User user) 
+        {
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.Username)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
@@ -74,10 +95,7 @@ namespace WebApp.API.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(new
-            {
-                token = tokenHandler.WriteToken(token)
-            });
+            return tokenHandler.WriteToken(token);
         }
     }
 }

@@ -13,7 +13,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [ApiController]
     [Route("ads/{adId}/photos")]
     public class PhotosController : ControllerBase

@@ -26,6 +26,7 @@ namespace WebApp.API.Controllers
             _repo = repo;
         }
         
+        [AllowAnonymous]
         [HttpGet("{id}/likes")]
         public IActionResult GetLikesCount(int id){
             int count = _repo.GetAdLikesCount(id);
@@ -33,6 +34,7 @@ namespace WebApp.API.Controllers
             return Ok(count);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAds([FromQuery]UserParams userParams)
         {
@@ -44,7 +46,7 @@ namespace WebApp.API.Controllers
             return Ok(adsToReturn);
         }
         
-        [Authorize]
+        // [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAd(AdForCreateDTO adForCreateDTO)
         {
@@ -58,6 +60,7 @@ namespace WebApp.API.Controllers
             return CreatedAtRoute("GetAd", new {controller = "Ads", id = adToCreate.Id}, adToReturn);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}", Name = "GetAd")]
         public async Task<IActionResult> GetAd(int id)
         {
@@ -70,7 +73,7 @@ namespace WebApp.API.Controllers
             return Ok(adToReturn);
         }
         
-        [Authorize]
+        // [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Ad>> RemoveAd(int id){
             var adToDelete = await _repo.GetAd(id);
@@ -83,7 +86,7 @@ namespace WebApp.API.Controllers
             return adToDelete;
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpDelete("user/{userId}/removes/{adId}")]
         public async Task<ActionResult<Like>> RemoveAdFromFavorites(int userId, int adId) {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
@@ -99,7 +102,7 @@ namespace WebApp.API.Controllers
             return likeToRemove;
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet]
         [Route("user")]
         public IActionResult GetUserAds(){ // GetLoggedUserAds
@@ -110,7 +113,7 @@ namespace WebApp.API.Controllers
             return Ok(adsToReturn);
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet("user/{userId}/favorites")]
         public IActionResult GetUserFavorites(int userId){
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
@@ -122,6 +125,7 @@ namespace WebApp.API.Controllers
             return Ok(adsToReturn);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("categories")]
         public IActionResult GetAdCategories(){
@@ -130,7 +134,7 @@ namespace WebApp.API.Controllers
             return Ok(categories);
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAd(int id, AdForUpdateDTO adForUpdateDTO)
         {

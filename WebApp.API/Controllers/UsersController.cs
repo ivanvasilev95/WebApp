@@ -29,6 +29,7 @@ namespace WebApp.API.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
@@ -41,7 +42,7 @@ namespace WebApp.API.Controllers
             return Ok(userToReturn);
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)
         {
@@ -58,6 +59,7 @@ namespace WebApp.API.Controllers
             //throw new Exception($"Updating user {id} failed on save.");
         }
 
+        [AllowAnonymous]
         [HttpPost("{id}/like/{adId}")]
         public async Task<IActionResult> LikeAd(int id, int adId)
         {
