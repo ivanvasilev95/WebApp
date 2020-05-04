@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
   ads: Ad[];
   pageNumber = 1;
   pageSize = 10;
+  showSpinner = true;
 
   constructor(private adService: AdService, private alertify: AlertifyService) { }
 
@@ -24,8 +25,10 @@ export class HomeComponent implements OnInit {
     this.adService.getAds(this.pageNumber, this.pageSize).subscribe((ads: PaginatedResult<Ad[]>) => {
       this.ads = ads.result;
       this.shuffle(this.ads);
+      this.showSpinner = false;
     }, error => {
       this.alertify.error(error); // 'Грешка при зареждане на обявите'
+      this.showSpinner = false;
     });
   }
 

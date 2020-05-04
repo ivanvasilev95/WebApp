@@ -9,11 +9,23 @@
     </div>-->
     <hr/>
     <!--<p *ngIf="ads?.length == 0">За момента няма налични обяви. Моля, върнете се по-късно.</p>-->
+    <!--
+    <div *ngIf="showSpinner">Loading...</div>
     <div *ngIf="ads?.length !== 0" class="row mt-3">
       <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
           <ad [ad]="ad"></ad>
       </div>
     </div>
     <div *ngIf="ads?.length !== 0" class="row" style="margin-left:5px;"><a [routerLink]="['/ads']">Виж повече <i class="fa fa-angle-right"></i></a></div>
+    -->
+    <div *ngIf="showSpinner" class="lds-ring" style="margin-top:50px;"><div></div><div></div><div></div><div></div></div>
+    <div *ngIf="ads?.length !== 0 && showSpinner === false" class="row mt-3">
+      <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
+          <ad [ad]="ad"></ad>
+      </div>
+      <div style="margin-left:15px;margin-bottom:10px;">
+        <a [routerLink]="['/ads']">Виж повече <i class="fa fa-angle-right"></i></a>
+      </div>
+    </div>
   </div>
 </div>
