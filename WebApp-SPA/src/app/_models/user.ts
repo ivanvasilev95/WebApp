@@ -2,7 +2,7 @@ import { Ad } from './ad';
 
 export interface User {
   id: number;
-  username: string;
+  userName: string;
   password: string;
   fullName: string;
   address: string;
@@ -10,4 +10,5 @@ export interface User {
   created: Date;
   lastActive: Date;
   ads?: Ad[];
+  roles?: string[];
 }

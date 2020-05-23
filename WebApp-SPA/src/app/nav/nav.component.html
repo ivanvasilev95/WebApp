@@ -12,6 +12,9 @@
     <li class="nav-item" routerLinkActive="active">
       <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="authService.unreadMsgCnt != 0"> ({{authService.unreadMsgCnt}})</span></a>
     </li>
+    <li *appHasRole="['Admin', 'Moderator']" class="nav-item" routerLinkActive="active"> <!-- *ngIf="hasRole(['Admin', 'Moderator'])" -->
+      <a class="nav-link" [routerLink]="['/admin']">Администратор</a>
+    </li>
   </ul>
 
   <div *ngIf="loggedIn()" class="dropdown" dropdown>
@@ -30,7 +33,7 @@
     </div>
   </div>
 
-    <a *ngIf="!loggedIn()" class="text-light" [routerLink]="['/login']" style="padding-left:735px;"><i class="fa fa-user"></i> Моят профил</a>
+    <a *ngIf="!loggedIn()" class="text-light" [routerLink]="['/login']" style="padding-left:790px;"><i class="fa fa-user"></i> Вход</a>
     <a class="btn btn-warning" [routerLink]="['/ad/new']" style="margin-left:10px;"><i class="fa fa-plus"></i> Добави обява</a>
  
 </div>

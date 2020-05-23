@@ -66,6 +66,13 @@ namespace WebApp.API
                         ValidateAudience = false
                     };
                 });
+
+            services.AddAuthorization(options => {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("ModerateAdRole", policy => policy.RequireRole("Admin", "Moderator"));
+                options.AddPolicy("VipOnly", policy => policy.RequireRole("VIP"));
+            });
+            
             /*
             services.AddMvc(options => {
                 var policy = new AuthorizationPolicyBuilder()
@@ -77,7 +84,7 @@ namespace WebApp.API
             services.AddCors();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper(typeof(Startup));
-            // services.AddTransient<Seed>();
+            services.AddTransient<Seed>();
             // services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IAdsRepository, AdsRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -89,7 +96,7 @@ namespace WebApp.API
                 options.Filters.Add(new AuthorizeFilter(policy));
             }).AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
-
+        /*
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbConnection"), b => b.UseRowNumberForPaging()));
@@ -115,9 +122,9 @@ namespace WebApp.API
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<LogUserActivity>();
         }
-
+        */
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seed seeder)
         {
             if (env.IsDevelopment())
             {
@@ -138,6 +145,7 @@ namespace WebApp.API
                 });
             }
 
+            // seeder.SeedUsers();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseHttpsRedirection();

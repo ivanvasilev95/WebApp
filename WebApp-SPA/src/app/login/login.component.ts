@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
 import { Router } from '@angular/router';
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
         this.alertify.success('Успешен вход');
         this.router.navigate(['/user/ads']);
       }, error => {
-        this.alertify.error(error); //'Невалиден имейл или парола'
+        this.alertify.error(error); // 'Невалидно потребителско име или парола'
       });
     }
   }

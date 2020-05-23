@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { BsDropdownModule, TabsModule, TooltipModule, PaginationModule } from 'ngx-bootstrap';
+import { BsDropdownModule, TabsModule, TooltipModule, PaginationModule, ModalModule } from 'ngx-bootstrap';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgxGalleryModule } from 'ngx-gallery';
 
@@ -40,6 +40,11 @@ import { LoginComponent } from './login/login.component';
 import { NewAdGuard } from './_guards/new-ad.guard';
 import { AboutComponent } from './about/about.component';
 import { ErrorInterceptorProvider } from './_services/error.interceptor';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { HasRoleDirective } from './_directives/hasRole.directive';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
+import { AdManagementComponent } from './admin/ad-management/ad-management.component';
+import { RolesModalComponent } from './admin/roles-modal/roles-modal.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -65,7 +70,12 @@ export function tokenGetter() {
       PhotoEditorComponent,
       TimeAgoPipe,
       LoginComponent,
-      AboutComponent
+      AboutComponent,
+      AdminPanelComponent,
+      HasRoleDirective,
+      UserManagementComponent,
+      AdManagementComponent,
+      RolesModalComponent
    ],
    imports: [
       BrowserModule,
@@ -75,6 +85,7 @@ export function tokenGetter() {
       NgxGalleryModule,
       RouterModule.forRoot(appRoutes),
       BsDropdownModule.forRoot(),
+      ModalModule.forRoot(),
       PaginationModule.forRoot(),
       JwtModule.forRoot({
          config: {
@@ -101,6 +112,9 @@ export function tokenGetter() {
       PreventUnsavedChanges, // ,
       // UserService
       ErrorInterceptorProvider
+   ],
+   entryComponents: [
+      RolesModalComponent
    ],
    bootstrap: [
       AppComponent

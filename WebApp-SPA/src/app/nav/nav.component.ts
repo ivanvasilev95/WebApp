@@ -26,4 +26,18 @@ export class NavComponent implements OnInit {
     this.alertify.message('Успешно излезнахте от системата');
     this.router.navigate(['/home']);
   }
+
+  hasRole(roles) {
+    const userRoles = this.authService.decodedToken.role as Array<string>;
+
+    if (!userRoles) {
+      return false;
+    }
+
+    if (this.authService.roleMatch(roles)) {
+      return true;
+    }
+
+    return false;
+  }
 }

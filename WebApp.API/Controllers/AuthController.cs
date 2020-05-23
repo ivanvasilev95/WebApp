@@ -13,6 +13,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace WebApp.API.Controllers
 {   
@@ -47,6 +48,8 @@ namespace WebApp.API.Controllers
             var userToReturn = _mapper.Map<UserForDetailedDTO>(userToCreate);
 
             if (result.Succeeded) {
+                await _userManager.AddToRoleAsync(userToCreate, "Member");
+                
                 return CreatedAtRoute("GetUser",
                     new {controller = "Users", id = userToCreate.Id}, userToReturn);
             }
@@ -58,6 +61,10 @@ namespace WebApp.API.Controllers
         public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
         {
             var user = await _userManager.FindByNameAsync(userForLoginDTO.Username);
+
+            if (user == null)
+                return Unauthorized("Невалидено потребителско име или парола");
+
             var result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDTO.Password, false);
 
             if (result.Succeeded) {
@@ -65,20 +72,27 @@ namespace WebApp.API.Controllers
                     // .FirstOrDefaultAsync(u => u.NormalizedUserName == userForLoginDTO.Username.ToUpper());
                 return Ok(new
                 {
-                    token = GenerateJwtToken(user)
+                    token = GenerateJwtToken(user).Result
                 });
             }
 
-            return Unauthorized("Невалиден имейл или парола");  
+            return Unauthorized("Невалидено потребителско име или парола");  
         }
 
-        private string GenerateJwtToken(User user) 
+        private async Task<string> GenerateJwtToken(User user) 
         {
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName)
             };
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            foreach(var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
 

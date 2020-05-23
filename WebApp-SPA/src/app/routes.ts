@@ -18,11 +18,13 @@ import { MessagesResolver } from './_resolvers/messages.resolver';
 import { LoginComponent } from './login/login.component';
 import { NewAdGuard } from './_guards/new-ad.guard';
 import { AboutComponent } from './about/about.component';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { LoginGuard } from './_guards/login.guard';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'about', component: AboutComponent },
-    { path: 'login', component: LoginComponent },
+    { path: 'login', component: LoginComponent, runGuardsAndResolvers: 'always', canActivate: [LoginGuard] },
     { path: 'user/:id/ads', component: UserAdsComponent },
     { path: 'ads', component: AdListComponent,
     resolve: {ads: AdListResolver} },
@@ -42,7 +44,8 @@ export const appRoutes: Routes = [
             { path: 'user/ads', component: MyAdsComponent },
             { path: 'user/ad/:id/edit', component: AdEditComponent },
             { path: 'ads/:id/:senderId', component: AdDetailComponent,
-            resolve: {ad: AdDetailResolver} },
+                resolve: {ad: AdDetailResolver} },
+            { path: 'admin', component: AdminPanelComponent, data: {roles: ['Admin', 'Moderator']} }
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' }
