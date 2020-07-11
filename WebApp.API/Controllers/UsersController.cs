@@ -33,11 +33,17 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await _userRepo.GetUser(id);
+            // var isCurrentUserOrAdmin = (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id || User.FindFirst(ClaimTypes.Name).Value == "admin");
+            
+            var currentUserRoles = ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value);
+            var isCurrentUserOrAdminOrModerator = (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id || currentUserRoles.Contains("Admin") || currentUserRoles.Contains("Moderator"));
+            var user = await _userRepo.GetUser(id, isCurrentUserOrAdminOrModerator);
 
             var userToReturn = _mapper.Map<UserForDetailedDTO>(user);
             foreach(var ad in userToReturn.Ads)
-                ad.PhotoUrl = _userRepo.getPhotoUrl(ad.Id);
+                ad.PhotoUrl = _userRepo.GetPhotoUrl(ad.Id);
 
             return Ok(userToReturn);
         }
@@ -49,7 +55,7 @@ namespace WebApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
             
-            var userFromRepo = await _userRepo.GetUser(id);
+            var userFromRepo = await _userRepo.GetUser(id, true);
 
             _mapper.Map(userForUpdateDTO, userFromRepo);
 

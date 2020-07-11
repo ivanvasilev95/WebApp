@@ -33,15 +33,16 @@
       <!--<p class="card-text text-muted text-center">-->
       <!--<i class="fa fa-location-arrow"></i> {{ad.location}}<br>
       <i class="fa fa-clock-o"></i> {{ad.dateAdded | date}}-->
-      <span *ngIf="ad.price == null">
+      <span *ngIf="ad.price == null && ad.isApproved">
         По договаряне
       </span>
-      <span *ngIf="ad.price != null && ad.price == 0">
+      <span *ngIf="ad.price != null && ad.price == 0 && ad.isApproved">
         Безплатно
       </span>
-      <span *ngIf="ad.price != null && ad.price != 0">
+      <span *ngIf="ad.price != null && ad.price != 0 && ad.isApproved">
         {{ad.price}} лв.
       </span>
+      <span *ngIf="!ad.isApproved" class="card-text text-center">not approved</span>
     </p>
     <!--
     <div class="text-center">

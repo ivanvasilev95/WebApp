@@ -21,7 +21,7 @@
         <ng-template #NoPhoto>
           <img src="https://www.tibs.org.tw/images/default.jpg" style="height:70px;width:70px" class="img-thumbnail mr-2">
         </ng-template>
-        {{ad.title}}
+        {{ad.title}} <span *ngIf="!ad.isApproved">(awaiting approval)</span>
         <!--<span style="margin-left:350px;"></span>-->
         <div style="float:right;">
           <button type="button" class="btn btn-outline-info ml-3" [routerLink]="['/ads', ad.id]"><i class="fa fa-eye"></i> Преглед</button>

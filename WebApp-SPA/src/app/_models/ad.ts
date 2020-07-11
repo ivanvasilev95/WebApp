@@ -13,4 +13,5 @@ export interface Ad {
     isUsed?: boolean;
     userId?: number;
     photos?: Photo[];
+    isApproved: boolean;
 }

@@ -25,16 +25,18 @@
     <div class="dropdown-menu mt-4" *dropdownMenu>
       <!--<a class="dropdown-item" [routerLink]="['/ad/new']"><i class=""></i> New Ad</a>
       <div class="dropdown-divider"></div>-->
-      <a class="dropdown-item" [routerLink]="['/user/ads']"><i class="fa fa-buysellads"></i> Моите обяви</a>
-      <div class="dropdown-divider"></div>
+      <div *appHasRole="['Member', 'Moderator']">
+        <a class="dropdown-item" [routerLink]="['/user/ads']"><i class="fa fa-buysellads"></i> Моите обяви</a>
+        <div class="dropdown-divider"></div>
+      </div>
       <a class="dropdown-item" [routerLink]="['/user/edit']"><i class="fa fa-user"></i>  Редактиране на профила</a>
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out"></i> Изход</a>
     </div>
   </div>
 
-    <a *ngIf="!loggedIn()" class="text-light" [routerLink]="['/login']" style="padding-left:790px;"><i class="fa fa-user"></i> Вход</a>
-    <a class="btn btn-warning" [routerLink]="['/ad/new']" style="margin-left:10px;"><i class="fa fa-plus"></i> Добави обява</a>
+  <a *ngIf="!loggedIn()" class="text-light" [routerLink]="['/login']" style="padding-left:790px;"><i class="fa fa-user"></i> Вход</a>
+  <a *ngIf="loggedIn() && authService.roleMatch(['Moderator', 'Member'])" class="btn btn-warning" [routerLink]="['/ad/new']" style="margin-left:10px;"><i class="fa fa-plus"></i> Добави обява</a>
  
 </div>
 </nav>

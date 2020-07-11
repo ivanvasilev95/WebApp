@@ -16,9 +16,15 @@ namespace WebApp.API.Data
 
         }
 
-        public async Task<User> GetUser(int id)
+        public async Task<User> GetUser(int id, bool isCurrentUserOrAdminOrModerator)
         {
-            var user = await _context.Users.Include(u => u.Ads).FirstOrDefaultAsync(u => u.Id == id);
+            var query = _context.Users.Include(u => u.Ads).AsQueryable();
+
+            if (isCurrentUserOrAdminOrModerator) {
+                query = query.IgnoreQueryFilters();
+            }
+
+            var user = await query.FirstOrDefaultAsync(u => u.Id == id);
 
             return user;
         }
@@ -28,7 +34,7 @@ namespace WebApp.API.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public string getPhotoUrl(int adId){
+        public string GetPhotoUrl(int adId){
             return _context.Photos.Where(p => p.IsMain && p.AdId == adId).FirstOrDefault()?.Url;
         }
 

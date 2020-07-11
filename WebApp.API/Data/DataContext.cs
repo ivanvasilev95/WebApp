@@ -30,7 +30,7 @@ namespace WebApp.API.Data
                     .HasForeignKey(ur => ur.RoleId)
                     .IsRequired();
 
-                    userRole.HasOne(ur => ur.User)
+                userRole.HasOne(ur => ur.User)
                     .WithMany(r => r.UserRoles)
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
@@ -66,6 +66,8 @@ namespace WebApp.API.Data
                 .WithMany(m => m.Messages)
                 .OnDelete(DeleteBehavior.Restrict);
             */
+
+            builder.Entity<Ad>().HasQueryFilter(a => a.IsApproved);
         }
     }
 }

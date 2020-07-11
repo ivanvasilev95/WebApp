@@ -16,8 +16,8 @@ namespace WebApp.API.DTOs
         public int UserId { get; set; }
         public string PhotoUrl { get; set; }
         public ICollection<PhotosForDetailedDTO> Photos { get; set; }
-
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
+        public bool IsApproved { get; set; }
     }
 }

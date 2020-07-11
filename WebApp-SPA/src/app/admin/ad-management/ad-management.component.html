@@ -1,3 +1,19 @@
-<p>
-  coming soon!
-</p>
+<div class="container mt-3">
+  <p *ngIf="ads?.length == 0" style="text-align: center;">Няма обяви за администриране.</p>
+  <ul class="list-group">
+    <li class="list-group-item mt-2" *ngFor="let ad of ads">
+      <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
+        <img src="{{ad.photoUrl}}" alt="{{ad.id}}" style="height:70px;width:70px" class="img-thumbnail mr-2">
+      </ng-container>
+      <ng-template #NoPhoto>
+        <img src="https://www.tibs.org.tw/images/default.jpg" style="height:70px;width:70px" class="img-thumbnail mr-2">
+      </ng-template>
+      {{ad.title}}
+      <div style="float:right;">
+        <button type="button" class="btn btn-sm btn-outline-info mr-1" [routerLink]="['/ads', ad.id]">Преглед</button>
+        <button type="button" class="btn btn-sm btn-success mr-1" (click)="approveAd(ad.id)">Одобри</button>
+        <button type="button" class="btn btn-sm btn-danger" (click)="rejectAd(ad.id)">Отхвърли</button>
+      </div>
+    </li>
+  </ul>
+</div>

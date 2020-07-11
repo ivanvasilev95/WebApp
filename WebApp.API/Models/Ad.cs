@@ -12,6 +12,7 @@ namespace WebApp.API.Models
         public double? Price { get; set; }
         public bool? IsUsed { get; set; }
         public DateTime DateAdded { get; set; }
+        public bool IsApproved { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
         public Category Category { get; set; }

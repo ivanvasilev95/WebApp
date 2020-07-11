@@ -7,9 +7,9 @@ namespace WebApp.API.Data
 {
     public interface IUserRepository
     {
-        Task<User> GetUser(int id);
+        Task<User> GetUser(int id, bool isCurrentUserOrAdminOrModerator);
         Task<bool> SaveAll();
-        string getPhotoUrl(int id);
+        string GetPhotoUrl(int id);
         Task<Message> GetMessage(int id);
         //Task<IEnumerable<Message>> GetMessagesForAd(MessageParams messageParams); // int id // Task<PagedList<Message>>
         Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams);

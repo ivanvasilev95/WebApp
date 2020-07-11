@@ -2,7 +2,7 @@
   <div class="row">
       <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
         <div *ngIf="user?.fullName != '' && user?.fullName != null"><h4>{{user?.fullName}}</h4></div>
-        <div *ngIf="user?.fullName == '' || user?.fullName == null"><h4>{{user?.username}}</h4></div>
+        <div *ngIf="user?.fullName == '' || user?.fullName == null"><h4>{{user?.userName}}</h4></div>
         <div *ngIf="user?.address != null && user?.address != ''"><p>{{user?.address}}</p></div>
         <h6><em>Потребител от {{user?.created | date: 'dd/MM/yyyy'}}</em></h6>
         <em>Последно активен: {{user?.lastActive | timeAgo}}</em>
@@ -12,6 +12,7 @@
   <div class="row">
     <div *ngFor="let ad of user?.ads" class="col-lg-2 col-md-3 col-sm-6">
       <ad [ad]="ad"></ad>
-    </div>  
+    </div>
   </div>
+  <p *ngIf="user?.ads?.length == 0" style="text-align: center;">Този потребител няма добавени обяви.</p>
 </div>

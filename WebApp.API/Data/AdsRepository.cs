@@ -27,7 +27,8 @@ namespace WebApp.API.Data
 
         public async Task<Ad> GetAd(int id)
         {
-            var ad = await _context.Ads.Include(a => a.Photos).FirstOrDefaultAsync(a => a.Id == id);
+            var ad = await _context.Ads.Include(a => a.Photos).IgnoreQueryFilters()
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             return ad;
         }
@@ -76,9 +77,9 @@ namespace WebApp.API.Data
 
         public IEnumerable<Ad> GetUserAds(int userId)
         {
-            var ads =  _context.Ads.Include(a => a.Photos).Where(a => a.UserId == userId).OrderByDescending(a => a.DateAdded).ToList();
-            
-            return ads;
+            var ads =  _context.Ads.Include(a => a.Photos).IgnoreQueryFilters();
+
+            return ads.Where(a => a.UserId == userId).OrderByDescending(a => a.DateAdded).ToList();
         }
 
         public async Task<bool> SaveAll()
@@ -107,9 +108,9 @@ namespace WebApp.API.Data
 
         public IEnumerable<Ad> GetUserFavorites(int userId)
         {
-            //var userFavorites = _context.Likes.Where(u => u.UserId == userId).Select(i => i.AdId);
             var user = _context.Users.Include(x => x.Likes).FirstOrDefault(u => u.Id == userId);
-            var userFavorites = user.Likes.Where(u => u.UserId == userId).Select(i => i.AdId); // where clause probably not needed
+            //var userFavorites = _context.Likes.Where(u => u.UserId == userId).Select(i => i.AdId);
+            var userFavorites = user.Likes.Select(i => i.AdId);
             
             return _context.Ads.Include(p => p.Photos).Where(a => userFavorites.Contains(a.Id));  
         }

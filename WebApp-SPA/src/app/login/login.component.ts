@@ -31,7 +31,11 @@ export class LoginComponent implements OnInit {
       this.model = Object.assign({}, this.loginForm.value);
       this.authService.login(this.model).subscribe(next => {
         this.alertify.success('Успешен вход');
-        this.router.navigate(['/user/ads']);
+        if (this.authService.roleMatch(['Admin', 'Moderator'])) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/user/ads']);
+        }
       }, error => {
         this.alertify.error(error); // 'Невалидно потребителско име или парола'
       });

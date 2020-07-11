@@ -15,7 +15,7 @@ namespace WebApp.API.Helpers
             var userId = int.Parse(resultContext.HttpContext.User
                 .FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "-1");
             var repo = (IUserRepository)resultContext.HttpContext.RequestServices.GetService(typeof(IUserRepository));
-            var user = await repo.GetUser(userId);
+            var user = await repo.GetUser(userId, true);
             if(user != null)
                 user.LastActive = DateTime.Now;
             await repo.SaveAll();

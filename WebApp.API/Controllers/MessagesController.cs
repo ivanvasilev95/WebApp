@@ -74,7 +74,7 @@ namespace WebApp.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMessage(/*int userId,*/ /*int adId,*/ MessageForCreationDTO messageForCreationDTO)
         {
-            var sender = await _userRepo.GetUser(messageForCreationDTO.SenderId);
+            var sender = await _userRepo.GetUser(messageForCreationDTO.SenderId, false);
             
             //if (messageForCreationDTO.SenderId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             if (sender.Id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
@@ -92,7 +92,7 @@ namespace WebApp.API.Controllers
             if (ad == null)
                 return BadRequest("Обявата не е намерена");
 
-            var recipient = await _userRepo.GetUser(messageForCreationDTO.RecipientId);
+            var recipient = await _userRepo.GetUser(messageForCreationDTO.RecipientId, false);
 
             if (recipient == null)
                 return BadRequest("Потребителят не е намерен");

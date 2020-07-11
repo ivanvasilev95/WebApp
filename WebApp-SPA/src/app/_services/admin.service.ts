@@ -22,4 +22,16 @@ export class AdminService {
   updateUserRoles(user: User, roles: {}) {
     return this.http.post(this.baseUrl + 'admin/editRoles/' + user.userName, roles);
   }
+
+  getAdsForApproval() {
+    return this.http.get(this.baseUrl + 'admin/adsForModeration');
+  }
+
+  approveAd(adId) {
+    return this.http.post(this.baseUrl + 'admin/approveAd/' + adId, {});
+  }
+
+  rejectAd(adId) {
+    return this.http.post(this.baseUrl + 'admin/rejectAd/' + adId, {});
+  }
 }

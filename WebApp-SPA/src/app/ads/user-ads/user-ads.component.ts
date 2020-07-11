@@ -12,7 +12,8 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 export class UserAdsComponent implements OnInit {
   user: User;
 
-  constructor(private userService: UserService, private route: ActivatedRoute, private alertify: AlertifyService) { }
+  constructor(private userService: UserService, private route: ActivatedRoute,
+              private router: Router, private alertify: AlertifyService) { }
 
   ngOnInit() {
     this.getUser();
@@ -20,8 +21,13 @@ export class UserAdsComponent implements OnInit {
 
   getUser() {
     // tslint:disable-next-line: no-string-literal
-    this.userService.getUser(+this.route.snapshot.params['id']).subscribe((user: User) => this.user = user,
-      error => this.alertify.error(error));
+    this.userService.getUser(+this.route.snapshot.params['id']).subscribe((user: User) => {
+        this.user = user;
+      },
+      error => {
+        this.alertify.error(error);
+        this.router.navigate(['']);
+      });
   }
 
   logConsole() {
