@@ -143,16 +143,19 @@ namespace WebApp.API.Controllers
                 if (photo.PublicId != null) 
                 {
                     var deleteParams = new DeletionParams(photo.PublicId);
-                    var result = _cloudinary.Destroy(deleteParams);
+					_cloudinary.Destroy(deleteParams);
+                    // var result = _cloudinary.Destroy(deleteParams);
+					/*
                     if (result.Result == "ok") 
                     {
                         _context.Photos.Remove(photo);
                     }
+					*/
                 } 
-                else 
-                {
+                // else 
+                // {
                     _context.Photos.Remove(photo);
-                }
+                // }
             }
 
             _context.Ads.Remove(ad);

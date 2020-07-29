@@ -19,4 +19,7 @@ export class RolesModalComponent {
     this.bsModalRef.hide();
   }
 
+  noCheckedRoles() {
+    return !this.roles.some(role => role.checked === true);
+  }
 }

@@ -17,7 +17,7 @@ export class AdEditComponent implements OnInit {
   categories: Category[];
   @ViewChild('editForm', {static: false}) editForm: NgForm;
   @ViewChild('descriptionForm', {static: false}) descriptionForm: NgForm; //
-  @ViewChild('adTabs', {static: false}) adTabs: TabsetComponent; //
+  @ViewChild('adTabs', {static: false}) adTabs: TabsetComponent; // not used
 
   constructor(private adService: AdService, private route: ActivatedRoute, private alertify: AlertifyService) { }
 

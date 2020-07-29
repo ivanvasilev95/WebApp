@@ -45,7 +45,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     if (this.route.snapshot.paramMap.get('senderId') == null || this.route.snapshot.paramMap.get('senderId') === undefined) {
       this.senderId = null;
     } else {
-    this.senderId = +this.route.snapshot.paramMap.get('senderId');
+      this.senderId = +this.route.snapshot.paramMap.get('senderId');
     }
 
     this.getAdLikesCount();
