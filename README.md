@@ -3,18 +3,18 @@ Web Bazar is an online platform for buying and selling goods and services writte
 
 The main user roles are:
 - Anonymous User
- - Review ads (search, filter, sort)
- - Login
- - Register
+    - Review ads (search, filter, sort)
+    - Login
+    - Register
 - User
- - Upload ads
- - Like ads
- - Send and receive messages
+    - Upload ads
+    - Like ads
+    - Send and receive messages
 - Moderator
- - Approve or reject pending ads
+    - Approve or reject pending ads
 - Administrator
- - Approve or reject pending ads
- - Manage user roles
+    - Approve or reject pending ads
+    - Manage user roles
 
 Tools and technologies used: ASP.NET Core Web API, Entity Framework Core, Identity Framework, AutoMapper, Angular, AlertifyJS, Bootstrap
 
