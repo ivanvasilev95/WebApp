@@ -18,4 +18,4 @@ Web Bazar is an online platform for buying and selling goods and services writte
 
 **Tools and technologies used:** ASP.NET Core Web API, Entity Framework Core, Identity Framework, AutoMapper, Angular, AlertifyJS, Bootstrap
 
-**Note:** The project is under development and it's not yet finished.
+**Note:** The project is still under development and it's not yet finished.
