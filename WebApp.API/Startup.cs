@@ -145,13 +145,17 @@ namespace WebApp.API
                 });
             }
 
-            // seeder.SeedUsers();
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            app.UseAuthentication();
             app.UseHttpsRedirection();
-            app.UseRouting();
-            app.UseAuthorization();
+			
+			app.UseRouting();
+			app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+			
+			app.UseAuthentication();
+			app.UseAuthorization();
+            
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+			
+			// seeder.SeedUsers();
         }
     }
 }
