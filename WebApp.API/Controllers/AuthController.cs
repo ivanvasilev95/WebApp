@@ -1,8 +1,6 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Data;
-using WebApp.API.DTOs;
 using WebApp.API.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -12,11 +10,11 @@ using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using WebApp.API.DTOs.User;
 
 namespace WebApp.API.Controllers
-{   
+{
     [AllowAnonymous]
     [ApiController]
     [Route("[controller]")]
@@ -27,15 +25,16 @@ namespace WebApp.API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AuthController(IConfiguration config,
+        public AuthController(
+            IConfiguration config,
             IMapper mapper,
             UserManager<User> userManager,
             SignInManager<User> signInManager)
         {
+            _config = config;
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
-            _config = config;
         }
 
         [HttpPost("register")]
@@ -68,8 +67,6 @@ namespace WebApp.API.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDTO.Password, false);
 
             if (result.Succeeded) {
-                // var appUser = await _userManager.Users//.Include(u => u.Ads)
-                    // .FirstOrDefaultAsync(u => u.NormalizedUserName == userForLoginDTO.Username.ToUpper());
                 return Ok(new
                 {
                     token = GenerateJwtToken(user).Result

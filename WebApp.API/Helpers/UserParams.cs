@@ -10,8 +10,8 @@ namespace WebApp.API.Helpers
             get { return pageSize; }
             set { pageSize = (value > MaxPageSize) ? MaxPageSize : value; }
         }
-        public string SearchText { get; set; }// = "";
-        public int CategoryId { get; set; }// = 0;
-        public string SortCriteria { get; set; }// = "newest";
+        public string SearchText { get; set; }
+        public int CategoryId { get; set; }
+        public string SortCriteria { get; set; }
     }
 }

@@ -1,6 +1,6 @@
-namespace WebApp.API.DTOs
+namespace WebApp.API.DTOs.Role
 {
-    public class RoleEditDto
+    public class RoleEditDTO
     {
         public string[] RoleNames { get; set; }
     }

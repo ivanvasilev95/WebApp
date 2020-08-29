@@ -1,31 +1,28 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Data;
-using WebApp.API.DTOs;
-using WebApp.API.Helpers;
-using WebApp.API.Models;
+using WebApp.API.Data.Interfaces;
+using WebApp.API.DTOs.User;
 
 namespace WebApp.API.Controllers
 {
-    [ServiceFilter(typeof(LogUserActivity))]
-    [ApiController]
-    [Route("[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : ApiController
     {
         private readonly IUserRepository _userRepo;
-        private readonly IAdsRepository _adsRepo;
+        private readonly IPhotoRepository _photoRepo;
         private readonly IMapper _mapper;
         
-        public UsersController(IUserRepository userRepo, IAdsRepository adsRepo, IMapper mapper)
+        public UsersController(
+            IUserRepository userRepo,
+            IPhotoRepository photoRepo, 
+            IMapper mapper)
         {
             _userRepo = userRepo;
-            _adsRepo = adsRepo;
+            _photoRepo = photoRepo;
             _mapper = mapper;
         }
 
@@ -33,72 +30,36 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            // var isCurrentUserOrAdmin = (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id || User.FindFirst(ClaimTypes.Name).Value == "admin");
-            
             var currentUserRoles = ((ClaimsIdentity)User.Identity).Claims
                 .Where(c => c.Type == ClaimTypes.Role)
                 .Select(c => c.Value);
+
             var isCurrentUserOrAdminOrModerator = (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id || currentUserRoles.Contains("Admin") || currentUserRoles.Contains("Moderator"));
             var user = await _userRepo.GetUser(id, isCurrentUserOrAdminOrModerator);
 
             var userToReturn = _mapper.Map<UserForDetailedDTO>(user);
-            foreach(var ad in userToReturn.Ads)
-                ad.PhotoUrl = _userRepo.GetPhotoUrl(ad.Id);
+            foreach(var ad in userToReturn.Ads) {
+                var photo = await _photoRepo.GetAdMainPhoto(ad.Id);
+                ad.PhotoUrl = photo?.Url;
+            }
 
             return Ok(userToReturn);
         }
 
-        // [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)
         {
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
             
-            var userFromRepo = await _userRepo.GetUser(id, true);
+            var userFromRepo = await _userRepo.GetUser(id, false);
 
             _mapper.Map(userForUpdateDTO, userFromRepo);
 
-            //if (await _repo.SaveAll())
+            //if (await _userRepo.SaveAll())
                 return NoContent();
             
             //throw new Exception($"Updating user {id} failed on save.");
         }
-
-        [AllowAnonymous]
-        [HttpPost("{id}/like/{adId}")]
-        public async Task<IActionResult> LikeAd(int id, int adId)
-        {
-            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();
-            
-            var like = await _adsRepo.GetLike(id, adId);
-            if (like != null) {
-                return BadRequest("Обявата вече е добавена в Наблюдавани");
-            }
-            
-            /*
-            if(await _adsRepo.GetAd(adId) == null)
-                return NotFound();
-            */
-
-            Ad ad = await _adsRepo.GetAd(adId);
-            if(ad == null)
-                return NotFound();
-            if(ad.UserId == id)
-                return BadRequest("Не може да добавяте собствени обяви в Наблюдавани");
-
-            like = new Like {
-                UserId = id,
-                AdId = adId
-            };
-
-            _adsRepo.Add<Like>(like);
-
-            if(await _adsRepo.SaveAll())
-                return Ok();
-            
-            return BadRequest("Грешка при добавяне на обявата в Наблюдавани");
-;        }
     }
 }

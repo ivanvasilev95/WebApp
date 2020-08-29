@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace WebApp.API.DTOs
+namespace WebApp.API.DTOs.Photo
 {
     public class PhotoForCreationDTO
     {

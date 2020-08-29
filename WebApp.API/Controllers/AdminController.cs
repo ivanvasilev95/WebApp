@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.DTOs;
 using Microsoft.AspNetCore.Identity;
 using WebApp.API.Models;
 using System.Collections.Generic;
@@ -14,12 +13,12 @@ using CloudinaryDotNet;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CloudinaryDotNet.Actions;
+using WebApp.API.DTOs.Ad;
+using WebApp.API.DTOs.Role;
 
 namespace WebApp.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class AdminController : ControllerBase
+    public class AdminController : ApiController
     {
         private readonly DataContext _context;
         public readonly UserManager<User> _userManager;
@@ -70,17 +69,21 @@ namespace WebApp.API.Controllers
         [HttpGet("roles")]
         public async Task<IActionResult> GetRoles()
         {
-            var roles = await _roleManager.Roles.OrderBy(r => r.Name).Select(r => r.Name).ToArrayAsync();
+            var roles = await _roleManager.Roles
+                .OrderBy(r => r.Name)
+                .Select(r => r.Name)
+                .ToArrayAsync();
+
             return Ok(roles);
         }
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("editRoles/{userName}")]
-        public async Task<IActionResult> EditRoles(string userName, RoleEditDto roleEditDto)
+        public async Task<IActionResult> EditRoles(string userName, RoleEditDTO roleEditDTO)
         {
             var user = await _userManager.FindByNameAsync(userName);
             var userRoles = await _userManager.GetRolesAsync(user);
-            var selectedRoles = roleEditDto.RoleNames;
+            var selectedRoles = roleEditDTO.RoleNames;
 
             selectedRoles = selectedRoles ?? new string[] {};
             var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
@@ -94,7 +97,6 @@ namespace WebApp.API.Controllers
                 return BadRequest("Грешка при премахването на роли.");
 
             return Ok(await _userManager.GetRolesAsync(user));
-
         }
 
         [Authorize(Policy = "ModerateAdRole")]
@@ -144,18 +146,9 @@ namespace WebApp.API.Controllers
                 {
                     var deleteParams = new DeletionParams(photo.PublicId);
 					_cloudinary.Destroy(deleteParams);
-                    // var result = _cloudinary.Destroy(deleteParams);
-					/*
-                    if (result.Result == "ok") 
-                    {
-                        _context.Photos.Remove(photo);
-                    }
-					*/
-                } 
-                // else 
-                // {
-                    _context.Photos.Remove(photo);
-                // }
+                }
+
+                _context.Photos.Remove(photo);
             }
 
             _context.Ads.Remove(ad);

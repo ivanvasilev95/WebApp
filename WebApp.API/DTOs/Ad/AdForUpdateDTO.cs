@@ -1,4 +1,4 @@
-namespace WebApp.API.DTOs
+namespace WebApp.API.DTOs.Ad
 {
     public class AdForUpdateDTO
     {

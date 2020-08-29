@@ -11,7 +11,6 @@ namespace WebApp.API.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         
-        // public DbSet<User> Users { get; set; }
         public DbSet<Ad> Ads { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Photo> Photos { get; set; }
@@ -38,19 +37,7 @@ namespace WebApp.API.Data
 
             builder.Entity<Like>()
                 .HasKey(k => new {k.UserId, k.AdId});
-            /*
-            builder.Entity<Like>()
-                .HasOne(u => u.User)
-                .WithMany(a => a.Ads)
-                .HasForeignKey(u => u.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Like>()
-                .HasOne(a => a.Ad)
-                .WithMany(u => u.Users)
-                .HasForeignKey(a => a.AdId)
-                .OnDelete(DeleteBehavior.Restrict);
-            */
             builder.Entity<Message>()
                 .HasOne(u => u.Sender)
                 .WithMany(m => m.MessagesSent)
@@ -60,12 +47,6 @@ namespace WebApp.API.Data
                 .HasOne(u => u.Recipient)
                 .WithMany(m => m.MessagesReceived)
                 .OnDelete(DeleteBehavior.Restrict);
-            /*
-            builder.Entity<Message>()
-                .HasOne(a => a.Ad)
-                .WithMany(m => m.Messages)
-                .OnDelete(DeleteBehavior.Restrict);
-            */
 
             builder.Entity<Ad>().HasQueryFilter(a => a.IsApproved);
         }

@@ -3,50 +3,48 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Data;
-using WebApp.API.DTOs;
+using WebApp.API.Data.Interfaces;
+using WebApp.API.DTOs.Message;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
-    // [Authorize]
-    [ServiceFilter(typeof(LogUserActivity))]
-    [ApiController]
-    [Route("[controller]")]
-    //[Route("user/{userId}/[controller]")]
-    public class MessagesController : ControllerBase
+    public class MessagesController : ApiController
     {
+        private readonly IAdsRepository _adsRepo;
+        private readonly IMessageRepository _messageRepo;
         private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
-        private readonly IAdsRepository _adsRepo;
+        
 
-        public MessagesController(IAdsRepository adsRepo, IUserRepository userRepo, IMapper mapper)
+        public MessagesController(
+            IAdsRepository adsRepo, 
+            IMessageRepository messageRepo,
+            IUserRepository userRepo, 
+            IMapper mapper)
         {
             _adsRepo = adsRepo;
+            _messageRepo = messageRepo;
             _userRepo = userRepo;
             _mapper = mapper;
         }
 
         [HttpGet("thread/{adId}/{recipientId}")]
-        public async Task<IActionResult> GetMessageThread(/* int userId */ int adId, int recipientId)
+        public async Task<IActionResult> GetMessageThread(int adId, int recipientId)
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var messageFromRepo = await _userRepo.GetMessageThread(userId, recipientId, adId);
+            var messageFromRepo = await _messageRepo.GetMessageThread(userId, recipientId, adId);
             var messageThread = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messageFromRepo);
 
             return Ok(messageThread);
         }
 
         [HttpGet("{id}", Name = "GetMessage")]
-        public async Task<IActionResult> GetMessage(/*int userId,*/ int id)
+        public async Task<IActionResult> GetMessage(int id)
         {
-            //if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            //return Unauthorized();
-
-            var messageFromRepo = await _userRepo.GetMessage(id);
+            var messageFromRepo = await _messageRepo.GetMessage(id);
             if (messageFromRepo == null)
                 return NotFound();
 
@@ -54,15 +52,11 @@ namespace WebApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMessages(/*int userId,*/
-            [FromQuery]MessageParams messageParams)
+        public async Task<IActionResult> GetMessages([FromQuery]MessageParams messageParams)
         {
-            //if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            //return Unauthorized();
-
             messageParams.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             
-            var messagesFromRepo = await _userRepo.GetMessagesForUser(messageParams);
+            var messagesFromRepo = await _messageRepo.GetUserMessages(messageParams);
             var messages = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messagesFromRepo);
             
             Response.AddPagination(messagesFromRepo.CurrentPage, messagesFromRepo.PageSize,
@@ -72,21 +66,13 @@ namespace WebApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMessage(/*int userId,*/ /*int adId,*/ MessageForCreationDTO messageForCreationDTO)
+        public async Task<IActionResult> CreateMessage(MessageForCreationDTO messageForCreationDTO)
         {
             var sender = await _userRepo.GetUser(messageForCreationDTO.SenderId, false);
             
-            //if (messageForCreationDTO.SenderId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             if (sender.Id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
-            /*
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();
-            
-            messageForCreationDTO.SenderId = userId;
-            */
 
-            //var ad = await _adsRepo.GetAd(adId);
             var ad = await _adsRepo.GetAd(messageForCreationDTO.AdId);
 
             if (ad == null)
@@ -99,10 +85,9 @@ namespace WebApp.API.Controllers
 
             var message = _mapper.Map<Message>(messageForCreationDTO);
 
-            _adsRepo.Add(message);
+            _messageRepo.Add(message);
 
-            if (await _userRepo.SaveAll()) {
-                //return NoContent();
+            if (await _messageRepo.SaveAll()) {
                 var messageToReturn = _mapper.Map<MessageToReturnDTO>(message);
                 return CreatedAtRoute("GetMessage", new { controller = "Messages", id = message.Id }, messageToReturn);
             }
@@ -111,13 +96,11 @@ namespace WebApp.API.Controllers
         }
 
         [HttpPost("{id}")]
-        public async Task<IActionResult> DeleteMessage(int id/*, int userId*/)
-        {
-            //if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                //return Unauthorized();  
+        public async Task<IActionResult> DeleteMessage(int id)
+        { 
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            var messageFromRepo = await _userRepo.GetMessage(id);
+            var messageFromRepo = await _messageRepo.GetMessage(id);
 
             if (messageFromRepo.SenderId == userId)
                 messageFromRepo.SenderDeleted = true;
@@ -126,9 +109,9 @@ namespace WebApp.API.Controllers
                 messageFromRepo.RecipientDeleted = true;
 
             if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
-                _adsRepo.Delete(messageFromRepo);
+                _messageRepo.Delete(messageFromRepo);
             
-            if (await _userRepo.SaveAll())
+            if (await _messageRepo.SaveAll())
                 return NoContent();
 
             throw new Exception("Грешка при изтриване на съобщението");
@@ -138,7 +121,7 @@ namespace WebApp.API.Controllers
         public async Task<IActionResult> MarkMessageAsRead(int id)
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var message = await _userRepo.GetMessage(id);
+            var message = await _messageRepo.GetMessage(id);
 
             if(message.RecipientId != userId)
                 return Unauthorized();
@@ -146,15 +129,16 @@ namespace WebApp.API.Controllers
             message.IsRead = true;
             message.DateRead = DateTime.Now;
 
-            await _userRepo.SaveAll();
+            await _messageRepo.SaveAll();
 
             return NoContent();
         }
 
         [HttpGet("user/unread")]
-        public IActionResult GetUnreadMessages(){
+        public async Task<IActionResult> GetUnreadMessages()
+        {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            int count = _userRepo.GetUnreadMessagesCount(userId);
+            int count = await _messageRepo.GetUnreadMessagesCount(userId);
             
             return Ok(count);
         }

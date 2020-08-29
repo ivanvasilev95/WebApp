@@ -63,7 +63,7 @@ export class AdService {
   }
 
   getCategories() {
-    return this.http.get<Category[]>(this.baseUrl + 'ads/categories');
+    return this.http.get<Category[]>(this.baseUrl + 'categories');
   }
 
   updateAd(id: number, ad: Ad) {
@@ -74,20 +74,20 @@ export class AdService {
     return this.http.post(this.baseUrl + 'ads', ad);
   }
 
-  addToFavorites(id: number, adId: number) {
-    return this.http.post(this.baseUrl + 'users/' + id + '/like/' + adId, {});
+  addToFavorites(userId: number, adId: number) {
+    return this.http.post(this.baseUrl + 'likes/user/' + userId + '/ad/' + adId, {});
   }
 
-  getAdLikesCount(id: number) {
-    return this.http.get(this.baseUrl + 'ads/' + id + '/likes');
+  getAdLikesCount(adId: number) {
+    return this.http.get(this.baseUrl + 'likes/count/ad/' + adId);
   }
 
   getUserFavorites(userId: number) {
     return this.http.get(this.baseUrl + 'ads/user/' + userId + '/favorites');
   }
 
-  removeAd(userId: number, adId: number) {
-    return this.http.delete(this.baseUrl + 'ads/user/' + userId + '/removes/' + adId);
+  removeAdFromFavorites(userId: number, adId: number) { // from favorites
+    return this.http.delete(this.baseUrl + 'likes/remove/user/' + userId + '/ad/' + adId);
   }
 
   setMainPhoto(adId: number, id: number) {

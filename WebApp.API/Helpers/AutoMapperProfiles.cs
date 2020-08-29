@@ -1,7 +1,9 @@
-using System;
 using System.Linq;
 using AutoMapper;
-using WebApp.API.DTOs;
+using WebApp.API.DTOs.Ad;
+using WebApp.API.DTOs.Message;
+using WebApp.API.DTOs.Photo;
+using WebApp.API.DTOs.User;
 using WebApp.API.Models;
 
 namespace WebApp.API.Helpers
@@ -19,7 +21,7 @@ namespace WebApp.API.Helpers
                 opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
             });
             
-            CreateMap<Photo, PhotosForDetailedDTO>(); // PhotoForDetailedDTO
+            CreateMap<Photo, PhotoForDetailedDTO>();
             CreateMap<User, UserForDetailedDTO>();
             CreateMap<UserForUpdateDTO, User>();
             CreateMap<UserForRegisterDTO, User>();

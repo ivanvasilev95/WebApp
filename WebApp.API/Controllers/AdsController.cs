@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -6,39 +5,34 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Data;
-using WebApp.API.DTOs;
+using WebApp.API.Data.Interfaces;
+using WebApp.API.DTOs.Ad;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
-    [ServiceFilter(typeof(LogUserActivity))]
-    [ApiController]
-    [Route("[controller]")]
-    public class AdsController : ControllerBase
+    public class AdsController : ApiController
     {
-        private readonly IAdsRepository _repo;
+        private readonly IAdsRepository _adsRepo;
+        private readonly ICategoryRepository _categoryRepo;
         private readonly IMapper _mapper;
-        public AdsController(IAdsRepository repo, IMapper mapper)
+
+        public AdsController(
+            IAdsRepository adsRepo, 
+            ICategoryRepository categoryRepo,
+            IMapper mapper)
         {
+            _adsRepo = adsRepo;
+            _categoryRepo = categoryRepo;
             _mapper = mapper;
-            _repo = repo;
-        }
-        
-        [AllowAnonymous]
-        [HttpGet("{id}/likes")]
-        public IActionResult GetLikesCount(int id){
-            int count = _repo.GetAdLikesCount(id);
-            
-            return Ok(count);
         }
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAds([FromQuery]UserParams userParams)
         {
-            var ads = await _repo.GetAds(userParams);
+            var ads = await _adsRepo.GetAds(userParams);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(ads);
 
             Response.AddPagination(ads.CurrentPage, ads.PageSize, ads.TotalCount, ads.TotalPages);
@@ -46,16 +40,15 @@ namespace WebApp.API.Controllers
             return Ok(adsToReturn);
         }
         
-        // [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAd(AdForCreateDTO adForCreateDTO)
         {
             var adToCreate = _mapper.Map<Ad>(adForCreateDTO);
-            _repo.Add(adToCreate);
-            // var adToReturn = _mapper.Map<AdForDetailedDTO>(adToCreate); 
-            await _repo.SaveAll();
+            _adsRepo.Add(adToCreate);
+            await _adsRepo.SaveAll();
+
             var adToReturn = _mapper.Map<AdForDetailedDTO>(adToCreate); 
-            adToReturn.CategoryName = _repo.GetAdCategory(adToReturn.CategoryId).Name; //
+            adToReturn.CategoryName = await _categoryRepo.GetCategoryName(adToReturn.CategoryId);
 
             return CreatedAtRoute("GetAd", new {controller = "Ads", id = adToCreate.Id}, adToReturn);
         }
@@ -64,85 +57,60 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetAd")]
         public async Task<IActionResult> GetAd(int id)
         {
-            var ad = await _repo.GetAd(id);
+            var ad = await _adsRepo.GetAd(id);
             if (ad == null)
                 return NotFound("Обявата не е намерена");
+                
             var adToReturn = _mapper.Map<AdForDetailedDTO>(ad);
-            adToReturn.CategoryName = _repo.GetAdCategory(adToReturn.CategoryId).Name;
+            adToReturn.CategoryName = await _categoryRepo.GetCategoryName(adToReturn.CategoryId);
      
             return Ok(adToReturn);
         }
-        
-        // [Authorize]
+
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Ad>> RemoveAd(int id){
-            var adToDelete = await _repo.GetAd(id);
+        public async Task<ActionResult<Ad>> RemoveAd(int id) 
+        {
+            var adToDelete = await _adsRepo.GetAd(id);
             if(adToDelete == null)
                 return NotFound();
             
-            _repo.Delete(adToDelete);
-            await _repo.SaveAll();
+            _adsRepo.Delete(adToDelete);
+            await _adsRepo.SaveAll();
 
             return adToDelete;
         }
 
-        // [Authorize]
-        [HttpDelete("user/{userId}/removes/{adId}")]
-        public async Task<ActionResult<Like>> RemoveAdFromFavorites(int userId, int adId) {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();
-                
-            var likeToRemove = await _repo.GetLike(userId, adId);
-            if(likeToRemove == null)
-                return NotFound();
-
-            _repo.Delete(likeToRemove);
-            await _repo.SaveAll();
-
-            return likeToRemove;
-        }
-
-        // [Authorize]
         [HttpGet]
         [Route("user")]
-        public IActionResult GetUserAds(){ // GetLoggedUserAds
+        public async Task<IActionResult> GetUserAds()
+        {
             int userId = int.Parse(this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value);
-            var ads = _repo.GetUserAds(userId);
+            var ads = await _adsRepo.GetUserAds(userId);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(ads);
 
             return Ok(adsToReturn);
         }
 
-        // [Authorize]
         [HttpGet("user/{userId}/favorites")]
-        public IActionResult GetUserFavorites(int userId){
+        public async Task<IActionResult> GetUserFavoriteAds(int userId)
+        {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var userFavoriteAds = _repo.GetUserFavorites(userId);
+            var userFavoriteAds = await _adsRepo.GetUserLikedAds(userId);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(userFavoriteAds);
 
             return Ok(adsToReturn);
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("categories")]
-        public IActionResult GetAdCategories(){
-            var categories = _repo.GetCategories();
-
-            return Ok(categories);
-        }
-
-        // [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAd(int id, AdForUpdateDTO adForUpdateDTO)
         {
-            var adFromRepo = await _repo.GetAd(id);
+            var adFromRepo = await _adsRepo.GetAd(id);
 
             _mapper.Map(adForUpdateDTO, adFromRepo);
 
-            //if (await _repo.SaveAll())
+            //if (await _adsRepo.SaveAll())
                 return NoContent();
             
             //throw new Exception($"Updating ad {id} failed on save.");

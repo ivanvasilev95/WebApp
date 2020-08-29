@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using WebApp.API.Models;
+using WebApp.API.DTOs.Ad;
 
-namespace WebApp.API.DTOs
+namespace WebApp.API.DTOs.User
 {
     public class UserForDetailedDTO
     {
@@ -13,6 +13,6 @@ namespace WebApp.API.DTOs
         public string Email { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
-        public ICollection<AdForDetailedDTO> Ads { get; set; } // Ad
+        public ICollection<AdForDetailedDTO> Ads { get; set; }
     }
 }
