@@ -5,7 +5,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Repositories
 {
-    public class PhotoRepository : BaseRepository, IPhotoRepository
+    public class PhotoRepository : RepositoryBase, IPhotoRepository
     {
         public PhotoRepository(DataContext context) : base(context){ }
 

@@ -104,8 +104,10 @@ namespace WebApp.API.Controllers
         public async Task<IActionResult> GetAdsForModeration()
         {
             var configuration = new MapperConfiguration(cfg =>
-                cfg.CreateMap<Ad, AdForListDTO>()
-                .ForMember(dto => dto.PhotoUrl, conf => conf.MapFrom(ol => ol.Photos.FirstOrDefault(p => p.IsMain).Url)));
+                cfg.CreateMap<Ad, AdForListDTO>().ForMember(
+                    dto => dto.PhotoUrl, 
+                    conf => conf.MapFrom(ol => ol.Photos.FirstOrDefault(p => p.IsMain).Url))
+            );
 
             var ads = await _context.Ads
                 .IgnoreQueryFilters()

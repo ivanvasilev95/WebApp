@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
 import { User } from '../_models/user';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,8 @@ export class AuthService {
   baseURL = environment.apiUrl + 'auth/';
   jwtHelper = new JwtHelperService();
   decodedToken: any;
-  unreadMsgCnt: number;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
 
   login(model: any) {
     return this.http.post(this.baseURL + 'login', model)
@@ -25,8 +25,9 @@ export class AuthService {
             localStorage.setItem('token', user.token);
             this.decodedToken = this.jwtHelper.decodeToken(user.token);
           }
+
           this.http.get(environment.apiUrl + 'messages/user/unread').subscribe((count: number) => {
-            this.unreadMsgCnt = count;
+            this.userService.unreadMessagesCount = count;
           });
         })
       );

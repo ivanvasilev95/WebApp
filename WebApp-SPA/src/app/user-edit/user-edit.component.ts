@@ -13,7 +13,6 @@ import { UserService } from '../_services/user.service';
 })
 export class UserEditComponent implements OnInit {
   user: User;
-
   @ViewChild('editForm', {static: false}) editForm: NgForm;
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
@@ -27,8 +26,7 @@ export class UserEditComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe(data => {
-      // tslint:disable-next-line: no-string-literal
-      this.user = data['user'];
+      this.user = data.user;
     });
   }
 
@@ -36,6 +34,7 @@ export class UserEditComponent implements OnInit {
     if (this.user.fullName === '') { this.user.fullName = null; }
     if (this.user.email === '') { this.user.email = null; }
     if (this.user.address === '') { this.user.address = null; }
+
     this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(next => {
       this.alertify.success('Профилът е редактиран успешно');
       this.editForm.reset(this.user);

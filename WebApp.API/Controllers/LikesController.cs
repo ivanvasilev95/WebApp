@@ -52,7 +52,7 @@ namespace WebApp.API.Controllers
         }
 
         [HttpDelete("remove/user/{userId}/ad/{adId}")]
-        public async Task<ActionResult<Like>> RemoveAdFromFavorites(int userId, int adId) 
+        public async Task<ActionResult<Like>> RemoveAdFromLiked(int userId, int adId) 
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();

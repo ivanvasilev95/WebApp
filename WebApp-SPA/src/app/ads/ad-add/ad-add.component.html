@@ -35,25 +35,12 @@
           </div>
         </div>
         <!-- condition -->
-        <!--
-        <div class="form-group">
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" formControlName="isUsed" id="defaultUnchecked">
-            <label class="custom-control-label" for="defaultUnchecked">Is Used</label>
-          </div>
-        </div>
-        -->
         <div class="form-group">
           <select class="custom-select" (change)="selectCondition($event)" formControlName="isUsed"> <!-- [ngClass]="{'is-invalid': createAdForm.get('isUsed').errors && createAdForm.get('isUsed').touched}" -->
             <option value="null">Избери състояние</option> <!--disabled-->
             <option value="true">използвано</option>
             <option value="false">ново</option>
           </select>
-          <!--
-          <div class="invalid-feedback" *ngIf="createAdForm.get('isUsed').hasError('required')">
-            Състоянието е задължително
-          </div>
-          -->
         </div>
         <!-- price -->
         <div class="form-group">
@@ -65,12 +52,6 @@
             class="form-control" 
             formControlName="price" 
             placeholder="Цена">
-          <!--
-          <div class="invalid-feedback" 
-            *ngIf="createAdForm.get('price').hasError('required') 
-              && createAdForm.get('price').touched">
-              Цената е задължителна
-          </div>-->
           <div class="invalid-feedback" 
             *ngIf="createAdForm.hasError('mismatch') 
               && createAdForm.get('price').touched">

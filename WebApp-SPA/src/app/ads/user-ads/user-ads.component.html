@@ -11,7 +11,7 @@
   <hr/>
   <div class="row">
     <div *ngFor="let ad of user?.ads" class="col-lg-2 col-md-3 col-sm-6">
-      <ad [ad]="ad"></ad>
+      <app-ad [ad]="ad"></app-ad>
     </div>
   </div>
   <p *ngIf="user?.ads?.length == 0" style="text-align: center;">Този потребител няма добавени обяви.</p>

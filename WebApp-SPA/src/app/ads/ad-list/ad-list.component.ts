@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AdService } from '../../_services/ad.service';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Ad } from '../../_models/ad';
 import { ActivatedRoute } from '@angular/router';
 import { Category } from 'src/app/_models/category';
 import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
+import { CategoryService } from 'src/app/_services/category.service';
 
 @Component({
   selector: 'app-ad-list',
@@ -13,23 +14,29 @@ import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
 })
 export class AdListComponent implements OnInit {
   ads: Ad[];
-  // adsToFilter: Ad[];
   categories: Category[];
   pagination: Pagination;
   userParams: any = {};
 
-  constructor(private adService: AdService, private alertify: AlertifyService, private route: ActivatedRoute) { }
+  constructor(private categoryService: CategoryService, private adService: AdService,
+              private alertify: AlertifyService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
-      // tslint:disable-next-line: no-string-literal
-      this.ads = data['ads'].result;
-      // tslint:disable-next-line: no-string-literal
-      this.pagination = data['ads'].pagination;
+      this.ads = data.ads.result;
+      this.pagination = data.ads.pagination;
     });
 
     this.getCategories();
+    this.initUserParams();
+  }
 
+  getCategories() {
+    this.categoryService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
+    error => this.alertify.error(error));
+  }
+
+  initUserParams() {
     this.userParams.searchText = '';
     this.userParams.categoryId = 0;
     this.userParams.sortCriteria = 'newest';
@@ -53,96 +60,10 @@ export class AdListComponent implements OnInit {
     });
   }
 
-  getCategories() {
-    this.adService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
-    error => this.alertify.error(error));
-  }
-
   filterByNameOrAddress() {
     if (this.userParams.searchText.replace(/\s/g, '').length) {
       this.userParams.searchText = this.userParams.searchText.trim().toLowerCase();
     }
     this.loadAds(true);
   }
-
-  /*
-  // tslint:disable-next-line: no-inferrable-types
-  // searchText: string = '';
-  // tslint:disable-next-line: no-inferrable-types
-  // categoryId: string = '0';
-  // tslint:disable-next-line: no-inferrable-types
-  // sortCriteria: string = 'newest';
-
-  // front-end sorting and filtering implementation
-  ngOnInit() {
-    this.route.data.subscribe(data => {
-      // tslint:disable-next-line: no-string-literal
-      this.ads = data['ads'].result;
-      // tslint:disable-next-line: no-string-literal
-      this.pagination = data['ads'].pagination;
-      // this.shuffle(this.ads); // unnecessary
-      this.adsToFilter = this.ads.map(x => Object.assign({}, x));
-    });
-    this.getCategories();
-    this.sortAds();
-  }
-
-  filterAds() {
-    this.filterByCategory(this.adsToFilter);
-    this.filterByNameOrAddress(this.ads);
-    this.sortAds();
-  }
-
-  filterByCategory(ads) {
-    if (+this.categoryId !== 0) {
-      this.ads = ads.filter(ad => ad.categoryId === +this.categoryId);
-    } else { // all categories
-      this.ads = ads.map(x => Object.assign({}, x));
-    }
-  }
-
-  filterByNameOrAddress(ads) {
-    if (this.searchText.replace(/\s/g, '').length) {
-      this.searchText = this.searchText.trim().toLowerCase();
-      this.ads = ads.filter(ad => ad.title.toLowerCase().includes(this.searchText) || ad.location.toLowerCase().includes(this.searchText));
-    } else { // input contains only whitespace
-      this.ads = ads.map(x => Object.assign({}, x));
-    }
-  }
-
-  sortAds() {
-    switch (this.sortCriteria) {
-      case 'newest': {
-        this.ads.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime());
-        break;
-      }
-      case 'cheapest': {
-        this.ads = this.ads.filter(ad => ad.price !== null);
-        this.ads.sort((a, b) => a.price - b.price);
-        break;
-      }
-      case 'expensive': {
-        this.ads = this.ads.filter(ad => ad.price !== null);
-        this.ads.sort((a, b) => b.price - a.price);
-        break;
-      }
-      default: { // po dogovarqne
-        this.ads = this.ads.filter(ad => ad.price === null);
-        break;
-      }
-    }
-  }
-
-  shuffle(a) {
-    // tslint:disable-next-line: one-variable-per-declaration
-    let j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
-        a[i] = a[j];
-        a[j] = x;
-    }
-    return a;
-  }
-  */
 }

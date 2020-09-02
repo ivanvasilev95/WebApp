@@ -16,7 +16,7 @@
           <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
         </ng-container>
         <ng-template #NoPhoto>
-          <img src="https://www.tibs.org.tw/images/default.jpg" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
+          <img src="assets/img/default.jpg" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
         </ng-template>
         <div class="card-body">
           <div>
@@ -67,11 +67,9 @@
                     <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
                     <h6 class="mt-2">Цена</h6>
                     <input type="number" class="form-control" name="price" [(ngModel)]="ad.price" min="0" oninput="validity.valid||(value='');">
-                    <!--<h6 *ngIf="ad.isUsed!==null" class="mt-2">Състояние <input class="ml-2" type="checkbox" name="isUsed" [(ngModel)]="ad.isUsed"/></h6>-->
                     <div *ngIf="ad.isUsed!==null">
                       <h6 class="mt-2">Състояние</h6>
                       <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
-                        <!--<option [ngValue]=null></option>-->
                         <option [ngValue]="true">използвано</option>
                         <option [ngValue]="false">ново</option>
                       </select>
@@ -80,12 +78,11 @@
             </tab>
             <tab heading="Описание">
               <form #descriptionForm="ngForm" id="descriptionForm" name="descriptionForm" (ngSubmit)="updateAd()">
-                <textarea class="form-control" name="description" rows="10" 
-                      [(ngModel)]="ad.description" pre></textarea>
+                <textarea class="form-control" name="description" rows="10" [(ngModel)]="ad.description" pre></textarea>
               </form>
             </tab>
             <tab heading="Снимки">
-              <photo-editor [photos]="ad.photos" [adId]="ad.id" (getAdPhotoChange)="updateMainPhoto($event)"></photo-editor>
+              <app-photo-editor [photos]="ad.photos" [adId]="ad.id" (getAdPhotoChange)="updateMainPhoto($event)"></app-photo-editor>
             </tab>
         </tabset>
       </div>

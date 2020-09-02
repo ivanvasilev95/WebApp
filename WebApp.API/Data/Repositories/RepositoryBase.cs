@@ -1,13 +1,12 @@
 using System.Threading.Tasks;
-using WebApp.API.Data.Interfaces;
 
 namespace WebApp.API.Data.Repositories
 {
-    public abstract class BaseRepository
+    public abstract class RepositoryBase
     {
         protected readonly DataContext _context;
 
-        public BaseRepository(DataContext context)
+        public RepositoryBase(DataContext context)
         {
             _context = context;
         }

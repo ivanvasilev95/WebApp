@@ -31,8 +31,10 @@
   </div>
 
   <div class="form-group">
-    <input [ngClass]="{'is-invalid': registerForm.get('email').errors && registerForm.get('email').touched}" class="form-control"
-      placeholder="Имейл адрес" formControlName="email">
+    <input [ngClass]="{'is-invalid': registerForm.get('email').errors && registerForm.get('email').touched}"
+      class="form-control"
+      placeholder="Имейл адрес" 
+      formControlName="email">
       <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('required')" style="text-align: left;">Полето "Имейл" е задължително</div>
       <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('email')" style="text-align: left;">Полето "Имейл" трябва да съдържа валиден имейл адрес</div>
   </div>
@@ -62,29 +64,28 @@
   </div>
 
   <div class="form-group">
-      <input 
-        [ngClass]="{'is-invalid': registerForm.get('confirmPassword').errors 
-          && registerForm.get('confirmPassword').touched
-          || registerForm.get('confirmPassword').touched
-          && registerForm.hasError('mismatch')}"
-        type="password" 
-        class="form-control" 
-        formControlName="confirmPassword" 
-        placeholder="Потвърди парола">
-      <div class="invalid-feedback" 
-        *ngIf="registerForm.get('confirmPassword').hasError('required') 
-          && registerForm.get('confirmPassword').touched" style="text-align: left;">
-          Полето "Потвърди парола" е задължително
-      </div>
-      <div class="invalid-feedback" 
-        *ngIf="registerForm.hasError('mismatch') 
-          && registerForm.get('confirmPassword').touched && registerForm.get('confirmPassword').value != ''" style="text-align: left;">
-          Двете пароли трябва да съвпадат
-      </div>
+    <input 
+      [ngClass]="{'is-invalid': registerForm.get('confirmPassword').errors 
+        && registerForm.get('confirmPassword').touched
+        || registerForm.get('confirmPassword').touched
+        && registerForm.hasError('mismatch')}"
+      type="password" 
+      class="form-control" 
+      formControlName="confirmPassword" 
+      placeholder="Потвърди парола">
+    <div class="invalid-feedback" 
+      *ngIf="registerForm.get('confirmPassword').hasError('required') 
+        && registerForm.get('confirmPassword').touched" style="text-align: left;">
+        Полето "Потвърди парола" е задължително
     </div>
+    <div class="invalid-feedback" 
+      *ngIf="registerForm.hasError('mismatch') 
+        && registerForm.get('confirmPassword').touched && registerForm.get('confirmPassword').value != ''" style="text-align: left;">
+        Двете пароли трябва да съвпадат
+    </div>
+  </div>
 
   <span class="form-group text-center">
     <button class="btn btn-success" [disabled]="!registerForm.valid" type="submit">Регистрация</button>
-    <!-- <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button> -->
   </span>
 </form>

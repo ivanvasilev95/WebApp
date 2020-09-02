@@ -1,11 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-
-import { UserService } from 'src/app/_services/user.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Message } from 'src/app/_models/message';
-import { Ad } from 'src/app/_models/ad';
 import { tap } from 'rxjs/operators';
+import { MessageService } from 'src/app/_services/message.service';
+import { UserService } from 'src/app/_services/user.service';
 
 @Component({
   selector: 'app-ad-messages',
@@ -15,11 +14,11 @@ import { tap } from 'rxjs/operators';
 export class AdMessagesComponent implements OnInit {
   @Input() recipientId: number;
   @Input() adId: number;
-  // @Input() ad: Ad;
   messages: Message[];
   newMessage: any = {};
 
-  constructor(private userService: UserService, private authService: AuthService, private alertify: AlertifyService) { }
+  constructor(private messageService: MessageService, private userService: UserService,
+              private authService: AuthService, private alertify: AlertifyService) { }
 
   ngOnInit() {
     this.loadMessages();
@@ -27,16 +26,15 @@ export class AdMessagesComponent implements OnInit {
 
   loadMessages() {
     const currentUserId = +this.authService.decodedToken.nameid;
-    this.userService.getMessageThread(this.adId, this.recipientId)
+    this.messageService.getMessageThread(this.adId, this.recipientId)
       .pipe(
         tap(messages => {
-          // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < messages.length; i++) {
-            if (messages[i].isRead === false && messages[i].recipientId === currentUserId) {
-              this.userService.markAsRead(messages[i].id);
-              this.authService.unreadMsgCnt--;
+            for (const message of messages) {
+              if (message.isRead === false && message.recipientId === currentUserId) {
+                this.messageService.markMessageAsRead(message.id);
+                this.userService.unreadMessagesCount--;
+              }
             }
-          }
         })
       )
       .subscribe(result => {
@@ -49,16 +47,12 @@ export class AdMessagesComponent implements OnInit {
   sendMessage() {
     const senderId = +this.authService.decodedToken.nameid;
 
-    this.newMessage.adId = this.adId; // this.ad.id;
+    this.newMessage.adId = this.adId;
     this.newMessage.senderId = senderId;
 
-    // if (this.recipientId !== senderId) {
     this.newMessage.recipientId = this.recipientId;
-    // } else {
-      // this.newMessage.recipientId = this.ad.userId;
-    // }
 
-    this.userService.sendMessage(this.newMessage).subscribe((message: Message) => {
+    this.messageService.sendMessage(this.newMessage).subscribe((message: Message) => {
       this.messages.push(message);
       this.newMessage.content = '';
     }, error => {

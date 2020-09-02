@@ -1,9 +1,13 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { BsDropdownModule, TabsModule, TooltipModule, PaginationModule, ModalModule } from 'ngx-bootstrap';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgxGalleryModule } from 'ngx-gallery';
 
@@ -46,8 +50,20 @@ import { UserManagementComponent } from './admin/user-management/user-management
 import { AdManagementComponent } from './admin/ad-management/ad-management.component';
 import { RolesModalComponent } from './admin/roles-modal/roles-modal.component';
 
+import { UserService } from './_services/user.service';
+import { CategoryService } from './_services/category.service';
+import { PhotoService } from './_services/photo.service';
+import { MessageService } from './_services/message.service';
+
 export function tokenGetter() {
    return localStorage.getItem('token');
+}
+
+export class CustomHammerConfig extends HammerGestureConfig  {
+   overrides = {
+       pinch: { enable: false },
+       rotate: { enable: false }
+   };
 }
 
 @NgModule({
@@ -109,9 +125,15 @@ export function tokenGetter() {
       AdListResolver,
       UserEditResolver,
       MessagesResolver,
-      PreventUnsavedChanges, // ,
-      // UserService
-      ErrorInterceptorProvider
+      PreventUnsavedChanges,
+      UserService,
+      MessageService,
+      PhotoService,
+      CategoryService,
+      ErrorInterceptorProvider,
+      {
+         provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig
+      }
    ],
    entryComponents: [
       RolesModalComponent

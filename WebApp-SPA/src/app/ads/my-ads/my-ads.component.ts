@@ -21,12 +21,11 @@ export class MyAdsComponent implements OnInit {
     this.adService.getUserAds().subscribe((userAds: Ad[]) => {
       this.userAds = userAds;
     }, error => {
-      // console.log(error);
-      this.alertify.error('Неуспешно зареждане на обявите');
+      this.alertify.error(error); // 'Неуспешно зареждане на обявите'
     });
   }
 
-  onDelete(adId) {
+  deleteAd(adId: number) {
     if (confirm('Сигурни ли сте, че искате да изтриете тази обява?')) {
       this.adService.deleteAd(adId).subscribe(res => {
         this.loadUserAds();

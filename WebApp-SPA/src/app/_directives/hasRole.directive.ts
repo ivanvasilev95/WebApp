@@ -23,10 +23,6 @@ export class HasRoleDirective implements OnInit {
         this.isVisible = true;
         this.viewContainerRef.createEmbeddedView(this.templateRef);
       }
-      // } else {
-        // this.isVisible = false;
-        // this.viewContainerRef.clear();
-      // }
     } else {
       this.isVisible = false;
       this.viewContainerRef.clear();

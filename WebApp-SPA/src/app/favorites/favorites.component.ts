@@ -15,20 +15,20 @@ export class FavoritesComponent implements OnInit {
   constructor(private adService: AdService, private authService: AuthService, private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.loadUserFavorites();
+    this.loadUserLikedAds();
   }
 
-  loadUserFavorites() {
-    this.adService.getUserFavorites(this.authService.decodedToken.nameid).subscribe((ads: Ad[]) => {
+  loadUserLikedAds() {
+    this.adService.getUserLikedAds(this.authService.decodedToken.nameid).subscribe((ads: Ad[]) => {
       this.ads = ads;
     }, error => {
       this.alertify.error(error);
     });
   }
 
-  removeAdFromFavorites(adId: number) {
-    this.adService.removeAdFromFavorites(this.authService.decodedToken.nameid, adId).subscribe(res => {
-      this.loadUserFavorites();
+  removeAdFromLiked(adId: number) {
+    this.adService.removeAdFromLiked(this.authService.decodedToken.nameid, adId).subscribe(res => {
+      this.loadUserLikedAds();
       this.alertify.success('Обявата беше премахната от Наблюдавани');
     }, error => {
       this.alertify.error(error);

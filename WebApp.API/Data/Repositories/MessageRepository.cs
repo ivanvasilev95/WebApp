@@ -8,7 +8,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Repositories
 {
-    public class MessageRepository : BaseRepository, IMessageRepository
+    public class MessageRepository : RepositoryBase, IMessageRepository
     {
         public MessageRepository(DataContext context): base(context) { }
 
@@ -33,7 +33,7 @@ namespace WebApp.API.Data.Repositories
                 case "Outbox":
                     messages = messages.Where(u => u.SenderId == messageParams.UserId);
                     break;
-                default:
+                default: // unread
                     messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.IsRead == false);
                     break;
             }

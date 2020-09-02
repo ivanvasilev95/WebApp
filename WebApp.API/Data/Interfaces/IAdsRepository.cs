@@ -5,7 +5,7 @@ using WebApp.API.Helpers;
 
 namespace WebApp.API.Data.Interfaces
 {
-    public interface IAdsRepository : IBaseRepository
+    public interface IAdsRepository : IRepositoryBase
     {
         Task<PagedList<Ad>> GetAds(UserParams userParams);
         Task<Ad> GetAd(int id);

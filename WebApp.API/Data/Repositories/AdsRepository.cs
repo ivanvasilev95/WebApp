@@ -8,7 +8,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Repositories
 {
-    public class AdsRepository : BaseRepository, IAdsRepository
+    public class AdsRepository : RepositoryBase, IAdsRepository
     {
         public AdsRepository(DataContext context) : base(context) { }
 
@@ -66,9 +66,9 @@ namespace WebApp.API.Data.Repositories
         public async Task<IEnumerable<Ad>> GetUserLikedAds(int userId)
         {
             var user = await _context.Users.Include(x => x.Likes).FirstOrDefaultAsync(u => u.Id == userId);
-            var userFavorites = user.Likes.Select(i => i.AdId);
+            var userLikedAds = user.Likes.Select(i => i.AdId);
             
-            return _context.Ads.Include(p => p.Photos).Where(a => userFavorites.Contains(a.Id));  
+            return _context.Ads.Include(p => p.Photos).Where(a => userLikedAds.Contains(a.Id));  
         }
     }
 }

@@ -35,9 +35,6 @@ namespace WebApp.API.Data
                     .IsRequired();
             });
 
-            builder.Entity<Like>()
-                .HasKey(k => new {k.UserId, k.AdId});
-
             builder.Entity<Message>()
                 .HasOne(u => u.Sender)
                 .WithMany(m => m.MessagesSent)
@@ -48,7 +45,11 @@ namespace WebApp.API.Data
                 .WithMany(m => m.MessagesReceived)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Ad>().HasQueryFilter(a => a.IsApproved);
+            builder.Entity<Like>()
+                .HasKey(k => new {k.UserId, k.AdId});
+                
+            builder.Entity<Ad>()
+                .HasQueryFilter(a => a.IsApproved);
         }
     }
 }

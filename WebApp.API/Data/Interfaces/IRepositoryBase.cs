@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace WebApp.API.Data.Interfaces
 {
-    public interface IBaseRepository
+    public interface IRepositoryBase
     {
         void Add(object entity);
         void Delete(object entity);

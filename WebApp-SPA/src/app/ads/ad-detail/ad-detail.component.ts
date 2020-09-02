@@ -5,7 +5,7 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
-import { TabsetComponent } from 'ngx-bootstrap';
+import { TabsetComponent } from 'ngx-bootstrap/tabs';
 
 @Component({
   selector: 'app-ad-detail',
@@ -25,8 +25,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.route.data.subscribe(data => {
-      // tslint:disable-next-line: no-string-literal
-      this.ad = data['ad'];
+      this.ad = data.ad;
     });
 
     this.galleryOptions = [
@@ -42,21 +41,28 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
 
     this.galleryImages = this.getImages();
 
+    this.setSenderId();
+    this.getAdLikesCount();
+  }
+
+  getImages() {
+    const imageUrls = [];
+    for (const photo of this.ad.photos) {
+      imageUrls.push({
+        small: photo.url,
+        medium: photo.url,
+        big: photo.url
+      });
+    }
+    return imageUrls;
+  }
+
+  private setSenderId() {
     if (this.route.snapshot.paramMap.get('senderId') == null || this.route.snapshot.paramMap.get('senderId') === undefined) {
       this.senderId = null;
     } else {
       this.senderId = +this.route.snapshot.paramMap.get('senderId');
     }
-
-    this.getAdLikesCount();
-  }
-
-  ngAfterViewInit() {
-    this.route.queryParams.subscribe(params => {
-      // tslint:disable-next-line: no-string-literal
-      const selectedTab = params['tab'];
-      this.adTabs.tabs[selectedTab > 0 && selectedTab !== undefined ? selectedTab : 0].active = true;
-    });
   }
 
   getAdLikesCount() {
@@ -65,40 +71,24 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getImages() {
-    const imageUrls = [];
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.ad.photos.length; i++) {
-      imageUrls.push({
-        small: this.ad.photos[i].url,
-        medium: this.ad.photos[i].url,
-        big: this.ad.photos[i].url
-      });
-    }
-    return imageUrls;
+  ngAfterViewInit() {
+    this.setActiveTab();
   }
 
-  addToFavorites(adId: number) {
-    this.adService.addToFavorites(this.authService.decodedToken.nameid, adId).subscribe(data => {
+  private setActiveTab() {
+    this.route.queryParams.subscribe(params => {
+      const selectedTab = params.tab;
+      this.adTabs.tabs[selectedTab > 0 && selectedTab !== undefined ? selectedTab : 0].active = true;
+    });
+  }
+
+  addToLikedAds(adId: number) {
+    this.adService.addAdToLiked(this.authService.decodedToken.nameid, adId).subscribe(data => {
       this.alertify.success('Вие добавихте ' + this.ad.title + ' в Наблюдавани');
-      // this.getAdLikesCount();
     }, error => {
       this.alertify.error(error);
-      // this.alertify.error('Грешка при добавяне на обявата в Наблюдавани');
     });
   }
-
-  /*
-  loadAd() {
-    // tslint:disable-next-line: no-string-literal
-    this.adService.getAd(+this.route.snapshot.params['id']).subscribe((ad: Ad) => {
-      this.ad = ad;
-    }, error => {
-      console.log(error);
-      // this.alertify.error(error);
-    });
-  }
-  */
 
   isAuthorized(): boolean {
     return this.isLoggedIn() && this.isNotUsersAd();

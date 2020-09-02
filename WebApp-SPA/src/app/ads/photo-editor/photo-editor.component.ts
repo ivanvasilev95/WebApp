@@ -2,12 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Photo } from 'src/app/_models/photo';
 import { environment } from '../../../environments/environment';
 import { FileUploader } from 'ng2-file-upload';
-import { AdService } from 'src/app/_services/ad.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
+import { PhotoService } from 'src/app/_services/photo.service';
 
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: 'photo-editor',
+  selector: 'app-photo-editor',
   templateUrl: './photo-editor.component.html',
   styleUrls: ['./photo-editor.component.css']
 })
@@ -15,13 +14,14 @@ export class PhotoEditorComponent implements OnInit {
   @Input() photos: Photo[];
   @Input() adId: number;
   @Output() getAdPhotoChange = new EventEmitter<string>();
+
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
   response: string;
   baseUrl = environment.apiUrl;
   currentMain: Photo;
 
-  constructor(private adService: AdService, private alertify: AlertifyService) { }
+  constructor(private photoService: PhotoService, private alertify: AlertifyService) { }
 
   ngOnInit() {
     this.initializeUploader();
@@ -43,7 +43,7 @@ export class PhotoEditorComponent implements OnInit {
     });
 
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
-    this.uploader.onSuccessItem = (item, response, status, headers) => {
+    this.uploader.onSuccessItem = (item, response) => {
       if (response) {
         const res: Photo = JSON.parse(response);
         const photo: Photo = {
@@ -57,7 +57,7 @@ export class PhotoEditorComponent implements OnInit {
   }
 
   setMainPhoto(photo: Photo) {
-    this.adService.setMainPhoto(this.adId, photo.id).subscribe(() => {
+    this.photoService.setMainPhoto(this.adId, photo.id).subscribe(() => {
       this.currentMain = this.photos.filter(p => p.isMain === true)[0];
       this.currentMain.isMain = false;
       photo.isMain = true;
@@ -69,11 +69,11 @@ export class PhotoEditorComponent implements OnInit {
 
   deletePhoto(id: number) {
     this.alertify.confirm('Сигурни ли сте, че искате да изтриете тази снимка?', () => {
-      this.adService.deletePhoto(this.adId, id).subscribe(() => {
+      this.photoService.deletePhoto(this.adId, id).subscribe(() => {
         this.photos.splice(this.photos.findIndex(p => p.id === id), 1);
         this.alertify.success('Снимката беше изтрита');
       }, error => {
-        this.alertify.error(error); // 'Изтриването беше неуспешно'
+        this.alertify.error(error);
       });
     });
   }

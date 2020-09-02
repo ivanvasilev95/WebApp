@@ -1,29 +1,14 @@
 <div class="container mt-3">
   <div style="text-align: center;">
     <h1>Web Bazar</h1>
-    <!-- Come on in to find whatever you want... All you need to do is sign up -->
     <p class="lead">Безплатни обяви без лимити.</p>
     <div class="text-center">
-      <img src="https://retohercules.com/images/website-icons-png.png" height="200" width="200" alt="Web Bazar logo"/>
+      <img src="assets/img/bazarbg.png" height="200" width="200" alt="Web Bazar logo"/>
     </div>
-    <!--<div class="text-center">
-      <button class="btn btn-info btn-lg" [routerLink]="['/about']">Научи повече</button>
-    </div>-->
-    <hr/>
-    <!--<p *ngIf="ads?.length == 0">За момента няма налични обяви. Моля, върнете се по-късно.</p>-->
-    <!--
-    <div *ngIf="showSpinner">Loading...</div>
-    <div *ngIf="ads?.length !== 0" class="row mt-3">
-      <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
-          <ad [ad]="ad"></ad>
-      </div>
-    </div>
-    <div *ngIf="ads?.length !== 0" class="row" style="margin-left:5px;"><a [routerLink]="['/ads']">Виж повече <i class="fa fa-angle-right"></i></a></div>
-    -->
     <div *ngIf="showSpinner" class="lds-ring" style="margin-top:50px;"><div></div><div></div><div></div><div></div></div>
-    <div *ngIf="ads?.length !== 0 && showSpinner === false" class="row mt-3">
+    <div *ngIf="ads.length !== 0 && showSpinner === false" class="row mt-3">
       <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
-          <ad [ad]="ad"></ad>
+          <app-ad [ad]="ad"></app-ad>
       </div>
       <div style="margin-bottom:10px;" class="container text-left">
         <a [routerLink]="['/ads']">Виж повече <i class="fa fa-angle-right"></i></a>

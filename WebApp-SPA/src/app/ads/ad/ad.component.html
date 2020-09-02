@@ -1,38 +1,14 @@
-<!--<div class="card mb-3" style="height:auto">
-  <div class="row no-gutters">
-    <div class="col-md-4">
-      <img src="{{ad.photoUrl}}" class="card-img" alt="{{ad.id}}">
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">{{ad.title}}</h5>
-        <p class="card-text">
-        <small class="text-muted">
-          <i class="fa fa-location-arrow"></i> {{ad.location}} 
-          <i class="fa fa-clock-o"></i> {{ad.dateAdded | date}}
-        </small>
-      </p>
-      <button class="btn btn-primary" [routerLink]="['/ads/', ad.id]">Take a look</button>
-      </div>
-    </div>
-  </div>
-</div>-->
 <div class="card mb-2">
   <div class="card-img-wrapper">
-    <!--<img class="card-img-top" src="{{ad.photoUrl}}" alt="{{ad.id}}" style="width:158px;height:120px;">-->
     <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
       <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.title}}" placement="top">
     </ng-container>
     <ng-template #NoPhoto>
-      <img src="https://www.tibs.org.tw/images/default.jpg" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.title}}" placement="top"> 
+      <img src="assets/img/default.jpg" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.title}}" placement="top"> 
     </ng-template>
   </div>
   <div class="card-body p-1">
-    <!--<div class="card-title text-center mb-1" style="font-size: 1.2vmin;">{{ad.title}}</div>-->
     <p class="card-text text-center">
-      <!--<p class="card-text text-muted text-center">-->
-      <!--<i class="fa fa-location-arrow"></i> {{ad.location}}<br>
-      <i class="fa fa-clock-o"></i> {{ad.dateAdded | date}}-->
       <span *ngIf="ad.price == null && ad.isApproved">
         По договаряне
       </span>
@@ -44,9 +20,5 @@
       </span>
       <span *ngIf="!ad.isApproved" class="card-text text-center">not approved</span>
     </p>
-    <!--
-    <div class="text-center">
-      <button class="btn btn-primary" [routerLink]="['/ads/', ad.id]">Преглед</button>
-    </div>-->
   </div>
 </div>

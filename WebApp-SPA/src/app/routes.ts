@@ -50,13 +50,3 @@ export const appRoutes: Routes = [
     },
     { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
-
-/*
-export const appRoutes: Routes = [
-    { path: 'home', component: HomeComponent },
-    { path: 'ads', component: AdsComponent },
-    { path: 'favorites', component: FavoritesComponent, canActivate: [AuthGuard] },
-    { path: 'messages', component: MessagesComponent, canActivate: [AuthGuard] },
-    { path: '**', redirectTo: 'home', pathMatch: 'full' }
-];
-*/

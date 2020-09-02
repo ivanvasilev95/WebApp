@@ -7,6 +7,7 @@ import { AdService } from 'src/app/_services/ad.service';
 import { Category } from 'src/app/_models/category';
 import { AuthService } from 'src/app/_services/auth.service';
 import { Location } from '@angular/common';
+import { CategoryService } from 'src/app/_services/category.service';
 
 @Component({
   selector: 'app-ad-add',
@@ -14,12 +15,12 @@ import { Location } from '@angular/common';
   styleUrls: ['./ad-add.component.css']
 })
 export class NewAddComponent implements OnInit {
-  ad: Ad;
   categories: Category[];
   createAdForm: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router, private alertify: AlertifyService,
-              private adService: AdService, private authService: AuthService, private location: Location) { }
+              private adService: AdService, private authService: AuthService,
+              private categoryService: CategoryService, private location: Location) { }
 
   ngOnInit() {
     this.getCategories();
@@ -27,8 +28,9 @@ export class NewAddComponent implements OnInit {
   }
 
   getCategories() {
-    this.adService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
-    error => this.alertify.error(error));
+    this.categoryService.getCategories().subscribe(
+      (categories: Category[]) => this.categories = categories,
+      error => this.alertify.error(error));
   }
 
   get categoryId() {
@@ -52,13 +54,7 @@ export class NewAddComponent implements OnInit {
   }
 
   selectCondition(e) {
-    /*
-    this.condition.setValue(e.target.value === 'true', {
-      onlySelf: true
-    });
-    */
-    // tslint:disable-next-line: quotemark
-    if (e.target.value === "null") {
+    if (e.target.value === 'null') {
       this.condition.setValue(null, {
         onlySelf: true
       });
@@ -77,7 +73,6 @@ export class NewAddComponent implements OnInit {
       location: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
       price: [''],
       isUsed: [null]
-      // isUsed: [false]
     }, {validator: this.priceValidator});
   }
 
@@ -87,19 +82,16 @@ export class NewAddComponent implements OnInit {
 
   createAd() {
     if (this.createAdForm.valid) {
-      this.ad = Object.assign({}, this.createAdForm.value);
-      this.ad.userId = +this.authService.decodedToken.nameid;
-      this.ad.isApproved = false; // maybe not necessary
-      this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name; // maybe not necessary
+      const ad: Ad = Object.assign({}, this.createAdForm.value);
+      ad.userId = +this.authService.decodedToken.nameid;
+      ad.isApproved = false; // maybe not necessary
+      ad.categoryName = this.categories.find(c => c.id === ad.categoryId).name; // maybe not necessary
 
-      this.adService.createAd(this.ad).subscribe((ad: Ad) => {
+      this.adService.createAd(ad).subscribe((newAd: Ad) => {
         this.alertify.success('Обявата е създадена успешно.');
-        this.router.navigate(['/user/ad/' + ad.id + '/edit']);
+        this.router.navigate(['/user/ad/' + newAd.id + '/edit']);
       }, error => {
-        this.alertify.error('Грешка при създаване на обявата.');
-        // this.alertify.error(error);
-      // }, () => {
-        // this.router.navigate(['/user/ads']);
+        this.alertify.error(error); // 'Грешка при създаването на обявата.'
       });
     }
   }

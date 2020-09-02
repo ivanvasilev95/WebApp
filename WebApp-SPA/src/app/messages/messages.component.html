@@ -28,8 +28,6 @@
         <th style="width: 10%"></th>
       </tr>
       <tr [style.background-color]="!message.isRead ? '#eee' : 'null'" *ngFor="let message of messages" [routerLink]="['/ads', message.adId, message.senderId]" [queryParams]="{tab: 2}">
-        <!-- messageContainer == 'Outbox' ? message.recipientId : message.senderId]" -->
-        <!-- [routerLink]="['/ads', message.adId, messageContainer == 'Outbox' ? message.recipientId : message.senderId]" -->
         <td>
           <div *ngIf="messageContainer != 'Outbox'">
             {{message.senderUsername}}
@@ -56,5 +54,5 @@
               [(ngModel)]="pagination.currentPage"
               (pageChanged)="pageChanged($event)"
             previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
-</pagination>
+  </pagination>
 </div>

@@ -1,42 +1,39 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-primary">
   <div class="container">
-  <a class="navbar-brand" [routerLink]="['/home']">Web Bazar</a>
-  
-  <ul *ngIf="loggedIn()" class="navbar-nav mr-auto">
-    <li class="nav-item" routerLinkActive="active">
-      <a class="nav-link" [routerLink]="['/ads']">Обяви</a>
-    </li>
-    <li class="nav-item" routerLinkActive="active">
-      <a class="nav-link" [routerLink]="['/favorites']">Наблюдавани</a>
-    </li>
-    <li class="nav-item" routerLinkActive="active">
-      <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="authService.unreadMsgCnt != 0"> ({{authService.unreadMsgCnt}})</span></a>
-    </li>
-    <li *appHasRole="['Admin', 'Moderator']" class="nav-item" routerLinkActive="active"> <!-- *ngIf="hasRole(['Admin', 'Moderator'])" -->
-      <a class="nav-link" [routerLink]="['/admin']">Администратор</a>
-    </li>
-  </ul>
+    <a class="navbar-brand" [routerLink]="['/home']">Web Bazar</a>
+    
+    <ul *ngIf="loggedIn()" class="navbar-nav mr-auto">
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/ads']">Обяви</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/favorites']">Наблюдавани</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="userService.unreadMessagesCount != 0"> ({{userService.unreadMessagesCount}})</span></a>
+      </li>
+      <li *appHasRole="['Admin', 'Moderator']" class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/admin']">Администратор</a>
+      </li>
+    </ul>
 
-  <div *ngIf="loggedIn()" class="dropdown" dropdown>
-    <a class="dropdown-toggle text-light" dropdownToggle>
-      <!--Welcome {{authService.decodedToken.unique_name | titlecase}}-->
-      {{authService.decodedToken.unique_name}}
-    </a>
-    <div class="dropdown-menu mt-4" *dropdownMenu>
-      <!--<a class="dropdown-item" [routerLink]="['/ad/new']"><i class=""></i> New Ad</a>
-      <div class="dropdown-divider"></div>-->
-      <div *appHasRole="['Member', 'Moderator']">
-        <a class="dropdown-item" [routerLink]="['/user/ads']"><i class="fa fa-buysellads"></i> Моите обяви</a>
+    <div *ngIf="loggedIn()" class="dropdown" dropdown>
+      <a class="dropdown-toggle text-light" dropdownToggle>
+        {{authService.decodedToken.unique_name}}
+      </a>
+      <div class="dropdown-menu mt-4" *dropdownMenu>
+        <div *appHasRole="['Member', 'Moderator']">
+          <a class="dropdown-item" [routerLink]="['/user/ads']"><i class="fa fa-buysellads"></i> Моите обяви</a>
+          <div class="dropdown-divider"></div>
+        </div>
+        <a class="dropdown-item" [routerLink]="['/user/edit']"><i class="fa fa-user"></i>  Редактиране на профила</a>
         <div class="dropdown-divider"></div>
+        <a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out"></i> Изход</a>
       </div>
-      <a class="dropdown-item" [routerLink]="['/user/edit']"><i class="fa fa-user"></i>  Редактиране на профила</a>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" (click)="logout()"><i class="fa fa-sign-out"></i> Изход</a>
     </div>
-  </div>
 
-  <a *ngIf="!loggedIn()" class="text-light" [routerLink]="['/login']" style="padding-left:790px;"><i class="fa fa-user"></i> Вход</a>
-  <a *ngIf="loggedIn() && authService.roleMatch(['Moderator', 'Member'])" class="btn btn-warning" [routerLink]="['/ad/new']" style="margin-left:10px;"><i class="fa fa-plus"></i> Добави обява</a>
- 
-</div>
+    <a *ngIf="!loggedIn()" class="text-light" [routerLink]="['/login']" style="padding-left:790px;">Вход</a>
+    <a *ngIf="loggedIn() && hasRole(['Moderator', 'Member'])" class="btn btn-warning" [routerLink]="['/ad/new']" style="margin-left:10px;"><i class="fa fa-plus"></i> Добави обява</a>
+  
+  </div>
 </nav>

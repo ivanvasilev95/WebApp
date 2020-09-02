@@ -1,13 +1,3 @@
-<!--
-<div class="container mt-5">
-    <div class="row">
-      <div class="col-lg-2 col-md-3 col-sm-6">
-        <p *ngFor="let ad of userAds">{{ad.title}}</p>
-      </div>
-      <p *ngIf="userAds.length == 0">User don't have any ads at this moment.</p>
-    </div>
-  </div>
--->
 <div class="container mt-4">
   <h4>Моите обяви</h4>
   <hr>
@@ -19,14 +9,13 @@
           <img src="{{ad.photoUrl}}" alt="{{ad.id}}" style="height:70px;width:70px" class="img-thumbnail mr-2">
         </ng-container>
         <ng-template #NoPhoto>
-          <img src="https://www.tibs.org.tw/images/default.jpg" style="height:70px;width:70px" class="img-thumbnail mr-2">
+          <img src="assets/img/default.jpg" style="height:70px;width:70px" class="img-thumbnail mr-2">
         </ng-template>
         {{ad.title}} <span *ngIf="!ad.isApproved">(очаква потвърждение)</span>
-        <!--<span style="margin-left:350px;"></span>-->
         <div style="float:right;">
           <button type="button" class="btn btn-outline-info ml-3" [routerLink]="['/ads', ad.id]"><i class="fa fa-eye"></i> Преглед</button>
           <button type="button" class="btn btn-outline-secondary ml-2" [routerLink]="['/user/ad', ad.id, 'edit']"><i class="fa fa-edit"></i> Редакция</button>
-          <button type="button" class="btn btn-outline-dark ml-2" (click)="onDelete(ad.id)"><i class="fa fa-trash fa-lg"></i> Изтрий</button>
+          <button type="button" class="btn btn-outline-dark ml-2" (click)="deleteAd(ad.id)"><i class="fa fa-trash fa-lg"></i> Изтрий</button>
         </div>
       </li>
     </ul>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLinkActive, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/_services/user.service';
 import { User } from 'src/app/_models/user';
 import { AlertifyService } from 'src/app/_services/alertify.service';
@@ -20,8 +20,7 @@ export class UserAdsComponent implements OnInit {
   }
 
   getUser() {
-    // tslint:disable-next-line: no-string-literal
-    this.userService.getUser(+this.route.snapshot.params['id']).subscribe((user: User) => {
+    this.userService.getUser(+this.route.snapshot.params.id).subscribe((user: User) => {
         this.user = user;
       },
       error => {
@@ -29,19 +28,4 @@ export class UserAdsComponent implements OnInit {
         this.router.navigate(['']);
       });
   }
-
-  logConsole() {
-    console.log(this.user.ads);
-  }
-    /*
-  loadAd() {
-    // tslint:disable-next-line: no-string-literal
-    this.adService.getAd(+this.route.snapshot.params['id']).subscribe((ad: Ad) => {
-      this.ad = ad;
-    }, error => {
-      console.log(error);
-      // this.alertify.error(error);
-    });
-  }
-  */
 }

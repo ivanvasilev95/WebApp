@@ -3,7 +3,6 @@ import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-// import { Location } from '@angular/common';
 import { User } from '../_models/user';
 
 @Component({
@@ -16,7 +15,7 @@ export class RegisterComponent implements OnInit {
   user: User;
 
   constructor(private authService: AuthService, private router: Router,
-              private alertify: AlertifyService, private fb: FormBuilder/*, private location: Location*/) { }
+              private alertify: AlertifyService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.createRegisterForm();
@@ -42,7 +41,7 @@ export class RegisterComponent implements OnInit {
       this.authService.register(this.user).subscribe(() => {
         this.alertify.success('Регистрацията е направена успешно');
       }, error => {
-        this.alertify.error(error); // 'Имаше грешка от страна на сървъра при опита за регистрация'
+        this.alertify.error(error);
       }, () => {
         this.authService.login(this.user).subscribe(() => {
           this.router.navigate(['']);
@@ -50,9 +49,4 @@ export class RegisterComponent implements OnInit {
       });
     }
   }
-  /*
-  cancel() {
-    this.location.back();
-  }
-  */
 }

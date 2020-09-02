@@ -6,13 +6,14 @@
     <h6><i>Категория: {{ad.categoryName}}</i></h6>
   </div>
   <div class="row mb-4">
-    <div class="col-sm-4"> <!-- left part -->
+    <!-- left part -->
+    <div class="col-sm-4">
       <div class="card">
         <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
           <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="height:350px;">
         </ng-container>
         <ng-template #NoPhoto>
-          <img src="https://www.tibs.org.tw/images/default.jpg" class="card-img-top img-thumbnail" style="height:350px;">
+          <img src="assets/img/default.jpg" class="card-img-top img-thumbnail" style="height:350px;">
         </ng-template>
         <div class="card-body">
           <div *ngIf="ad.price == null">
@@ -45,29 +46,29 @@
         </div>
         <div class="card-footer">
           <div class="btn-group d-flex" *ngIf="isAuthorized()">
-              <button class="btn btn-primary w-100" (click)="addToFavorites(ad.id)" style="height:36.5px;">Наблюдавай</button>
+              <button class="btn btn-primary w-100" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
               <button class="btn btn-success w-100" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-sm-8"> <!-- right part -->
+    <!-- right part -->
+    <div class="col-sm-8"> 
       <div class="tab-panel">
         <tabset class="ad-tabset" #adTabs>
             <tab heading="Описание">
               <textarea class="form-control" name="description" rows="15" 
                       [(ngModel)]="ad.description" disabled style="background-color:#FFF !important;color:black;text-align: justify;"></textarea>
-              <!--<div style="text-align: justify;"><pre>{{ad.description}}</pre></div>-->
             </tab>
             <tab heading="Снимки">
               <p *ngIf="galleryImages.length == 0">Няма налични снимки</p>
               <ngx-gallery style="margin-left:120px;margin-top:13px;" *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
-            <tab heading="Съобщения" *ngIf="senderId !== null"> <!-- *ngIf="senderId !== null && isLoggedIn()" -->
+            <tab heading="Съобщения" *ngIf="senderId !== null">
               <app-ad-messages [adId]="ad.id" [recipientId]="senderId"></app-ad-messages>
             </tab>
             <tab heading="Съобщения" *ngIf="senderId === null && isAuthorized()">
-              <app-ad-messages [adId]="ad.id" [recipientId]="ad.userId"></app-ad-messages> <!-- [ad]="ad" -->
+              <app-ad-messages [adId]="ad.id" [recipientId]="ad.userId"></app-ad-messages>
             </tab>
         </tabset>
       </div>

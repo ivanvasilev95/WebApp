@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertifyService } from '../_services/alertify.service';
 import { AuthService } from '../_services/auth.service';
 import { Router } from '@angular/router';
@@ -10,7 +10,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  model: any = {};
   loginForm: FormGroup;
 
   constructor(public authService: AuthService, private alertify: AlertifyService, private fb: FormBuilder, private router: Router) { }
@@ -28,8 +27,8 @@ export class LoginComponent implements OnInit {
 
   login() {
     if (this.loginForm.valid) {
-      this.model = Object.assign({}, this.loginForm.value);
-      this.authService.login(this.model).subscribe(next => {
+      const model = Object.assign({}, this.loginForm.value);
+      this.authService.login(model).subscribe(() => {
         this.alertify.success('Успешен вход');
         if (this.authService.roleMatch(['Admin', 'Moderator'])) {
           this.router.navigate(['/admin']);

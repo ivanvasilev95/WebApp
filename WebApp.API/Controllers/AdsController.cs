@@ -91,14 +91,14 @@ namespace WebApp.API.Controllers
             return Ok(adsToReturn);
         }
 
-        [HttpGet("user/{userId}/favorites")]
-        public async Task<IActionResult> GetUserFavoriteAds(int userId)
+        [HttpGet("user/{userId}/liked")]
+        public async Task<IActionResult> GetUserLikedAds(int userId)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var userFavoriteAds = await _adsRepo.GetUserLikedAds(userId);
-            var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(userFavoriteAds);
+            var userLikedAds = await _adsRepo.GetUserLikedAds(userId);
+            var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(userLikedAds);
 
             return Ok(adsToReturn);
         }

@@ -10,7 +10,7 @@ import { PaginatedResult } from '../_models/pagination';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  ads: Ad[];
+  ads: Ad[] = [];
   pageNumber = 1;
   pageSize = 10;
   showSpinner = true;
@@ -32,14 +32,15 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  shuffle(a) {
-    // tslint:disable-next-line: one-variable-per-declaration
-    let j, x, i;
+  shuffle(a: Ad[]) {
+    let i: number;
+    let j: number;
+    let temp: Ad;
     for (i = a.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
+        temp = a[i];
         a[i] = a[j];
-        a[j] = x;
+        a[j] = temp;
     }
     return a;
   }

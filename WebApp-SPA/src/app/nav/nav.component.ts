@@ -11,13 +11,12 @@ import { UserService } from '../_services/user.service';
 })
 export class NavComponent implements OnInit {
 
-  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) { }
+  constructor(public authService: AuthService, public userService: UserService,
+              private alertify: AlertifyService, private router: Router) { }
 
   ngOnInit() {}
 
   loggedIn() {
-    // const token = localStorage.getItem('token');
-    // return !!token;
     return this.authService.loggedIn();
   }
 
@@ -28,16 +27,6 @@ export class NavComponent implements OnInit {
   }
 
   hasRole(roles) {
-    const userRoles = this.authService.decodedToken.role as Array<string>;
-
-    if (!userRoles) {
-      return false;
-    }
-
-    if (this.authService.roleMatch(roles)) {
-      return true;
-    }
-
-    return false;
+    return this.authService.roleMatch(roles);
   }
 }

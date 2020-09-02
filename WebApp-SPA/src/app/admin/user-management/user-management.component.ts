@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/_models/user';
 import { AdminService } from 'src/app/_services/admin.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { RolesModalComponent } from '../roles-modal/roles-modal.component';
 
 @Component({
@@ -51,6 +51,7 @@ export class UserManagementComponent implements OnInit {
       const rolesToUpdate = {
         roleNames: [...values.filter(el => el.checked === true).map(el => el.name)]
       };
+
       if (rolesToUpdate) {
         this.adminService.updateUserRoles(user, rolesToUpdate).subscribe(() => {
           user.roles = [...rolesToUpdate.roleNames];
@@ -64,30 +65,20 @@ export class UserManagementComponent implements OnInit {
   private getRolesArray(user) {
     const rolesForModal = [];
     const userRoles = user.roles;
-    /*
-    const roles: any[] = [
-      {name: 'Admin', value: 'Admin'},
-      {name: 'Moderator', value: 'Moderator'},
-      {name: 'Member', value: 'Member'},
-      {name: 'VIP', value: 'VIP'}
-    ];
-    */
 
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < this.roles.length; i++) {
+    for (const role of this.roles) {
       let isMatch = false;
-      // tslint:disable-next-line: prefer-for-of
-      for (let j = 0; j < userRoles.length; j++) {
-        if (this.roles[i].name === userRoles[j]) {
+      for (const userRole of userRoles) {
+        if (role.name === userRole) {
           isMatch = true;
-          this.roles[i].checked = true;
-          rolesForModal.push(this.roles[i]);
+          role.checked = true;
+          rolesForModal.push(role);
           break;
         }
       }
       if (!isMatch) {
-        this.roles[i].checked = false;
-        rolesForModal.push(this.roles[i]);
+        role.checked = false;
+        rolesForModal.push(role);
       }
     }
 
