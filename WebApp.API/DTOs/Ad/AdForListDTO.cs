@@ -10,8 +10,6 @@ namespace WebApp.API.DTOs.Ad
         public double? Price { get; set; }
         public DateTime DateAdded { get; set; }
         public string PhotoUrl { get; set; }
-        public int CategoryId { get; set; }
-        //public string CategoryName { get; set; }
         public bool IsApproved { get; set; }
     }
 }

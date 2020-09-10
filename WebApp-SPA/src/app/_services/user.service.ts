@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
 })
 export class UserService {
   baseUrl = environment.apiUrl;
-  unreadMessagesCount: number; // make it static and refactor
 
   constructor(private http: HttpClient) {}
 

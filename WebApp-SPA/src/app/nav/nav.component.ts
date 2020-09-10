@@ -2,19 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { Router } from '@angular/router';
-import { UserService } from '../_services/user.service';
+import { MessageService } from '../_services/message.service';
 
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.css']
 })
-export class NavComponent implements OnInit {
+export class NavComponent {
 
-  constructor(public authService: AuthService, public userService: UserService,
-              private alertify: AlertifyService, private router: Router) { }
+  constructor(public authService: AuthService,
+              private alertify: AlertifyService,
+              private router: Router) { }
 
-  ngOnInit() {}
+  get unreadMessagesCount() {
+      return MessageService.unreadMessagesCount;
+  }
 
   loggedIn() {
     return this.authService.loggedIn();

@@ -63,7 +63,7 @@ namespace WebApp.API.Controllers
             var photo = _mapper.Map<Photo>(photoForCreationDTO);
 
             var adFromRepo = await _adsRepo.GetAd(adId);
-            if(!adFromRepo.Photos.Any(a => a.IsMain))
+            if(!adFromRepo.Photos.Any(p => p.IsMain))
                 photo.IsMain = true;
             
             adFromRepo.Photos.Add(photo);

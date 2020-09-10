@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../_services/alertify.service';
 import { Pagination, PaginatedResult } from '../_models/pagination';
 import { MessageService } from '../_services/message.service';
-import { UserService } from '../_services/user.service';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-messages',
@@ -14,10 +14,12 @@ import { UserService } from '../_services/user.service';
 export class MessagesComponent implements OnInit {
   messages: Message[];
   pagination: Pagination;
-  messageContainer: 'Unread';
+  messageContainer = 'Unread';
 
-  constructor(private messageService: MessageService, private userService: UserService,
-              private route: ActivatedRoute, private alertify: AlertifyService) { }
+  constructor(private messageService: MessageService,
+              private route: ActivatedRoute,
+              private alertify: AlertifyService,
+              private authService: AuthService) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -26,7 +28,27 @@ export class MessagesComponent implements OnInit {
     });
   }
 
-  loadMessages() {
+  isNotRead(message: Message) {
+    return !message.isRead && message.senderId !== +this.authService.decodedToken.nameid;
+  }
+
+  recipientOfTheAd(message: Message): number {
+    if (message.senderId === +this.authService.decodedToken.nameid) {
+      return message.recipientId;
+    } else {
+      return message.senderId;
+    }
+  }
+
+  loadMessages(messageFilter?: string, returnToFirstPage = true) {
+    if (returnToFirstPage) {
+      this.pagination.currentPage = 1;
+    }
+
+    if (messageFilter !== null && messageFilter !== undefined) {
+      this.messageContainer = messageFilter;
+    }
+
     this.messageService.getMessages(this.pagination.currentPage,
       this.pagination.itemsPerPage, this.messageContainer)
       .subscribe((res: PaginatedResult<Message[]>) => {
@@ -39,17 +61,18 @@ export class MessagesComponent implements OnInit {
 
   pageChanged(event: any): void {
     this.pagination.currentPage = event.page;
-    this.loadMessages();
+    this.loadMessages(null, false);
   }
 
   deleteMessage(id: number) {
     this.alertify.confirm('Сигурни ли сте, че искате да изтриете това съобщение', () => {
       this.messageService.deleteMessage(id).subscribe(() => {
         const messageIndex = this.messages.findIndex(m => m.id === id);
-        if (this.messages[messageIndex].isRead === false) {
-          this.userService.unreadMessagesCount--;
+        if (this.messages[messageIndex].recipientId === +this.authService.decodedToken.nameid
+         && this.messages[messageIndex].isRead === false) {
+          MessageService.unreadMessagesCount--;
         }
-        this.messages.splice(messageIndex, 1);
+        this.loadMessages();
         this.alertify.success('Съобщението беше изтрито успешно');
       }, error => {
         this.alertify.error(error);

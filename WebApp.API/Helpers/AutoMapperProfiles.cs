@@ -1,10 +1,11 @@
 using System.Linq;
 using AutoMapper;
+using WebApp.API.Models;
 using WebApp.API.DTOs.Ad;
 using WebApp.API.DTOs.Message;
 using WebApp.API.DTOs.Photo;
 using WebApp.API.DTOs.User;
-using WebApp.API.Models;
+using WebApp.API.DTOs.Category;
 
 namespace WebApp.API.Helpers
 {
@@ -12,25 +13,33 @@ namespace WebApp.API.Helpers
     {
          public AutoMapperProfiles() {
             CreateMap<Ad, AdForDetailedDTO>()
-            .ForMember(dest => dest.PhotoUrl, opt => {
-                opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
-            });
+                .ForMember(dest => dest.PhotoUrl, opt => {
+                    opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
+                })
+                .ForMember(dest => dest.CategoryName, opt => {
+                    opt.MapFrom(src => src.Category.Name);
+                });
 
             CreateMap<Ad, AdForListDTO>()
-            .ForMember(dest => dest.PhotoUrl, opt => {
-                opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
-            });
+                .ForMember(dest => dest.PhotoUrl, opt => {
+                    opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
+                });
             
-            CreateMap<Photo, PhotoForDetailedDTO>();
+            CreateMap<AdForUpdateDTO, Ad>();
+            CreateMap<AdForCreateDTO, Ad>();
+            
             CreateMap<User, UserForDetailedDTO>();
             CreateMap<UserForUpdateDTO, User>();
             CreateMap<UserForRegisterDTO, User>();
-            CreateMap<AdForUpdateDTO, Ad>();
-            CreateMap<AdForCreateDTO, Ad>();
-            CreateMap<MessageForCreationDTO, Message>().ReverseMap();
+
             CreateMap<Message, MessageToReturnDTO>();
-            CreateMap<Photo, PhotoForReturnDTO>();
+            CreateMap<MessageForCreationDTO, Message>().ReverseMap();
+
+            CreateMap<Photo, PhotoForReturnDTO>();  
+            CreateMap<Photo, PhotoForDetailedDTO>();
             CreateMap<PhotoForCreationDTO, Photo>();
+
+            CreateMap<Category, CategoryToReturnDTO>();
          }
     }
 }

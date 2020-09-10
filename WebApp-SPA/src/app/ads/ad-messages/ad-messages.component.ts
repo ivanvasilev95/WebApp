@@ -4,7 +4,6 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Message } from 'src/app/_models/message';
 import { tap } from 'rxjs/operators';
 import { MessageService } from 'src/app/_services/message.service';
-import { UserService } from 'src/app/_services/user.service';
 
 @Component({
   selector: 'app-ad-messages',
@@ -17,11 +16,12 @@ export class AdMessagesComponent implements OnInit {
   messages: Message[];
   newMessage: any = {};
 
-  constructor(private messageService: MessageService, private userService: UserService,
-              private authService: AuthService, private alertify: AlertifyService) { }
+  constructor(private messageService: MessageService,
+              private authService: AuthService,
+              private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.loadMessages();
+    this.newMessage.content = '';
   }
 
   loadMessages() {
@@ -30,9 +30,9 @@ export class AdMessagesComponent implements OnInit {
       .pipe(
         tap(messages => {
             for (const message of messages) {
-              if (message.isRead === false && message.recipientId === currentUserId) {
+              if (message.isRead === false && message.recipientId === currentUserId && message.senderDeleted === false) {
                 this.messageService.markMessageAsRead(message.id);
-                this.userService.unreadMessagesCount--;
+                MessageService.unreadMessagesCount--;
               }
             }
         })
@@ -45,6 +45,12 @@ export class AdMessagesComponent implements OnInit {
   }
 
   sendMessage() {
+    const messageLength = this.newMessage.content.length;
+    if (isNaN(messageLength) || messageLength < 5) {
+      this.alertify.error('Съобщението трябва да бъде поне 5 символа');
+      return;
+    }
+
     const senderId = +this.authService.decodedToken.nameid;
 
     this.newMessage.adId = this.adId;

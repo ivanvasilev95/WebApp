@@ -28,17 +28,22 @@ namespace WebApp.API.Data.Repositories
             switch(messageParams.MessageContainer) 
             {
                 case "Inbox":
-                    messages = messages.Where(u => u.RecipientId == messageParams.UserId);
+                    messages = messages
+                        .Where(m => m.RecipientId == messageParams.UserId && m.SenderDeleted == false && m.RecipientDeleted == false)
+                        .OrderBy(m => m.IsRead)
+                        .ThenByDescending(m => m.MessageSent);
                     break;
                 case "Outbox":
-                    messages = messages.Where(u => u.SenderId == messageParams.UserId);
+                    messages = messages
+                        .Where(m => m.SenderId == messageParams.UserId && m.SenderDeleted == false)
+                        .OrderByDescending(m => m.MessageSent);
                     break;
                 default: // unread
-                    messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.IsRead == false);
+                    messages = messages
+                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false && m.SenderDeleted == false && m.RecipientDeleted == false)
+                        .OrderByDescending(m => m.MessageSent);
                     break;
             }
-
-            messages = messages.OrderByDescending(u => u.MessageSent);
 
             return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
         }

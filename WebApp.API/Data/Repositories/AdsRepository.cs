@@ -15,6 +15,7 @@ namespace WebApp.API.Data.Repositories
         public async Task<Ad> GetAd(int id)
         {
             var ad = await _context.Ads
+                .Include(a => a.Category)
                 .Include(a => a.Photos)
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(a => a.Id == id);
@@ -58,9 +59,14 @@ namespace WebApp.API.Data.Repositories
 
         public async Task<IEnumerable<Ad>> GetUserAds(int userId)
         {
-            var ads =  _context.Ads.Include(a => a.Photos).IgnoreQueryFilters();
+            var ads =  await _context.Ads
+                .Include(a => a.Photos)
+                .Where(a => a.UserId == userId)
+                .OrderByDescending(a => a.DateAdded)
+                .IgnoreQueryFilters()
+                .ToListAsync();
 
-            return await ads.Where(a => a.UserId == userId).OrderByDescending(a => a.DateAdded).ToListAsync();
+            return ads;
         }
 
         public async Task<IEnumerable<Ad>> GetUserLikedAds(int userId)

@@ -64,11 +64,13 @@
               <p *ngIf="galleryImages.length == 0">Няма налични снимки</p>
               <ngx-gallery style="margin-left:120px;margin-top:13px;" *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
-            <tab heading="Съобщения" *ngIf="senderId !== null">
-              <app-ad-messages [adId]="ad.id" [recipientId]="senderId"></app-ad-messages>
+            <!-- the recipient must be other user -->
+            <tab heading="Съобщения" *ngIf="recipientId !== null" (selectTab)="adMsgs.loadMessages()">
+              <app-ad-messages #adMsgs [adId]="ad.id" [recipientId]="recipientId"></app-ad-messages>
             </tab>
-            <tab heading="Съобщения" *ngIf="senderId === null && isAuthorized()">
-              <app-ad-messages [adId]="ad.id" [recipientId]="ad.userId"></app-ad-messages>
+            <!-- not my ad so the recipient is the owner of the ad -->
+            <tab heading="Съобщения" *ngIf="recipientId === null && isAuthorized()" (selectTab)="adMsgs2.loadMessages()">
+              <app-ad-messages #adMsgs2 [adId]="ad.id" [recipientId]="ad.userId"></app-ad-messages>
             </tab>
         </tabset>
       </div>

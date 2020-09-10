@@ -19,7 +19,6 @@ export class PhotoEditorComponent implements OnInit {
   hasBaseDropZoneOver = false;
   response: string;
   baseUrl = environment.apiUrl;
-  currentMain: Photo;
 
   constructor(private photoService: PhotoService, private alertify: AlertifyService) { }
 
@@ -58,8 +57,8 @@ export class PhotoEditorComponent implements OnInit {
 
   setMainPhoto(photo: Photo) {
     this.photoService.setMainPhoto(this.adId, photo.id).subscribe(() => {
-      this.currentMain = this.photos.filter(p => p.isMain === true)[0];
-      this.currentMain.isMain = false;
+      const currentMainPhoto = this.photos.filter(p => p.isMain === true)[0];
+      currentMainPhoto.isMain = false;
       photo.isMain = true;
       this.getAdPhotoChange.emit(photo.url);
     }, error => {

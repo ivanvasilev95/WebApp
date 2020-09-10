@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebApp.API.Data;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.Ad;
 using WebApp.API.Helpers;
@@ -17,19 +19,20 @@ namespace WebApp.API.Controllers
         private readonly IAdsRepository _adsRepo;
         private readonly ICategoryRepository _categoryRepo;
         private readonly IMapper _mapper;
-
+        
         public AdsController(
             IAdsRepository adsRepo, 
             ICategoryRepository categoryRepo,
-            IMapper mapper)
+            IMapper mapper,
+            DataContext context)
         {
             _adsRepo = adsRepo;
             _categoryRepo = categoryRepo;
             _mapper = mapper;
         }
 
-        [AllowAnonymous]
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAds([FromQuery]UserParams userParams)
         {
             var ads = await _adsRepo.GetAds(userParams);
@@ -47,24 +50,21 @@ namespace WebApp.API.Controllers
             _adsRepo.Add(adToCreate);
             await _adsRepo.SaveAll();
 
-            var adToReturn = _mapper.Map<AdForDetailedDTO>(adToCreate); 
-            adToReturn.CategoryName = await _categoryRepo.GetCategoryName(adToReturn.CategoryId);
+            var adToReturn = _mapper.Map<AdForDetailedDTO>(adToCreate);
+            adToReturn.CategoryName = await _categoryRepo.GetCategoryName(adToCreate.CategoryId);
 
             return CreatedAtRoute("GetAd", new {controller = "Ads", id = adToCreate.Id}, adToReturn);
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}", Name = "GetAd")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAd(int id)
         {
             var ad = await _adsRepo.GetAd(id);
             if (ad == null)
                 return NotFound("Обявата не е намерена");
-                
-            var adToReturn = _mapper.Map<AdForDetailedDTO>(ad);
-            adToReturn.CategoryName = await _categoryRepo.GetCategoryName(adToReturn.CategoryId);
      
-            return Ok(adToReturn);
+            return Ok(_mapper.Map<Ad, AdForDetailedDTO>(ad));
         }
 
         [HttpDelete("{id}")]

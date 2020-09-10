@@ -6,7 +6,7 @@
       <img src="assets/img/bazarbg.png" height="200" width="200" alt="Web Bazar logo"/>
     </div>
     <div *ngIf="showSpinner" class="lds-ring" style="margin-top:50px;"><div></div><div></div><div></div><div></div></div>
-    <div *ngIf="ads.length !== 0 && showSpinner === false" class="row mt-3">
+    <div *ngIf="ads.length !== 0 && showSpinner === false" class="row mt-4">
       <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
           <app-ad [ad]="ad"></app-ad>
       </div>

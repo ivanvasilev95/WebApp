@@ -27,9 +27,9 @@ export const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, runGuardsAndResolvers: 'always', canActivate: [LoginGuard] },
     { path: 'user/:id/ads', component: UserAdsComponent },
     { path: 'ads', component: AdListComponent,
-    resolve: {ads: AdListResolver} },
+        resolve: {ads: AdListResolver} },
     { path: 'ads/:id', component: AdDetailComponent,
-    resolve: {ad: AdDetailResolver} },
+        resolve: {ad: AdDetailResolver} },
     { path: 'ad/new', component: NewAddComponent, runGuardsAndResolvers: 'always', canActivate: [NewAdGuard] },
     {
         path: '',
@@ -38,13 +38,11 @@ export const appRoutes: Routes = [
         children: [
             { path: 'favorites', component: FavoritesComponent },
             { path: 'messages', component: MessagesComponent,
-            resolve: {messages: MessagesResolver} },
+                resolve: {messages: MessagesResolver} },
             { path: 'user/edit', component: UserEditComponent,
-            resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
+                resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },
             { path: 'user/ad/:id/edit', component: AdEditComponent },
-            { path: 'ads/:id/:senderId', component: AdDetailComponent,
-                resolve: {ad: AdDetailResolver} },
             { path: 'admin', component: AdminPanelComponent, data: {roles: ['Admin', 'Moderator']} }
         ]
     },

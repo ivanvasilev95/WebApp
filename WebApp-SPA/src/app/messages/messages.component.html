@@ -2,38 +2,39 @@
 
   <div class="row">
     <div class="btn-group">
-      <button class="btn btn-primary" name="unread" ngDefaultControl [(ngModel)]="messageContainer" btnRadio="Unread" (click)="loadMessages()">
+      <button class="btn btn-primary" [class.active]="messageContainer === 'Unread'" name="unread" ngDefaultControl btnRadio="Unread" (click)="loadMessages('Unread')">
         <i class="fa fa-envelope"></i> Непрочетени
       </button>
-      <button class="btn btn-primary" name="inbox" ngDefaultControl [(ngModel)]="messageContainer" btnRadio="Inbox" (click)="loadMessages()">
+      <button class="btn btn-primary" [class.active]="messageContainer === 'Inbox'" name="inbox" ngDefaultControl btnRadio="Inbox" (click)="loadMessages('Inbox')">
         <i class="fa fa-envelope-open"></i> Получени
       </button>
-      <button class="btn btn-primary" name="outbox" ngDefaultControl [(ngModel)]="messageContainer" btnRadio="Outbox" (click)="loadMessages()">
+      <button class="btn btn-primary" [class.active]="messageContainer === 'Outbox'" name="outbox" ngDefaultControl btnRadio="Outbox" (click)="loadMessages('Outbox')">
         <i class="fa fa-paper-plane"></i> Изпратени
       </button>
     </div>
   </div>
  
-  <div class="text-center" *ngIf="messages?.length == 0">
+  <div class="text-center" *ngIf="messages?.length === 0">
     <p style="padding-top:10px;">Нямате съобщения</p>
   </div>
   
   <div class="row" *ngIf="messages?.length > 0">
     <table class="table table-hover" style="cursor: pointer;border: 1px solid gainsboro;">
       <tr>
-        <th style="width: 10%">Подател</th>
+        <th *ngIf="messageContainer !== 'Outbox'" style="width: 10%">Подател</th>
+        <th *ngIf="messageContainer === 'Outbox'" style="width: 10%">Получател</th>
         <th style="width: 20%">Обява</th>
         <th style="width: 55%">Съобщение</th>
         <th style="width: 40%">Дата</th>
         <th style="width: 10%"></th>
       </tr>
-      <tr [style.background-color]="!message.isRead ? '#eee' : 'null'" *ngFor="let message of messages" [routerLink]="['/ads', message.adId, message.senderId]" [queryParams]="{tab: 2}">
+      <tr [style.background-color]="isNotRead(message) ? '#eee' : 'null'" *ngFor="let message of messages" [routerLink]="['/ads', message.adId]" [queryParams]="{recipient: this.recipientOfTheAd(message), tab: 2}">
         <td>
-          <div *ngIf="messageContainer != 'Outbox'">
+          <div *ngIf="messageContainer !== 'Outbox'">
             {{message.senderUsername}}
           </div>
-          <div *ngIf="messageContainer == 'Outbox'">
-            {{message.recipientUsername }}
+          <div *ngIf="messageContainer === 'Outbox'">
+            {{message.recipientUsername}}
           </div>
         </td>
         <td>{{message.adTitle}}</td>

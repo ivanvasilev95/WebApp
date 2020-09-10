@@ -33,38 +33,6 @@ export class NewAddComponent implements OnInit {
       error => this.alertify.error(error));
   }
 
-  get categoryId() {
-    return this.createAdForm.get('categoryId');
-  }
-
-  selectCategory(e) {
-    if (typeof(e.target.value) === 'number') {
-      this.categoryId.setValue(e.target.value, {
-        onlySelf: true
-      });
-    } else {
-      this.categoryId.setValue(+e.target.value.substring(0, 1), {
-        onlySelf: true
-      });
-    }
-  }
-
-  get condition() {
-    return this.createAdForm.get('isUsed');
-  }
-
-  selectCondition(e) {
-    if (e.target.value === 'null') {
-      this.condition.setValue(null, {
-        onlySelf: true
-      });
-    } else {
-      this.condition.setValue(e.target.value, {
-        onlySelf: true
-      });
-    }
-  }
-
   createNewAdForm() {
     this.createAdForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
@@ -80,12 +48,42 @@ export class NewAddComponent implements OnInit {
     return g.get('price').value >= 0 ? null : {mismatch: true};
   }
 
+  get categoryId() {
+    return this.createAdForm.get('categoryId');
+  }
+
+  get condition() {
+    return this.createAdForm.get('isUsed');
+  }
+
+  selectCategory(e) {
+    if (typeof(e.target.value) === 'number') {
+      this.categoryId.setValue(e.target.value, {
+        onlySelf: true
+      });
+    } else {
+      this.categoryId.setValue(+e.target.value.substring(0, 1), {
+        onlySelf: true
+      });
+    }
+  }
+
+  selectCondition(e) {
+    if (e.target.value === 'null') {
+      this.condition.setValue(null, {
+        onlySelf: true
+      });
+    } else {
+      this.condition.setValue(e.target.value, {
+        onlySelf: true
+      });
+    }
+  }
+
   createAd() {
     if (this.createAdForm.valid) {
       const ad: Ad = Object.assign({}, this.createAdForm.value);
       ad.userId = +this.authService.decodedToken.nameid;
-      ad.isApproved = false; // maybe not necessary
-      ad.categoryName = this.categories.find(c => c.id === ad.categoryId).name; // maybe not necessary
 
       this.adService.createAd(ad).subscribe((newAd: Ad) => {
         this.alertify.success('Обявата е създадена успешно.');

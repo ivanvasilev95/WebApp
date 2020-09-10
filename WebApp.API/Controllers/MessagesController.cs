@@ -52,7 +52,7 @@ namespace WebApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMessages([FromQuery]MessageParams messageParams)
+        public async Task<IActionResult> GetUserMessages([FromQuery]MessageParams messageParams)
         {
             messageParams.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             
@@ -101,6 +101,9 @@ namespace WebApp.API.Controllers
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var messageFromRepo = await _messageRepo.GetMessage(id);
+            if (messageFromRepo == null) {
+                return BadRequest("Съобщението не е намерено");
+            }
 
             if (messageFromRepo.SenderId == userId)
                 messageFromRepo.SenderDeleted = true;
@@ -114,7 +117,7 @@ namespace WebApp.API.Controllers
             if (await _messageRepo.SaveAll())
                 return NoContent();
 
-            throw new Exception("Грешка при изтриване на съобщението");
+            return BadRequest("Грешка при изтриване на съобщението");
         }
 
         [HttpPost("{id}/read")]
@@ -135,7 +138,7 @@ namespace WebApp.API.Controllers
         }
 
         [HttpGet("user/unread")]
-        public async Task<IActionResult> GetUnreadMessages()
+        public async Task<IActionResult> GetUnreadMessagesCount()
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             int count = await _messageRepo.GetUnreadMessagesCount(userId);

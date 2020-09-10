@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Ad } from 'src/app/_models/ad';
 import { AdService } from 'src/app/_services/ad.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
@@ -13,15 +13,15 @@ import { TabsetComponent } from 'ngx-bootstrap/tabs';
   styleUrls: ['./ad-detail.component.css']
 })
 export class AdDetailComponent implements OnInit, AfterViewInit {
-  ad: Ad;
+  @ViewChild('adTabs', {static: false}) adTabs: TabsetComponent;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
-  @ViewChild('adTabs', {static: false}) adTabs: TabsetComponent;
-  senderId: number; // should have been recipientId
+  ad: Ad;
+  recipientId: number;
   adLikesCount: number;
 
   constructor(private adService: AdService, public authService: AuthService,
-              private alertify: AlertifyService, private route: ActivatedRoute, private router: Router) { }
+              private alertify: AlertifyService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -41,7 +41,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
 
     this.galleryImages = this.getImages();
 
-    this.setSenderId();
+    this.setRecipientId();
     this.getAdLikesCount();
   }
 
@@ -57,12 +57,15 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     return imageUrls;
   }
 
-  private setSenderId() {
-    if (this.route.snapshot.paramMap.get('senderId') == null || this.route.snapshot.paramMap.get('senderId') === undefined) {
-      this.senderId = null;
-    } else {
-      this.senderId = +this.route.snapshot.paramMap.get('senderId');
-    }
+  private setRecipientId() {
+    this.route.queryParams.subscribe(params => {
+      const recipientId = params.recipient;
+      if (recipientId !== undefined) {
+        this.recipientId = +recipientId;
+      } else {
+        this.recipientId = null;
+      }
+    });
   }
 
   getAdLikesCount() {
@@ -72,7 +75,9 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.setActiveTab();
+    setTimeout(() => {
+      this.setActiveTab();
+    });
   }
 
   private setActiveTab() {

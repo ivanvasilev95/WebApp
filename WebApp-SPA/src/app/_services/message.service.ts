@@ -3,12 +3,13 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PaginatedResult } from '../_models/pagination';
 import { Message } from '../_models/message';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
+  public static unreadMessagesCount: number;
   baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
@@ -52,6 +53,9 @@ export class MessageService {
   }
 
   getUnreadMessagesCount() {
-    return this.http.get(this.baseUrl + 'messages/user/unread');
+    return this.http.get(this.baseUrl + 'messages/user/unread')
+      .pipe(
+        tap((count: number) => { MessageService.unreadMessagesCount = count; })
+      );
   }
 }

@@ -30,12 +30,12 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var currentUserRoles = ((ClaimsIdentity)User.Identity).Claims
-                .Where(c => c.Type == ClaimTypes.Role)
-                .Select(c => c.Value);
+            bool isCurrentUserOrAdminOrModerator = isUserEligible(id);
 
-            var isCurrentUserOrAdminOrModerator = (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id || currentUserRoles.Contains("Admin") || currentUserRoles.Contains("Moderator"));
             var user = await _userRepo.GetUser(id, isCurrentUserOrAdminOrModerator);
+            if(user == null) {
+                return NotFound("Потребителят не е намерен");
+            }
 
             var userToReturn = _mapper.Map<UserForDetailedDTO>(user);
             foreach(var ad in userToReturn.Ads) {
@@ -44,6 +44,16 @@ namespace WebApp.API.Controllers
             }
 
             return Ok(userToReturn);
+        }
+
+        private bool isUserEligible(int userId){
+            if (User.Identity.IsAuthenticated) {
+                var currentUserRoles = ((ClaimsIdentity)User.Identity).Claims
+                    .Where(c => c.Type == ClaimTypes.Role)
+                    .Select(c => c.Value);
+                return (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == userId || currentUserRoles.Contains("Admin") || currentUserRoles.Contains("Moderator"));
+            }
+            return false;
         }
 
         [HttpPut("{id}")]

@@ -3,11 +3,6 @@
     <div class="col-sm-4">
         <h4>Редакция на обява</h4>
     </div>
-    <div class="col-sm-8">
-      <div *ngIf="editForm?.dirty" class="alert alert-info">
-        <strong>Информация:</strong> Вие направихте промени. Всички незапазени промени ще бъдат изтрити!
-      </div>
-    </div>
   </div>
   <div class="row mb-4">
     <div class="col-sm-4"> <!-- left part -->
@@ -85,6 +80,9 @@
               <app-photo-editor [photos]="ad.photos" [adId]="ad.id" (getAdPhotoChange)="updateMainPhoto($event)"></app-photo-editor>
             </tab>
         </tabset>
+      </div>
+      <div *ngIf="editForm?.dirty || descriptionForm?.dirty" class="alert alert-info mt-3">
+        <strong>Информация:</strong> Вие направихте промени. Всички незапазени промени ще бъдат изтрити!
       </div>
     </div>
   </div>
