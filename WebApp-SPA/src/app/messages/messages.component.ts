@@ -32,6 +32,10 @@ export class MessagesComponent implements OnInit {
     return !message.isRead && message.senderId !== +this.authService.decodedToken.nameid;
   }
 
+  senderDeletedIt(message: Message) {
+    return message.senderDeleted && message.recipientId === +this.authService.decodedToken.nameid;
+  }
+
   recipientOfTheAd(message: Message): number {
     if (message.senderId === +this.authService.decodedToken.nameid) {
       return message.recipientId;
@@ -72,7 +76,7 @@ export class MessagesComponent implements OnInit {
          && this.messages[messageIndex].isRead === false) {
           MessageService.unreadMessagesCount--;
         }
-        this.loadMessages();
+        this.loadMessages(null, false);
         this.alertify.success('Съобщението беше изтрито успешно');
       }, error => {
         this.alertify.error(error);

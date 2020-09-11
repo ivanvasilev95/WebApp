@@ -16,6 +16,7 @@ export class MessageService {
 
   getMessages(page?: number, itemsPerPage?: number, messageContainer?: string) {
     const paginatedResult: PaginatedResult<Message[]> = new PaginatedResult<Message[]>();
+
     let params = new HttpParams();
     params = params.append('MessageContainer', messageContainer);
 

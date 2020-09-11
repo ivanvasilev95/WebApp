@@ -29,7 +29,7 @@ namespace WebApp.API.Data.Repositories
             {
                 case "Inbox":
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId && m.SenderDeleted == false && m.RecipientDeleted == false)
+                        .Where(m => m.RecipientId == messageParams.UserId /* && m.SenderDeleted == false */ && m.RecipientDeleted == false)
                         .OrderBy(m => m.IsRead)
                         .ThenByDescending(m => m.MessageSent);
                     break;
@@ -40,7 +40,7 @@ namespace WebApp.API.Data.Repositories
                     break;
                 default: // unread
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false && m.SenderDeleted == false && m.RecipientDeleted == false)
+                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false /* && m.SenderDeleted == false */ && m.RecipientDeleted == false)
                         .OrderByDescending(m => m.MessageSent);
                     break;
             }
@@ -65,7 +65,7 @@ namespace WebApp.API.Data.Repositories
         public async Task<int> GetUnreadMessagesCount(int userId)
         {
             var unreadMsgsCount = await _context.Messages
-                .Where(m => m.RecipientId == userId && m.IsRead == false && m.SenderDeleted == false && m.RecipientDeleted == false)
+                .Where(m => m.RecipientId == userId && m.IsRead == false /* && m.SenderDeleted == false */ && m.RecipientDeleted == false)
                 .CountAsync();
             
             return unreadMsgsCount;

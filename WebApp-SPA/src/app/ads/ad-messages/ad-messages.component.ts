@@ -30,7 +30,7 @@ export class AdMessagesComponent implements OnInit {
       .pipe(
         tap(messages => {
             for (const message of messages) {
-              if (message.isRead === false && message.recipientId === currentUserId && message.senderDeleted === false) {
+              if (message.isRead === false && message.recipientId === currentUserId /* && message.senderDeleted === false */) {
                 this.messageService.markMessageAsRead(message.id);
                 MessageService.unreadMessagesCount--;
               }
