@@ -13,7 +13,7 @@ export class AdDetailResolver implements Resolve<Ad> {
     resolve(route: ActivatedRouteSnapshot): Observable<Ad> {
         return this.adService.getAd(route.params.id).pipe(
             catchError(error => {
-                this.alertify.error(error); // 'Проблем с получаването на данните'
+                this.alertify.error(error);
                 this.router.navigate(['/ads']);
                 return of(null);
             })

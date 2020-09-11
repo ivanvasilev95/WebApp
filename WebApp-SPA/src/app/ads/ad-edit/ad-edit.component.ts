@@ -27,9 +27,9 @@ export class AdEditComponent implements OnInit {
   }
 
   getAd() {
-    this.adService.getAd(+this.route.snapshot.params.id).subscribe(
-      (ad: Ad) => this.ad = ad,
-      error => this.alertify.error(error));
+    this.route.data.subscribe(data => {
+      this.ad = data.ad;
+    });
   }
 
   getCategories() {

@@ -32,7 +32,7 @@ export class PhotoEditorComponent implements OnInit {
 
   initializeUploader() {
     this.uploader = new FileUploader({
-      url: this.baseUrl + 'ads/' + this.adId + '/photos',
+      url: this.baseUrl + 'photos/ad/' + this.adId,
       authToken: 'Bearer ' + localStorage.getItem('token'),
       isHTML5: true,
       allowedFileType: ['image'],

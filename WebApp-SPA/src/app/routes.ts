@@ -20,6 +20,7 @@ import { NewAdGuard } from './_guards/new-ad.guard';
 import { AboutComponent } from './about/about.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { LoginGuard } from './_guards/login.guard';
+import { AdEditResolver } from './_resolvers/ad-edit.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
@@ -42,7 +43,8 @@ export const appRoutes: Routes = [
             { path: 'user/edit', component: UserEditComponent,
                 resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },
-            { path: 'user/ad/:id/edit', component: AdEditComponent },
+            { path: 'user/ad/:id/edit', component: AdEditComponent,
+                resolve: {ad: AdEditResolver} },
             { path: 'admin', component: AdminPanelComponent, data: {roles: ['Admin', 'Moderator']} }
         ]
     },

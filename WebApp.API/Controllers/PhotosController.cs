@@ -13,10 +13,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
-    [ApiController]
-    [Route("ads/{adId}/photos")]
-    [ServiceFilter(typeof(LogUserActivity))]
-    public class PhotosController : ControllerBase
+    public class PhotosController : ApiController
     {
         private readonly IMapper _mapper;
         private readonly IAdsRepository _adsRepo;
@@ -47,7 +44,7 @@ namespace WebApp.API.Controllers
             return Ok(photo);
         }
 
-        [HttpPost]
+        [HttpPost("ad/{adId}")]
         public async Task<IActionResult> AddPhoto(int adId, [FromForm]PhotoForCreationDTO photoForCreationDTO)
         {
             var file = photoForCreationDTO.File;
@@ -70,7 +67,7 @@ namespace WebApp.API.Controllers
 
             if(await _adsRepo.SaveAll()){
                 var photoToReturn = _mapper.Map<PhotoForReturnDTO>(photo);
-                return CreatedAtRoute("GetPhoto", new {id = photo.Id}, photoToReturn);
+                return CreatedAtRoute("GetPhoto", new {controller = "Photos", id = photo.Id}, photoToReturn);
             }
             
             return BadRequest("Не може да се добави снимката");
@@ -96,7 +93,7 @@ namespace WebApp.API.Controllers
             return uploadResult;
         }
 
-        [HttpPost("{id}/SetMain")]
+        [HttpPost("{id}/setMain/ad/{adId}")]
         public async Task<IActionResult> SetMainPhoto(int adId, int id)
         {
             var ad = await _adsRepo.GetAd(adId);
@@ -120,7 +117,7 @@ namespace WebApp.API.Controllers
             return BadRequest("Не може да се зададе снимката като главна");
         }
 
-        [HttpDelete("{photoId}")]
+        [HttpDelete("{photoId}/ad/{adId}")]
         public async Task<IActionResult> DeletePhoto(int adId, int photoId)
         {
             var ad = await _adsRepo.GetAd(adId);

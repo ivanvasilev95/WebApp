@@ -58,10 +58,10 @@
                 (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
             <span class="fa fa-upload"></span> Качи
         </button>
-        <button type="button" class="btn btn-warning btn-s" style="margin-right:5px;"
+        <!-- <button type="button" class="btn btn-warning btn-s" style="margin-right:5px;"
                 (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
             <span class="fa fa-ban"></span> Отказ
-        </button>
+        </button> -->
         <button type="button" class="btn btn-danger btn-s"
                 (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
             <span class="fa fa-trash"></span> Премахни

@@ -11,11 +11,11 @@ export class PhotoService {
   constructor(private http: HttpClient) { }
 
   setMainPhoto(adId: number, id: number) {
-    return this.http.post(this.baseUrl + 'ads/' + adId + '/photos/' + id + '/SetMain', {});
+    return this.http.post(this.baseUrl + 'photos/' + id + '/setMain/ad/' + adId, {});
   }
 
   deletePhoto(adId: number, id: number) {
-    return this.http.delete(this.baseUrl + 'ads/' + adId + '/photos/' + id);
+    return this.http.delete(this.baseUrl + 'photos/' + id + '/ad/' + adId);
   }
 
 }
