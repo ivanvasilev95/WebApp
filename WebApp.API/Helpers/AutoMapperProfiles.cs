@@ -25,6 +25,9 @@ namespace WebApp.API.Helpers
                     opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
                 });
             
+            CreateMap<Category, CategoryToReturnDTO>();
+            CreateMap<CategoryForCreationDTO, Category>();
+
             CreateMap<AdForUpdateDTO, Ad>();
             CreateMap<AdForCreateDTO, Ad>();
             
@@ -38,8 +41,6 @@ namespace WebApp.API.Helpers
             CreateMap<Photo, PhotoForReturnDTO>();  
             CreateMap<Photo, PhotoForDetailedDTO>();
             CreateMap<PhotoForCreationDTO, Photo>();
-
-            CreateMap<Category, CategoryToReturnDTO>();
          }
     }
 }

@@ -25,11 +25,12 @@
               <strong class="primary-font">{{message.senderUsername}}</strong>
               <small class="text-muted float-right">
                 <span class="fa fa-clock-o"> {{message.messageSent | timeAgo}}</span>
-                <span *ngIf="message.isRead && !message.recipientDeleted" class="text-success"> (прочетено)</span>
-                <span *ngIf="message.recipientDeleted" class="text-danger"> (изтрито)</span>
+                <span *ngIf="message.isRead && !message.recipientDeleted" class="text-success"> (видяно)</span>
+                <!-- <span *ngIf="message.recipientDeleted" class="text-danger"> (изтрито)</span> -->
               </small>
             </div>
-            <p>{{message.content}}</p>
+            <p *ngIf="!message.senderDeleted">{{message.content}}</p>
+            <p *ngIf="message.senderDeleted"><i>[вие изтрихте вашето съобщение]</i></p>
           </div>
         </div>
       </li>

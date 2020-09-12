@@ -142,6 +142,16 @@ namespace WebApp.API.Controllers
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(a => a.Id == adId);
             
+            RemoveAdPhotos(ad);
+
+            _context.Ads.Remove(ad);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        private void RemoveAdPhotos(Ad ad) {
             foreach (var photo in ad.Photos) 
             {
                 if (photo.PublicId != null) 
@@ -152,12 +162,6 @@ namespace WebApp.API.Controllers
 
                 _context.Photos.Remove(photo);
             }
-
-            _context.Ads.Remove(ad);
-
-            await _context.SaveChangesAsync();
-
-            return Ok();
         }
     }
 }

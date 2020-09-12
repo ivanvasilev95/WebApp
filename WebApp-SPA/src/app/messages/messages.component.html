@@ -42,7 +42,7 @@
         <td *ngIf="senderDeletedIt(message)" style="text-align: justify;"><i>[съобщението е премахнато]</i></td>
         <td>{{message.messageSent | timeAgo}}</td>
         <td>
-          <button class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(message.id)">Изтрий</button>
+          <button *ngIf="senderIsCurrentUser(message)" class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(message.id)">Изтрий</button>
         </td>
       </tr>
     </table>

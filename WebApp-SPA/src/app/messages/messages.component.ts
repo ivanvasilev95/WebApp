@@ -36,6 +36,10 @@ export class MessagesComponent implements OnInit {
     return message.senderDeleted && message.recipientId === +this.authService.decodedToken.nameid;
   }
 
+  senderIsCurrentUser(message: Message) {
+    return message.senderId === +this.authService.decodedToken.nameid;
+  }
+
   recipientOfTheAd(message: Message): number {
     if (message.senderId === +this.authService.decodedToken.nameid) {
       return message.recipientId;

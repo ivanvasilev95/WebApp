@@ -54,7 +54,7 @@ namespace WebApp.API.Data.Repositories
                 .Include(u => u.Sender)
                 .Include(a => a.Ad)
                 .Include(u => u.Recipient)
-                .Where(m => (m.RecipientId == recipientId && m.SenderId == userId && m.SenderDeleted == false
+                .Where(m => (m.RecipientId == recipientId && m.SenderId == userId /*&& m.SenderDeleted == false*/
                           || m.RecipientId == userId && m.SenderId == recipientId && m.RecipientDeleted == false) 
                           && m.AdId == adId)
                 .ToListAsync();

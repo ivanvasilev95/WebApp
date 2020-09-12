@@ -111,8 +111,8 @@ namespace WebApp.API.Controllers
             if (messageFromRepo.RecipientId == userId)
                 messageFromRepo.RecipientDeleted = true;
 
-            if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
-                _messageRepo.Delete(messageFromRepo);
+            // if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
+            //     _messageRepo.Delete(messageFromRepo);
             
             if (await _messageRepo.SaveAll())
                 return NoContent();

@@ -15,8 +15,6 @@ export class MessageService {
   constructor(private http: HttpClient) {}
 
   getMessages(page?: number, itemsPerPage?: number, messageContainer?: string) {
-    const paginatedResult: PaginatedResult<Message[]> = new PaginatedResult<Message[]>();
-
     let params = new HttpParams();
     params = params.append('MessageContainer', messageContainer);
 
@@ -28,6 +26,7 @@ export class MessageService {
     return this.http.get<Message[]>(this.baseUrl + 'messages', {observe: 'response', params})
       .pipe(
         map(response => {
+          const paginatedResult: PaginatedResult<Message[]> = new PaginatedResult<Message[]>();
           paginatedResult.result = response.body;
           if (response.headers.get('Pagination') != null) {
             paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));

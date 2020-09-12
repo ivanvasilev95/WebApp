@@ -129,25 +129,29 @@ namespace WebApp.API.Controllers
             if(photoFromRepo.IsMain)
                 return BadRequest("Тази снимка е зададена като главна и не може да се изтрие");
             
-            if(photoFromRepo.PublicId != null)
-            {
-                var deleteParams = new DeletionParams(photoFromRepo.PublicId);
-
-                var result = _cloudinary.Destroy(deleteParams);
-
-                if(result.Result == "ok") {
-                    _photoRepo.Delete(photoFromRepo);
-                }
-            } 
-            else 
-            {
-                _photoRepo.Delete(photoFromRepo);
-            }
+            DeletePhoto(photoFromRepo);
 
             if(await _photoRepo.SaveAll())
                 return Ok();
             
             return BadRequest("Грешка при изтриване на снимката");
+        }
+
+        private void DeletePhoto(Photo photo) {
+            if(photo.PublicId != null)
+            {
+                var deleteParams = new DeletionParams(photo.PublicId);
+
+                var result = _cloudinary.Destroy(deleteParams);
+
+                if(result.Result == "ok") {
+                    _photoRepo.Delete(photo);
+                }
+            } 
+            else 
+            {
+                _photoRepo.Delete(photo);
+            }
         }
     }
 }
