@@ -50,7 +50,7 @@ namespace WebApp.API.Controllers
         public async Task<IActionResult> GetUsersWithRoles()
         {
             var userList = await (from user in _context.Users
-                                  orderby user.UserName
+                                  orderby user.Id
                                   select new
                                   {
                                       Id = user.Id,

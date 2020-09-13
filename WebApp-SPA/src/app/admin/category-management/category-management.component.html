@@ -1,0 +1,21 @@
+<div class="container mt-2">
+  <div class="input-group">
+    <input type="text" [(ngModel)]="newCategoryName" class="form-control" placeholder="Добави нова категория">
+    <button class="btn btn-light form-control ml-2" (click)="addCategory()">Добави</button>  
+  </div>
+</div>
+<div *ngIf="categories !== null && categories?.length !== 0" class="row mt-2">
+  <table  class="table">
+    <tr>
+      <th style="width: 30%">ID</th>
+      <th style="width: 50%">Категория</th>
+      <th style="width: 20%"></th>
+    </tr>
+    <tr *ngFor="let category of categories">
+      <td>{{category.id}}</td>
+      <td>{{category.name}}</td>
+      <td><button class="btn btn-danger" (click)="removeCategory(category.id)">Премахни</button></td>
+    </tr>
+  </table>
+</div>
+<p *ngIf="categories === null || categories?.length === 0" style="text-align: center; margin-top: 20px;">Няма намерени категории.</p>

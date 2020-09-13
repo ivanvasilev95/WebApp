@@ -6,10 +6,10 @@
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/ads']">Обяви</a>
       </li>
-      <li class="nav-item" routerLinkActive="active">
+      <li *appHasRole="['Member', 'Moderator']" class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/favorites']">Наблюдавани</a>
       </li>
-      <li class="nav-item" routerLinkActive="active">
+      <li *appHasRole="['Member', 'Moderator']" class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="unreadMessagesCount != 0"> ({{unreadMessagesCount}})</span></a>
       </li>
       <li *appHasRole="['Admin', 'Moderator']" class="nav-item" routerLinkActive="active">

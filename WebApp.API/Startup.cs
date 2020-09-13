@@ -34,7 +34,7 @@ namespace WebApp.API
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddDbContext<DataContext>(options => options.UseMySql("Server=localhost; Database=WebAppDb; Uid=user; Pwd=password"));
+                .AddDbContext<DataContext>(options => options.UseMySql("Server=localhost; Database=WebAppDb; Uid=user; Pwd=541122"));
             
             IdentityBuilder builder = services.AddIdentityCore<User>(opt => {
                 opt.Password.RequireDigit = false;

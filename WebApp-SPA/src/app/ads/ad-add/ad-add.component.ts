@@ -57,12 +57,13 @@ export class NewAddComponent implements OnInit {
   }
 
   selectCategory(e) {
+    console.log(e.target.value);
     if (typeof(e.target.value) === 'number') {
       this.categoryId.setValue(e.target.value, {
         onlySelf: true
       });
     } else {
-      this.categoryId.setValue(+e.target.value.substring(0, 1), {
+      this.categoryId.setValue(+e.target.value.substring(3), {
         onlySelf: true
       });
     }

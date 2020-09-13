@@ -49,6 +49,7 @@ import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { HasRoleDirective } from './_directives/hasRole.directive';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { AdManagementComponent } from './admin/ad-management/ad-management.component';
+import { CategoryManagementComponent } from './admin/category-management/category-management.component';
 import { RolesModalComponent } from './admin/roles-modal/roles-modal.component';
 
 import { UserService } from './_services/user.service';
@@ -92,6 +93,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       HasRoleDirective,
       UserManagementComponent,
       AdManagementComponent,
+      CategoryManagementComponent,
       RolesModalComponent
    ],
    imports: [

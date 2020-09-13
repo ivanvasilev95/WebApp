@@ -12,6 +12,11 @@
           <app-ad-management></app-ad-management>
         </div>
       </tab>
+      <tab heading="Управление на категории" *appHasRole="['Admin', 'Moderator']">
+        <div class="container">
+          <app-category-management></app-category-management>
+        </div>
+      </tab>
     </tabset>
   </div>
 </div>
