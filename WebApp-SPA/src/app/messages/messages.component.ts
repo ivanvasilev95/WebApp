@@ -48,7 +48,7 @@ export class MessagesComponent implements OnInit {
     }
   }
 
-  loadMessages(messageFilter?: string, returnToFirstPage = true) {
+  loadMessages(messageFilter: string = null, returnToFirstPage: boolean = false) {
     if (returnToFirstPage) {
       this.pagination.currentPage = 1;
     }
@@ -69,7 +69,7 @@ export class MessagesComponent implements OnInit {
 
   pageChanged(event: any): void {
     this.pagination.currentPage = event.page;
-    this.loadMessages(null, false);
+    this.loadMessages();
   }
 
   deleteMessage(id: number) {
@@ -80,7 +80,7 @@ export class MessagesComponent implements OnInit {
          && this.messages[messageIndex].isRead === false) {
           MessageService.unreadMessagesCount--;
         }
-        this.loadMessages(null, false);
+        this.loadMessages();
         this.alertify.success('Съобщението беше изтрито успешно');
       }, error => {
         this.alertify.error(error);

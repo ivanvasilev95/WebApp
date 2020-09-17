@@ -2,13 +2,13 @@
 
   <div class="row">
     <div class="btn-group">
-      <button class="btn btn-primary" [class.active]="messageContainer === 'Unread'" name="unread" ngDefaultControl btnRadio="Unread" (click)="loadMessages('Unread')">
+      <button class="btn btn-primary" [class.active]="messageContainer === 'Unread'" name="unread" ngDefaultControl btnRadio="Unread" (click)="loadMessages('Unread', true)">
         <i class="fa fa-envelope"></i> Непрочетени
       </button>
-      <button class="btn btn-primary" [class.active]="messageContainer === 'Inbox'" name="inbox" ngDefaultControl btnRadio="Inbox" (click)="loadMessages('Inbox')">
+      <button class="btn btn-primary" [class.active]="messageContainer === 'Inbox'" name="inbox" ngDefaultControl btnRadio="Inbox" (click)="loadMessages('Inbox', true)">
         <i class="fa fa-envelope-open"></i> Получени
       </button>
-      <button class="btn btn-primary" [class.active]="messageContainer === 'Outbox'" name="outbox" ngDefaultControl btnRadio="Outbox" (click)="loadMessages('Outbox')">
+      <button class="btn btn-primary" [class.active]="messageContainer === 'Outbox'" name="outbox" ngDefaultControl btnRadio="Outbox" (click)="loadMessages('Outbox', true)">
         <i class="fa fa-paper-plane"></i> Изпратени
       </button>
     </div>
