@@ -62,8 +62,11 @@ namespace WebApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
             
-            var userFromRepo = await _userRepo.GetUser(id, false);
+            if (await _userRepo.EmailIsNotAvailable(id, userForUpdateDTO.Email?.Trim())) {
+                return BadRequest("Вече има регистриран потребител с този имейл адрес");
+            }
 
+            var userFromRepo = await _userRepo.GetUser(id, false);
             _mapper.Map(userForUpdateDTO, userFromRepo);
 
             //if (await _userRepo.SaveAll())

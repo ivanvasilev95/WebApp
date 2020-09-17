@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/_models/user';
+import { AuthService } from 'src/app/_services/auth.service';
 
 @Component({
   selector: 'app-roles-modal',
@@ -12,14 +13,29 @@ export class RolesModalComponent {
   user: User;
   roles: any[];
 
-  constructor(public bsModalRef: BsModalRef) {}
+  constructor(public bsModalRef: BsModalRef, private authService: AuthService) {}
 
   updateRoles() {
     this.updateSelectedRoles.emit(this.roles);
     this.bsModalRef.hide();
   }
 
+  changeRole(role) {
+    role.checked = !role.checked;
+    if (role.value === 'Admin') {
+      // ...
+    }
+  }
+
   noCheckedRoles() {
     return !this.roles.some(role => role.checked === true);
+  }
+
+  areMyRoles() {
+    return this.user.id === +this.authService.decodedToken.nameid;
+  }
+
+  areAdminRoles() {
+    return this.user.userName === 'admin';
   }
 }

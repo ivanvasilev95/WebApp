@@ -32,5 +32,13 @@ namespace WebApp.API.Data.Repositories
 
             return user;
         }
+
+        public async Task<bool> EmailIsNotAvailable(int userId, string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+            
+            return await _context.Users.AnyAsync(u => u.Id != userId && u.Email == email);
+        }
     }
 }

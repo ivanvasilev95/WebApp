@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title pull-left">Редактиране на ролите на {{user.userName}}</h4>
+  <h4 class="modal-title pull-left">Преглед на ролите на {{user.userName}}</h4>
   <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -11,13 +11,15 @@
       class="form-check-input" 
       value="{{role.value}}" 
       [checked]="role.checked"
-      (change)="role.checked = !role.checked"
-      [disabled]="role.name === 'Admin' && user.userName === 'admin'">
+      (change)="changeRole(role)"
+      [disabled]="areAdminRoles() || areMyRoles()">
+      <!-- (change)="role.checked = !role.checked" -->
+      <!-- [disabled]="role.name === 'Admin' && user.userName === 'admin'"> -->
       <label>{{role.name}}</label>
     </div>
   </form>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Отказ</button>
-  <button type="button" class="btn btn-success" (click)="updateRoles()" form="rolesForm" [disabled]="noCheckedRoles()">Промяна</button>
+  <button type="button" class="btn btn-success" (click)="updateRoles()" form="rolesForm" [disabled]="noCheckedRoles() || areMyRoles() || areAdminRoles()">Промяна</button>
 </div>

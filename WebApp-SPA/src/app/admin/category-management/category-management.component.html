@@ -1,7 +1,11 @@
 <div class="container mt-2">
-  <div class="input-group">
-    <input type="text" [(ngModel)]="newCategoryName" class="form-control" placeholder="Добави нова категория">
-    <button class="btn btn-light form-control ml-2" (click)="addCategory()">Добави</button>  
+  <div class="row">
+    <div class="col-sm-10">
+      <input type="text" [(ngModel)]="newCategoryName" class="form-control" placeholder="Добави нова категория">
+    </div>
+    <div class="col-sm-2">
+      <button class="btn btn-light form-control" (click)="addCategory()">Добави</button>  
+    </div>
   </div>
 </div>
 <div *ngIf="categories !== null && categories?.length !== 0" class="row mt-2">
