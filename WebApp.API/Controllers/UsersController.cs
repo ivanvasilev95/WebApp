@@ -30,9 +30,10 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            bool isCurrentUserOrAdminOrModerator = isUserEligible(id);
+            // bool isCurrentUserOrAdminOrModerator = IsUserEligible(id);
 
-            var user = await _userRepo.GetUser(id, isCurrentUserOrAdminOrModerator);
+            // var user = await _userRepo.GetUser(id, isCurrentUserOrAdminOrModerator);
+            var user = await _userRepo.GetUser(id, false);
             if(user == null) {
                 return NotFound("Потребителят не е намерен");
             }
@@ -46,15 +47,15 @@ namespace WebApp.API.Controllers
             return Ok(userToReturn);
         }
 
-        private bool isUserEligible(int userId){
-            if (User.Identity.IsAuthenticated) {
-                var currentUserRoles = ((ClaimsIdentity)User.Identity).Claims
-                    .Where(c => c.Type == ClaimTypes.Role)
-                    .Select(c => c.Value);
-                return (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == userId || currentUserRoles.Contains("Admin") || currentUserRoles.Contains("Moderator"));
-            }
-            return false;
-        }
+        // private bool IsUserEligible(int userId){
+        //     if (User.Identity.IsAuthenticated) {
+        //         var currentUserRoles = ((ClaimsIdentity)User.Identity).Claims
+        //             .Where(c => c.Type == ClaimTypes.Role)
+        //             .Select(c => c.Value);
+        //         return (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == userId || currentUserRoles.Contains("Admin") || currentUserRoles.Contains("Moderator"));
+        //     }
+        //     return false;
+        // }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)

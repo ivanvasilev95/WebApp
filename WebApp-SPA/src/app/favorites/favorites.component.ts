@@ -28,7 +28,7 @@ export class FavoritesComponent implements OnInit {
 
   removeAdFromLiked(adId: number) {
     this.adService.removeAdFromLiked(this.authService.decodedToken.nameid, adId).subscribe(res => {
-      this.loadUserLikedAds();
+      this.ads.splice(this.ads.findIndex(a => a.id === adId), 1);
       this.alertify.success('Обявата беше премахната от Наблюдавани');
     }, error => {
       this.alertify.error(error);

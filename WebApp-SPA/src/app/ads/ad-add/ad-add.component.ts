@@ -57,7 +57,6 @@ export class NewAddComponent implements OnInit {
   }
 
   selectCategory(e) {
-    console.log(e.target.value);
     if (typeof(e.target.value) === 'number') {
       this.categoryId.setValue(e.target.value, {
         onlySelf: true

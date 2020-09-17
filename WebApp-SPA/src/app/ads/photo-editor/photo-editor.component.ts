@@ -50,6 +50,11 @@ export class PhotoEditorComponent implements OnInit {
           url: res.url,
           isMain: res.isMain
         };
+
+        if (this.photos.length === 0) {
+          this.getAdPhotoChange.emit(photo.url);
+        }
+
         this.photos.push(photo);
       }
     };
