@@ -13,8 +13,6 @@
       [checked]="role.checked"
       (change)="changeRole(role)"
       [disabled]="areAdminRoles() || areMyRoles()">
-      <!-- (change)="role.checked = !role.checked" -->
-      <!-- [disabled]="role.name === 'Admin' && user.userName === 'admin'"> -->
       <label>{{role.name}}</label>
     </div>
   </form>

@@ -59,6 +59,7 @@ namespace WebApp.API.Controllers
                                                join role in _context.Roles
                                                on userRole.RoleId
                                                equals role.Id
+                                               orderby role.Name
                                                select role.Name).ToList()
                                   }).ToListAsync();
 

@@ -22,8 +22,19 @@ export class RolesModalComponent {
 
   changeRole(role) {
     role.checked = !role.checked;
-    if (role.value === 'Admin') {
-      // ...
+    this.uncheckUnnecessaryRoles(role);
+  }
+
+  private uncheckUnnecessaryRoles(role) {
+    if (role.value === 'Admin' && role.checked === true) {
+      this.roles.filter(r => r.value === 'Moderator')[0].checked = false;
+    }
+    if (role.value === 'Moderator' && role.checked === true) {
+      this.roles.filter(r => r.value === 'Admin')[0].checked = false;
+      this.roles.filter(r => r.value === 'Member')[0].checked = false;
+    }
+    if (role.value === 'Member' && role.checked === true) {
+      this.roles.filter(r => r.value === 'Moderator')[0].checked = false;
     }
   }
 

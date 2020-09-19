@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.Message;
+using WebApp.API.Extensions;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
 

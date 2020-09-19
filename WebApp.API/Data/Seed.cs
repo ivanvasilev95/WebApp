@@ -15,13 +15,13 @@ namespace WebApp.API.Data
             _roleManager = roleManager;
         }
 
-        public void SeedUsers()
+        public void SeedData()
         {
             var roles = new List<Role>
-            {
-                new Role {Name = "Member"},
+            {   
                 new Role {Name = "Admin"},
-                new Role {Name = "Moderator"}
+                new Role {Name = "Moderator"},
+                new Role {Name = "Member"}
             };
 
             foreach (var role in roles)

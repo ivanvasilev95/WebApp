@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using WebApp.API.Helpers;
 
-namespace WebApp.API.Helpers
+namespace WebApp.API.Extensions
 {
-    public static class Extensions
+    public static class HttpResponseExtensions
     {
         public static void AddApplicationError(this HttpResponse response, string message)
         {
