@@ -59,7 +59,10 @@ namespace WebApp.API
             app
                 .UseHttpsRedirection()
                 .UseRouting()
-                .UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+                .UseCors(x => x
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod())
                 .UseAuthentication()
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>

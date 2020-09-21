@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.Models;
@@ -20,11 +19,10 @@ namespace WebApp.API.Controllers
             _likesRepo = likesRepo;
         }
         
-        [HttpPost("user/{userId}/ad/{adId}")]
-        public async Task<IActionResult> LikeAd(int userId, int adId)
+        [HttpPost("add")]
+        public async Task<IActionResult> LikeAd([FromQuery]int adId)
         {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             
             var like = await _likesRepo.GetLike(userId, adId);
             if (like != null) {
@@ -51,11 +49,10 @@ namespace WebApp.API.Controllers
             return BadRequest("Грешка при добавяне на обявата в Наблюдавани");
         }
 
-        [HttpDelete("remove/user/{userId}/ad/{adId}")]
-        public async Task<ActionResult<Like>> RemoveAdFromLiked(int userId, int adId) 
+        [HttpDelete("remove")]
+        public async Task<ActionResult<Like>> RemoveAdFromLiked([FromQuery]int adId) 
         {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 
             var likeToRemove = await _likesRepo.GetLike(userId, adId);
             if(likeToRemove == null)
@@ -67,9 +64,8 @@ namespace WebApp.API.Controllers
             return likeToRemove;
         }
 
-        [AllowAnonymous]
-        [HttpGet("count/ad/{adId}")]
-        public async Task<IActionResult> GetAdLikesCount(int adId)
+        [HttpGet("count")]
+        public async Task<IActionResult> GetAdLikesCount([FromQuery]int adId)
         {
             var count = await _likesRepo.GetAdLikesCount(adId);
             return Ok(count);

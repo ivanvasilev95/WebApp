@@ -17,7 +17,7 @@ export class AdService {
   getAds(page?: number, itemsPerPage?: number, userParams?: any): Observable<PaginatedResult<Ad[]>> {
     const paginatedResult: PaginatedResult<Ad[]> = new PaginatedResult<Ad[]>();
 
-    const params = this.addHttpParams(page, itemsPerPage, userParams);
+    const params = this.addHttpParamsForAds(page, itemsPerPage, userParams);
 
     return this.http.get<Ad[]>(this.baseUrl + 'ads', { observe: 'response', params})
     .pipe(
@@ -31,7 +31,7 @@ export class AdService {
     );
   }
 
-  private addHttpParams(page?: number, itemsPerPage?: number, userParams?: any): HttpParams {
+  private addHttpParamsForAds(page?: number, itemsPerPage?: number, userParams?: any): HttpParams {
     let params = new HttpParams();
 
     if (page != null && itemsPerPage != null) {
@@ -53,7 +53,7 @@ export class AdService {
   }
 
   getUserAds(): Observable<Ad[]> {
-    return this.http.get<Ad[]>(this.baseUrl + 'ads/user');
+    return this.http.get<Ad[]>(this.baseUrl + 'ads/personal');
   }
 
   deleteAd(id: number) {
@@ -68,19 +68,23 @@ export class AdService {
     return this.http.post(this.baseUrl + 'ads', ad);
   }
 
-  addAdToLiked(userId: number, adId: number) {
-    return this.http.post(this.baseUrl + 'likes/user/' + userId + '/ad/' + adId, {});
+  addAdToLiked(adId: number) {
+    return this.http.post(this.baseUrl + 'likes/add', {}, {params: this.createQueryString(adId)});
   }
 
   getAdLikesCount(adId: number) {
-    return this.http.get(this.baseUrl + 'likes/count/ad/' + adId);
+    return this.http.get(this.baseUrl + 'likes/count', {params: this.createQueryString(adId)});
   }
 
-  getUserLikedAds(userId: number) {
-    return this.http.get(this.baseUrl + 'ads/user/' + userId + '/liked');
+  getUserLikedAds() {
+    return this.http.get(this.baseUrl + 'ads/liked');
   }
 
-  removeAdFromLiked(userId: number, adId: number) {
-    return this.http.delete(this.baseUrl + 'likes/remove/user/' + userId + '/ad/' + adId);
+  removeAdFromLiked(adId: number) {
+    return this.http.delete(this.baseUrl + 'likes/remove', {params: this.createQueryString(adId)});
+  }
+
+  private createQueryString(adId: number) {
+    return new HttpParams().append('adId', adId.toString());
   }
 }

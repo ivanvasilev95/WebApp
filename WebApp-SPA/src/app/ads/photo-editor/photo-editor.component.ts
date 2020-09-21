@@ -32,7 +32,7 @@ export class PhotoEditorComponent implements OnInit {
 
   initializeUploader() {
     this.uploader = new FileUploader({
-      url: this.baseUrl + 'photos/ad/' + this.adId,
+      url: this.baseUrl + 'photos/add?adId=' + this.adId,
       authToken: 'Bearer ' + localStorage.getItem('token'),
       isHTML5: true,
       allowedFileType: ['image'],
@@ -61,7 +61,7 @@ export class PhotoEditorComponent implements OnInit {
   }
 
   setMainPhoto(photo: Photo) {
-    this.photoService.setMainPhoto(this.adId, photo.id).subscribe(() => {
+    this.photoService.setMainPhoto(photo.id).subscribe(() => {
       const currentMainPhoto = this.photos.filter(p => p.isMain === true)[0];
       currentMainPhoto.isMain = false;
       photo.isMain = true;
@@ -73,9 +73,9 @@ export class PhotoEditorComponent implements OnInit {
 
   deletePhoto(id: number) {
     this.alertify.confirm('Сигурни ли сте, че искате да изтриете тази снимка?', () => {
-      this.photoService.deletePhoto(this.adId, id).subscribe(() => {
+      this.photoService.deletePhoto(id).subscribe(() => {
         this.photos.splice(this.photos.findIndex(p => p.id === id), 1);
-        this.alertify.success('Снимката беше изтрита');
+        this.alertify.success('Снимката беше изтрита успешно');
       }, error => {
         this.alertify.error(error);
       });

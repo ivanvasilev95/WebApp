@@ -80,8 +80,7 @@ namespace WebApp.API.Controllers
             return adToDelete;
         }
 
-        [HttpGet]
-        [Route("user")]
+        [HttpGet("personal")]
         public async Task<IActionResult> GetUserAds()
         {
             int userId = int.Parse(this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value);
@@ -91,12 +90,10 @@ namespace WebApp.API.Controllers
             return Ok(adsToReturn);
         }
 
-        [HttpGet("user/{userId}/liked")]
-        public async Task<IActionResult> GetUserLikedAds(int userId)
+        [HttpGet("liked")]
+        public async Task<IActionResult> GetUserLikedAds()
         {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                return Unauthorized();
-
+            int userId = int.Parse(this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value);
             var userLikedAds = await _adsRepo.GetUserLikedAds(userId);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(userLikedAds);
 

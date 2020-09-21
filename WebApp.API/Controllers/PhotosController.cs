@@ -44,12 +44,12 @@ namespace WebApp.API.Controllers
             return Ok(photo);
         }
 
-        [HttpPost("ad/{adId}")]
-        public async Task<IActionResult> AddPhoto(int adId, [FromForm]PhotoForCreationDTO photoForCreationDTO)
+        [HttpPost("add")]
+        public async Task<IActionResult> AddPhoto([FromQuery]int adId, [FromForm]PhotoForCreationDTO photoForCreationDTO)
         {
             var file = photoForCreationDTO.File;
 
-            if(file == null)
+            if (file == null)
                 return BadRequest();
 
             var uploadResult = UploadToCloudinary(file);
@@ -60,12 +60,12 @@ namespace WebApp.API.Controllers
             var photo = _mapper.Map<Photo>(photoForCreationDTO);
 
             var adFromRepo = await _adsRepo.GetAd(adId);
-            if(!adFromRepo.Photos.Any(p => p.IsMain))
+            if (!adFromRepo.Photos.Any(p => p.IsMain))
                 photo.IsMain = true;
             
             adFromRepo.Photos.Add(photo);
 
-            if(await _adsRepo.SaveAll()){
+            if (await _adsRepo.SaveAll()) {
                 var photoToReturn = _mapper.Map<PhotoForReturnDTO>(photo);
                 return CreatedAtRoute("GetPhoto", new {controller = "Photos", id = photo.Id}, photoToReturn);
             }
@@ -93,61 +93,51 @@ namespace WebApp.API.Controllers
             return uploadResult;
         }
 
-        [HttpPost("{id}/setMain/ad/{adId}")]
-        public async Task<IActionResult> SetMainPhoto(int adId, int id)
+        [HttpPost("{id}/setMain")]
+        public async Task<IActionResult> SetMainPhoto(int id)
         {
-            var ad = await _adsRepo.GetAd(adId);
-
-            if(!ad.Photos.Any(p => p.Id == id))
-                return BadRequest("Обявата няма снимка с такова id");
-            
             var photoFromRepo = await _photoRepo.GetPhoto(id);
 
-            if(photoFromRepo.IsMain)
+            if (photoFromRepo.IsMain)
                 return BadRequest("Тази снимка вече е зададена като главна");
             
-            var currentMainPhoto = await _photoRepo.GetAdMainPhoto(adId);
+            var currentMainPhoto = await _photoRepo.GetAdMainPhoto(photoFromRepo.AdId);
             currentMainPhoto.IsMain = false;
 
             photoFromRepo.IsMain = true;
 
-            if(await _photoRepo.SaveAll())
+            if (await _photoRepo.SaveAll())
                 return NoContent();
             
             return BadRequest("Не може да се зададе снимката като главна");
         }
 
-        [HttpDelete("{photoId}/ad/{adId}")]
-        public async Task<IActionResult> DeletePhoto(int adId, int photoId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemovePhoto(int id)
         {
-            var ad = await _adsRepo.GetAd(adId);
-
-            if(!ad.Photos.Any(p => p.Id == photoId))
-                return BadRequest("Обявата няма снимка с такова id");
-            
-            var photoFromRepo = await _photoRepo.GetPhoto(photoId);
-            if(photoFromRepo.IsMain)
+            var photoFromRepo = await _photoRepo.GetPhoto(id);
+            if (photoFromRepo.IsMain)
                 return BadRequest("Тази снимка е зададена като главна и не може да се изтрие");
             
             DeletePhoto(photoFromRepo);
 
-            if(await _photoRepo.SaveAll())
+            if (await _photoRepo.SaveAll())
                 return Ok();
             
             return BadRequest("Грешка при изтриване на снимката");
         }
 
-        private void DeletePhoto(Photo photo) {
-            if(photo.PublicId != null)
+        private void DeletePhoto(Photo photo) 
+        {
+            if (photo.PublicId != null)
             {
                 var deleteParams = new DeletionParams(photo.PublicId);
 
                 var result = _cloudinary.Destroy(deleteParams);
 
-                if(result.Result == "ok") {
+                if(result.Result == "ok")
                     _photoRepo.Delete(photo);
-                }
-            } 
+            }
             else 
             {
                 _photoRepo.Delete(photo);

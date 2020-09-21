@@ -88,7 +88,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   }
 
   addToLikedAds(adId: number) {
-    this.adService.addAdToLiked(this.authService.decodedToken.nameid, adId).subscribe(data => {
+    this.adService.addAdToLiked(adId).subscribe(data => {
       this.alertify.success('Вие добавихте ' + this.ad.title + ' в Наблюдавани');
     }, error => {
       this.alertify.error(error);
