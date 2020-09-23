@@ -45,6 +45,7 @@ namespace WebApp.API
             {
                 app.UseExceptionHandler(builder => {
                     builder.Run(async context => {
+                        // context.Response.ContentType = "application/json";
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
                         var error = context.Features.Get<IExceptionHandlerFeature>();

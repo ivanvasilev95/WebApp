@@ -3,7 +3,7 @@
     <h1>Web Bazar</h1>
     <p class="lead">Безплатни обяви без лимити.</p>
     <div class="text-center">
-      <img src="assets/img/bazarbg.png" height="200" width="200" alt="Web Bazar logo"/>
+      <img style="cursor:pointer;" src="assets/img/bazarbg.png" [routerLink]="['/about']" height="200" width="200" alt="Web Bazar logo"/>
     </div>
     <div *ngIf="showSpinner" class="lds-ring" style="margin-top:50px;"><div></div><div></div><div></div><div></div></div>
     <div *ngIf="ads.length !== 0 && showSpinner === false" class="row mt-4">

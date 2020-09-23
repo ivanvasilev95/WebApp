@@ -1,0 +1,10 @@
+<div class="tab-panel" style="text-align: center; margin-top: 60px; margin-left: 25%; margin-right: 25%;">
+  <tabset class="ad-tabset" [justified]="true">
+    <tab heading="Вход" (deselect)="login.loginForm.reset()">
+      <app-login #login></app-login>
+    </tab>
+    <tab heading="Регистрация" (deselect)="register.registerForm.reset()">
+      <app-register #register></app-register>
+    </tab>
+  </tabset>
+</div>

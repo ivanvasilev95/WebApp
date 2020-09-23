@@ -3,6 +3,9 @@
     <a class="navbar-brand" [routerLink]="['/home']">Web Bazar</a>
     
     <ul *ngIf="loggedIn()" class="navbar-nav mr-auto">
+      <li *appHasRole="['Admin', 'Moderator']" class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/admin']">Администратор</a>
+      </li>
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/ads']">Обяви</a>
       </li>
@@ -11,9 +14,6 @@
       </li>
       <li *appHasRole="['Member', 'Moderator']" class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="unreadMessagesCount != 0"> ({{unreadMessagesCount}})</span></a>
-      </li>
-      <li *appHasRole="['Admin', 'Moderator']" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/admin']">Администратор</a>
       </li>
     </ul>
 
@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <a *ngIf="!loggedIn()" class="text-light" [routerLink]="['/login']" style="padding-left:790px;">Вход</a>
+    <a *ngIf="!loggedIn()" class="text-light" [routerLink]="['/auth']" style="padding-left:790px;">Вход</a>
     <a *ngIf="loggedIn() && hasRole(['Moderator', 'Member'])" class="btn btn-warning" [routerLink]="['/ad/new']" style="margin-left:10px;"><i class="fa fa-plus"></i> Добави обява</a>
   
   </div>

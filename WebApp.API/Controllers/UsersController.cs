@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -62,18 +63,56 @@ namespace WebApp.API.Controllers
         {
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
+
+            userForUpdateDTO.Email = userForUpdateDTO.Email?.Trim();
             
-            if (await _userRepo.EmailIsNotAvailable(id, userForUpdateDTO.Email?.Trim())) {
-                return BadRequest("Вече има регистриран потребител с този имейл адрес");
-            }
+            var result = await ValidateEmail(userForUpdateDTO.Email, id);
+            if (result != null)
+                return BadRequest(result);
 
             var userFromRepo = await _userRepo.GetUser(id, false);
+            userFromRepo.NormalizedEmail = userForUpdateDTO.Email?.ToUpper();
             _mapper.Map(userForUpdateDTO, userFromRepo);
 
             //if (await _userRepo.SaveAll())
                 return NoContent();
             
             //throw new Exception($"Updating user {id} failed on save.");
+        }
+
+        // user other than the main admin (with id = 1) must provide valid email address
+        private async Task<string> ValidateEmail(string email, int userId)
+        {
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            // is not admin and email filed is empty
+            if (string.IsNullOrWhiteSpace(email) && currentUserId != 1)
+                return "Полето имейл не може да бъде празно";
+
+            // is admin and email field is not empty or is not admin
+            if ((currentUserId == 1 && !string.IsNullOrWhiteSpace(email)) || currentUserId != 1) {
+                if (!IsValidEmailAddress(email))
+                    return "Имейлът не е валиден";
+                
+                if (await _userRepo.EmailIsNotAvailable(userId, email)) {
+                    return "Вече има регистриран потребител с този имейл адрес";
+                }
+            }
+            
+            return null;
+        }
+
+        private bool IsValidEmailAddress(string input)
+        {
+            try
+            {
+                var email = new MailAddress(input);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

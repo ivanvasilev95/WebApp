@@ -1,0 +1,53 @@
+<form [formGroup]="loginForm" (ngSubmit)="login()">
+  <div class="form-group">
+    <input type="text" 
+      [ngClass]="{'is-invalid': loginForm.get('username').errors 
+        && loginForm.get('username').touched}"
+      class="form-control" 
+      formControlName="username" 
+      placeholder="Потребителско име">
+    <div class="invalid-feedback" 
+      *ngIf="loginForm.get('username').hasError('required')
+        && loginForm.get('username').touched" style="text-align: left;">
+        Потребителското име е задължително
+    </div>
+    <div class="invalid-feedback"
+      *ngIf="loginForm.get('username').hasError('minlength')
+        && loginForm.get('username').touched" style="text-align: left;">
+        Потребителското име трябва да бъде поне 4 символа
+    </div>
+    <div class="invalid-feedback"
+      *ngIf="loginForm.get('username').hasError('maxlength')
+        && loginForm.get('username').touched" style="text-align: left;">
+        Потребителското име не трябва да надвишава 10 символа
+    </div>
+  </div>
+
+  <div class="form-group">
+    <input type="password" 
+      [ngClass]="{'is-invalid': loginForm.get('password').errors 
+        && loginForm.get('password').touched}"
+      class="form-control" 
+      formControlName="password" 
+      placeholder="Парола">
+    <div class="invalid-feedback" 
+      *ngIf="loginForm.get('password').hasError('required') 
+        && loginForm.get('password').touched" style="text-align: left;">
+        Полето "Парола" е задължително
+    </div>
+    <div class="invalid-feedback" 
+      *ngIf="loginForm.get('password').hasError('minlength') 
+        && loginForm.get('password').touched" style="text-align: left;">
+        Паролата трябва да бъде поне 6 символа
+    </div>
+    <div class="invalid-feedback" 
+      *ngIf="loginForm.get('password').hasError('maxlength') 
+        && loginForm.get('password').touched" style="text-align: left;">
+        Паролата не трябва да навдишава 12 символа
+    </div>
+  </div>
+
+  <span class="form-group text-center">
+    <button class="btn btn-success" [disabled]="!loginForm.valid" type="submit">Вход</button>
+  </span>
+</form>

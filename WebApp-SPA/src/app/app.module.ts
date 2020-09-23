@@ -15,7 +15,7 @@ import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { AuthService } from './_services/auth.service';
 import { HomeComponent } from './home/home.component';
-import { RegisterComponent } from './register/register.component';
+import { RegisterComponent } from './auth/register/register.component';
 import { AlertifyService } from './_services/alertify.service';
 import { AdListComponent } from './ads/ad-list/ad-list.component';
 import { FavoritesComponent } from './favorites/favorites.component';
@@ -35,13 +35,13 @@ import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import { AdEditResolver } from './_resolvers/ad-edit.resolver';
-import {TimeAgoPipe} from 'time-ago-pipe';
+import { TimeAgoPipe } from 'time-ago-pipe';
 import { NewAddComponent } from './ads/ad-add/ad-add.component';
 import { AdMessagesComponent } from './ads/ad-messages/ad-messages.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PhotoEditorComponent } from './ads/photo-editor/photo-editor.component';
 import { FileUploadModule } from 'ng2-file-upload';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { NewAdGuard } from './_guards/new-ad.guard';
 import { AboutComponent } from './about/about.component';
 import { ErrorInterceptorProvider } from './_services/error.interceptor';
@@ -56,6 +56,7 @@ import { UserService } from './_services/user.service';
 import { CategoryService } from './_services/category.service';
 import { PhotoService } from './_services/photo.service';
 import { MessageService } from './_services/message.service';
+import { AuthPanelComponent } from './auth/auth-panel/auth-panel.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -88,6 +89,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       PhotoEditorComponent,
       TimeAgoPipe,
       LoginComponent,
+      AuthPanelComponent,
       AboutComponent,
       AdminPanelComponent,
       HasRoleDirective,

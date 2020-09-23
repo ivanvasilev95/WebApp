@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertifyService } from '../_services/alertify.service';
-import { AuthService } from '../_services/auth.service';
+import { AlertifyService } from 'src/app/_services/alertify.service';
+import { AuthService } from 'src/app/_services/auth.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
@@ -20,8 +20,8 @@ export class LoginComponent implements OnInit {
 
   createLoginForm() {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required]]
+      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]]
     });
   }
 

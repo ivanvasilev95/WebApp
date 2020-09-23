@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Category } from 'src/app/_models/category';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { CategoryService } from 'src/app/_services/category.service';

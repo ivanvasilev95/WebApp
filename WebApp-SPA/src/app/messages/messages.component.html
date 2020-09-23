@@ -15,7 +15,7 @@
   </div>
  
   <div class="text-center" *ngIf="messages?.length === 0">
-    <p style="padding-top:10px;">Нямате съобщения</p>
+    <h5 style="margin-top: 50px;">Нямате съобщения</h5>
   </div>
   
   <div class="row" *ngIf="messages?.length > 0">
@@ -49,7 +49,7 @@
   </div>
 
 </div>
-<div class="d-flex justify-content-center">
+<div *ngIf="messages?.length !== 0" class="d-flex justify-content-center">
   <pagination [boundaryLinks]="true" 
               [totalItems]="pagination.totalItems"
               [itemsPerPage]="pagination.itemsPerPage"

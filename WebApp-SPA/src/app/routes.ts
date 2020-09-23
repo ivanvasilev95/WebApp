@@ -15,17 +15,18 @@ import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import { NewAddComponent } from './ads/ad-add/ad-add.component';
 import { MessagesResolver } from './_resolvers/messages.resolver';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { NewAdGuard } from './_guards/new-ad.guard';
 import { AboutComponent } from './about/about.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { LoginGuard } from './_guards/login.guard';
 import { AdEditResolver } from './_resolvers/ad-edit.resolver';
+import { AuthPanelComponent } from './auth/auth-panel/auth-panel.component';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'about', component: AboutComponent },
-    { path: 'login', component: LoginComponent, runGuardsAndResolvers: 'always', canActivate: [LoginGuard] },
+    { path: 'auth', component: AuthPanelComponent, runGuardsAndResolvers: 'always', canActivate: [LoginGuard] },
     { path: 'user/:id/ads', component: UserAdsComponent },
     { path: 'ads', component: AdListComponent,
         resolve: {ads: AdListResolver} },
