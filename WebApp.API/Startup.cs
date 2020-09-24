@@ -43,14 +43,16 @@ namespace WebApp.API
             } 
             else 
             {
+                // global exception handler throws an exception when response headers contain non-ascii chars
                 app.UseExceptionHandler(builder => {
                     builder.Run(async context => {
                         // context.Response.ContentType = "application/json";
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
                         var error = context.Features.Get<IExceptionHandlerFeature>();
+
                         if(error != null) {
-                            context.Response.AddApplicationError(error.Error.Message);
+                            // context.Response.AddApplicationError(error.Error.Message);
                             await context.Response.WriteAsync(error.Error.Message);
                         }
                     });
@@ -62,8 +64,8 @@ namespace WebApp.API
                 .UseRouting()
                 .UseCors(x => x
                     .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod())
+                    .AllowAnyMethod()
+                    .AllowAnyHeader())
                 .UseAuthentication()
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>

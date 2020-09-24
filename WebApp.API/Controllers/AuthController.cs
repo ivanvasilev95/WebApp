@@ -40,18 +40,17 @@ namespace WebApp.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
-            if (await _userManager.FindByEmailAsync(userForRegisterDTO.Email.Trim()) != null) {
+            userForRegisterDTO.Email = userForRegisterDTO.Email.ToLower().Trim();
+            if (await _userManager.FindByEmailAsync(userForRegisterDTO.Email) != null) {
                 return BadRequest("Вече има регистриран потребител с този имейл адрес");
             }
 
             var userToCreate = _mapper.Map<User>(userForRegisterDTO);
-
             var result = await _userManager.CreateAsync(userToCreate, userForRegisterDTO.Password);
-
-            var userToReturn = _mapper.Map<UserForDetailedDTO>(userToCreate);
 
             if (result.Succeeded) {
                 await _userManager.AddToRoleAsync(userToCreate, "Member");
+                var userToReturn = _mapper.Map<UserForDetailedDTO>(userToCreate);
                 
                 return CreatedAtRoute("GetUser",
                     new {controller = "Users", id = userToCreate.Id}, userToReturn);

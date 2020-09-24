@@ -9,22 +9,32 @@ export class ErrorInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             catchError(error => {
                 if (error instanceof HttpErrorResponse) {
-                    if (error.status === 401 || error.status === 400 || error.status === 404) {
-                        if (typeof error.error === 'object') {
-                            return throwError('Грешка на сървъра'); // error.error.errors.id[0]
-                        }
-                        return throwError(error.error);
+                    // unknown error
+                    if (error.status === 0) {
+                        return throwError(error.statusText);
                     }
+                    // unauthorized, not found, bad request or internal server error (global exception)
+                    if (error.status === 401 || error.status === 404
+                    || (error.status === 400 && !error.error.errors) || error.status === 500) {
+                        if (typeof error.error === 'object') { // if not is string
+                            return throwError('Грешка на сървъра');
+                        }
+                        return throwError(error.error); // exception message
+                    }
+                    /*
+                    // global exception error
                     const applicationError = error.headers.get('Application-Error');
                     if (applicationError) {
                         return throwError(applicationError);
                     }
+                    */
+                    // model state error (returns 400 bad request)
                     const serverError = error.error.errors;
                     let modelStateErrors = '';
-                    if (serverError && typeof serverError === 'object') { // model state error
+                    if (serverError && typeof serverError === 'object') {
                         for (const key in serverError) {
                             if (serverError[key]) {
-                                modelStateErrors += serverError[key] + '\n';
+                                modelStateErrors += serverError[key] + ' ';
                             }
                         }
                     }

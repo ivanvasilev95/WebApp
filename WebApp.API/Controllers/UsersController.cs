@@ -31,9 +31,9 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            // bool isCurrentUserOrAdminOrModerator = IsUserEligible(id);
+            // bool isLoggedUserOrAdminOrModerator = IsUserEligible(id);
 
-            // var user = await _userRepo.GetUser(id, isCurrentUserOrAdminOrModerator);
+            // var user = await _userRepo.GetUser(id, isLoggedUserOrAdminOrModerator);
             var user = await _userRepo.GetUser(id, false);
             if(user == null) {
                 return NotFound("Потребителят не е намерен");
@@ -50,10 +50,10 @@ namespace WebApp.API.Controllers
 
         // private bool IsUserEligible(int userId){
         //     if (User.Identity.IsAuthenticated) {
-        //         var currentUserRoles = ((ClaimsIdentity)User.Identity).Claims
+        //         var loggedUserRoles = ((ClaimsIdentity)User.Identity).Claims
         //             .Where(c => c.Type == ClaimTypes.Role)
         //             .Select(c => c.Value);
-        //         return (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == userId || currentUserRoles.Contains("Admin") || currentUserRoles.Contains("Moderator"));
+        //         return (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == userId || loggedUserRoles.Contains("Admin") || loggedUserRoles.Contains("Moderator"));
         //     }
         //     return false;
         // }
@@ -64,11 +64,8 @@ namespace WebApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            userForUpdateDTO.Email = userForUpdateDTO.Email?.Trim();
-            
-            var result = await ValidateEmail(userForUpdateDTO.Email, id);
-            if (result != null)
-                return BadRequest(result);
+            userForUpdateDTO.Email = userForUpdateDTO.Email?.ToLower().Trim();
+            await ValidateEmail(userForUpdateDTO.Email, id);
 
             var userFromRepo = await _userRepo.GetUser(id, false);
             userFromRepo.NormalizedEmail = userForUpdateDTO.Email?.ToUpper();
@@ -81,25 +78,23 @@ namespace WebApp.API.Controllers
         }
 
         // user other than the main admin (with id = 1) must provide valid email address
-        private async Task<string> ValidateEmail(string email, int userId)
+        private async Task ValidateEmail(string email, int userId)
         {
-            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var loggedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             // is not admin and email filed is empty
-            if (string.IsNullOrWhiteSpace(email) && currentUserId != 1)
-                return "Полето имейл не може да бъде празно";
+            if (string.IsNullOrWhiteSpace(email) && loggedUserId != 1)
+                throw new Exception("Полето имейл не може да бъде празно");
 
-            // is admin and email field is not empty or is not admin
-            if ((currentUserId == 1 && !string.IsNullOrWhiteSpace(email)) || currentUserId != 1) {
+            // logged user is admin and email field is not empty or is not admin
+            if ((loggedUserId == 1 && !string.IsNullOrWhiteSpace(email)) || loggedUserId != 1) {
                 if (!IsValidEmailAddress(email))
-                    return "Имейлът не е валиден";
+                    throw new Exception("Имейлът не е валиден");
                 
                 if (await _userRepo.EmailIsNotAvailable(userId, email)) {
-                    return "Вече има регистриран потребител с този имейл адрес";
+                    throw new Exception("Вече има регистриран потребител с този имейл адрес");
                 }
             }
-            
-            return null;
         }
 
         private bool IsValidEmailAddress(string input)

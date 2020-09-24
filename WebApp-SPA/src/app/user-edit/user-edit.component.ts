@@ -37,6 +37,7 @@ export class UserEditComponent implements OnInit {
 
     this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(next => {
       this.alertify.success('Профилът е редактиран успешно');
+      this.user.email = this.user.email.toLowerCase();
       this.editForm.reset(this.user);
     }, error => {
       this.alertify.error(error);

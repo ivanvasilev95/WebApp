@@ -20,11 +20,11 @@ namespace WebApp.API.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<User> GetUser(int id, bool includeAllUserAds)
+        public async Task<User> GetUser(int id, bool includeNotApprovedUserAds)
         {
             var query = _context.Users.Include(u => u.Ads).AsQueryable();
 
-            if (includeAllUserAds) {
+            if (includeNotApprovedUserAds) {
                 query = query.IgnoreQueryFilters();
             }
 
