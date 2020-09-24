@@ -89,7 +89,7 @@ namespace WebApp.API.Controllers
             // logged user is admin and email field is not empty or is not admin
             if ((loggedUserId == 1 && !string.IsNullOrWhiteSpace(email)) || loggedUserId != 1) {
                 if (!IsValidEmailAddress(email))
-                    throw new Exception("Имейлът не е валиден");
+                    throw new Exception("Имейлът адресът не е валиден");
                 
                 if (await _userRepo.EmailIsNotAvailable(userId, email)) {
                     throw new Exception("Вече има регистриран потребител с този имейл адрес");
