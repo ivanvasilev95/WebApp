@@ -1,24 +1,23 @@
 <div class="card mb-2">
   <div class="card-img-wrapper">
     <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
-      <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.title}}" placement="top">
+      <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.isApproved ? ad.title : ad.title + ' (очаква одобрение)'}}" placement="top"> <!-- try with custom pipe -->
     </ng-container>
     <ng-template #NoPhoto>
-      <img src="assets/img/default.jpg" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.title}}" placement="top"> 
+      <img src="assets/img/default.jpg" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.isApproved ? ad.title : ad.title + ' (очаква одобрение)'}}" placement="top"> 
     </ng-template>
   </div>
   <div class="card-body p-1">
     <p class="card-text text-center">
-      <span *ngIf="ad.price == null && ad.isApproved">
+      <span *ngIf="ad.price == null">
         По договаряне
       </span>
-      <span *ngIf="ad.price != null && ad.price == 0 && ad.isApproved">
+      <span *ngIf="ad.price != null && ad.price == 0">
         Безплатно
       </span>
-      <span *ngIf="ad.price != null && ad.price != 0 && ad.isApproved">
-        {{ad.price}} лв.
+      <span *ngIf="ad.price != null && ad.price != 0">
+        {{ad.price | number : '1.2-2'}} лв.
       </span>
-      <span *ngIf="!ad.isApproved" class="card-text text-center">not approved</span>
     </p>
   </div>
 </div>

@@ -13,9 +13,8 @@ import { UserEditComponent } from './user-edit/user-edit.component';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
 import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
-import { NewAddComponent } from './ads/ad-add/ad-add.component';
+import { NewAdComponent } from './ads/ad-add/ad-add.component';
 import { MessagesResolver } from './_resolvers/messages.resolver';
-import { LoginComponent } from './auth/login/login.component';
 import { NewAdGuard } from './_guards/new-ad.guard';
 import { AboutComponent } from './about/about.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
@@ -32,7 +31,7 @@ export const appRoutes: Routes = [
         resolve: {ads: AdListResolver} },
     { path: 'ads/:id', component: AdDetailComponent,
         resolve: {ad: AdDetailResolver} },
-    { path: 'ad/new', component: NewAddComponent, runGuardsAndResolvers: 'always', canActivate: [NewAdGuard] },
+    { path: 'ad/new', component: NewAdComponent, runGuardsAndResolvers: 'always', canActivate: [NewAdGuard] },
     {
         path: '',
         runGuardsAndResolvers: 'always',

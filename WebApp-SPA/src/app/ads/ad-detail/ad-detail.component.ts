@@ -18,7 +18,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   galleryImages: NgxGalleryImage[];
   ad: Ad;
   recipientId: number;
-  adLikesCount: number;
+  adLikesCount: number = null;
 
   constructor(private adService: AdService, public authService: AuthService,
               private alertify: AlertifyService, private route: ActivatedRoute) { }
@@ -42,7 +42,9 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     this.galleryImages = this.getImages();
 
     this.setRecipientId();
-    this.getAdLikesCount();
+    if (this.ad.isApproved && this.userIsLoggedIn() && !this.isNotLoggedInUserAd()) {
+      this.getAdLikesCount();
+    }
   }
 
   getImages() {
@@ -95,15 +97,15 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  isAuthorized(): boolean {
-    return this.isLoggedIn() && this.isNotUsersAd();
+  userIsAuthorized(): boolean {
+    return this.userIsLoggedIn() && this.isNotLoggedInUserAd();
   }
 
-  isNotUsersAd(): boolean {
+  isNotLoggedInUserAd(): boolean {
     return +this.authService.decodedToken.nameid !== this.ad.userId;
   }
 
-  isLoggedIn(): boolean {
+  userIsLoggedIn(): boolean {
     return this.authService.loggedIn();
   }
 

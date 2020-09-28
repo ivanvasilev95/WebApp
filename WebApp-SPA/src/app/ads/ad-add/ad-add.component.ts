@@ -14,7 +14,7 @@ import { CategoryService } from 'src/app/_services/category.service';
   templateUrl: './ad-add.component.html',
   styleUrls: ['./ad-add.component.css']
 })
-export class NewAddComponent implements OnInit {
+export class NewAdComponent implements OnInit {
   categories: Category[];
   createAdForm: FormGroup;
 

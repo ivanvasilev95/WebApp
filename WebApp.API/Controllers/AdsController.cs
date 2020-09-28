@@ -50,8 +50,7 @@ namespace WebApp.API.Controllers
             _adsRepo.Add(adToCreate);
             await _adsRepo.SaveAll();
 
-            var adToReturn = _mapper.Map<AdForDetailedDTO>(adToCreate);
-            adToReturn.CategoryName = await _categoryRepo.GetCategoryName(adToCreate.CategoryId);
+            var adToReturn = _mapper.Map<AdForDetailedDTO>(await _adsRepo.GetAd(adToCreate.Id));
 
             return CreatedAtRoute("GetAd", new {controller = "Ads", id = adToCreate.Id}, adToReturn);
         }

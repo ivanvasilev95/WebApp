@@ -1,5 +1,4 @@
-<div class="container mt-3">
-  <div style="text-align: center;">
+<div class="container mt-3 text-center">
     <h1>Web Bazar</h1>
     <p class="lead">Безплатни обяви без лимити.</p>
     <div class="text-center">
@@ -10,9 +9,8 @@
       <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
           <app-ad [ad]="ad"></app-ad>
       </div>
-      <div style="margin-bottom:10px;" class="container text-left mt-1">
+      <div class="col-sm-12 text-left mt-1 mb-10">
         <a [routerLink]="['/ads']">Виж повече <i class="fa fa-angle-right"></i></a>
       </div>
     </div>
-  </div>
 </div>

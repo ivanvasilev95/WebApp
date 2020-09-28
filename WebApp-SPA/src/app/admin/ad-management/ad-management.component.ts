@@ -27,6 +27,7 @@ export class AdManagementComponent implements OnInit {
 
   approveAd(adId) {
     this.adminService.approveAd(adId).subscribe(() => {
+      this.alertify.success(this.ads.find(a => a.id === adId).title + ' беше одобрена');
       this.ads.splice(this.ads.findIndex(a => a.id === adId), 1);
     },
     error => {
@@ -36,6 +37,7 @@ export class AdManagementComponent implements OnInit {
 
   rejectAd(adId) {
     this.adminService.rejectAd(adId).subscribe(() => {
+      this.alertify.error(this.ads.find(a => a.id === adId).title + ' беше отхвърлена');
       this.ads.splice(this.ads.findIndex(a => a.id === adId), 1);
     },
     error => {

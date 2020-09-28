@@ -6,12 +6,8 @@ import { Ad } from 'src/app/_models/ad';
   templateUrl: './ad.component.html',
   styleUrls: ['./ad.component.css']
 })
-export class AdComponent implements OnInit {
+export class AdComponent {
   @Input() ad: Ad;
 
   constructor() { }
-
-  ngOnInit() {
-  }
-
 }

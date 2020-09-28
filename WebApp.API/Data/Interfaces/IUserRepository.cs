@@ -5,7 +5,7 @@ namespace WebApp.API.Data.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetUser(int id, bool includeNotApprovedUserAds);
+        Task<User> GetUser(int id, bool includeNotApprovedAds);
         Task<bool> EmailIsNotAvailable(int userId, string email);
         Task<bool> SaveAll();
     }

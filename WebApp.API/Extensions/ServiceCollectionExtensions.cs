@@ -79,8 +79,8 @@ namespace WebApp.API.Extensions
                 .AddScoped<IMessageRepository, MessageRepository>()
                 .AddScoped<IPhotoRepository, PhotoRepository>()
                 .AddScoped<ICategoryRepository, CategoryRepository>()
-                .AddScoped<LogUserActivity>()
-                .AddTransient<Seed>();
+                .AddScoped<LogUserActivity>();
+                // .AddTransient<Seed>();
 
         public static IServiceCollection AddCloudinarySettingsConfiguration(
             this IServiceCollection services,

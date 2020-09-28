@@ -31,32 +31,26 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            // bool isLoggedUserOrAdminOrModerator = IsUserEligible(id);
-
-            // var user = await _userRepo.GetUser(id, isLoggedUserOrAdminOrModerator);
-            var user = await _userRepo.GetUser(id, false);
+            bool isLoggedInUserOrAdminOrModerator = IsUserEligible(id);
+            var user = await _userRepo.GetUser(id, isLoggedInUserOrAdminOrModerator);
             if(user == null) {
                 return NotFound("Потребителят не е намерен");
             }
 
             var userToReturn = _mapper.Map<UserForDetailedDTO>(user);
-            foreach(var ad in userToReturn.Ads) {
-                var photo = await _photoRepo.GetAdMainPhoto(ad.Id);
-                ad.PhotoUrl = photo?.Url;
-            }
 
             return Ok(userToReturn);
         }
 
-        // private bool IsUserEligible(int userId){
-        //     if (User.Identity.IsAuthenticated) {
-        //         var loggedUserRoles = ((ClaimsIdentity)User.Identity).Claims
-        //             .Where(c => c.Type == ClaimTypes.Role)
-        //             .Select(c => c.Value);
-        //         return (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == userId || loggedUserRoles.Contains("Admin") || loggedUserRoles.Contains("Moderator"));
-        //     }
-        //     return false;
-        // }
+        private bool IsUserEligible(int userId){
+            if (User.Identity.IsAuthenticated) {
+                var loggedUserRoles = ((ClaimsIdentity)User.Identity).Claims
+                    .Where(c => c.Type == ClaimTypes.Role)
+                    .Select(c => c.Value);
+                return (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == userId || loggedUserRoles.Contains("Admin") || loggedUserRoles.Contains("Moderator"));
+            }
+            return false;
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)

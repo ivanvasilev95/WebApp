@@ -11,7 +11,7 @@ namespace WebApp.API.Data.Repositories
             _context = context;
         }
 
-        public void Add(object entity)
+        public void Add(object entity) // make it async and maybe generic
         {
             _context.Add(entity);
         }

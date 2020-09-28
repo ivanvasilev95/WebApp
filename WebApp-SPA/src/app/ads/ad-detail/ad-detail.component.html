@@ -23,7 +23,7 @@
             <strong>Цена:</strong> Безплатно
           </div>
           <div *ngIf="ad.price != null && ad.price != 0">
-            <strong>Цена:</strong> {{ad.price}} лв.
+            <strong>Цена:</strong> {{ad.price | number : '1.2-2'}} лв.
           </div>
           <div>
             <strong>Адрес:</strong> {{ad.location}}
@@ -34,20 +34,17 @@
           <div *ngIf="ad.isUsed!=null">
             <strong>Състояние: </strong><ng-container *ngIf="ad.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
           </div>
-          <div class="mt-1" *ngIf="isLoggedIn() && !isNotUsersAd()">
+          <div class="mt-1" *ngIf="adLikesCount !== null">
             <i>Наблюдаващи обявата: {{adLikesCount}}</i>
           </div>
-          <div class="mt-2" *ngIf="isLoggedIn() && isNotUsersAd()">
-            <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
-          </div>
-          <div class="mt-2" *ngIf="!isLoggedIn()">
+          <div class="mt-2" *ngIf="!userIsLoggedIn() || (userIsLoggedIn() && isNotLoggedInUserAd()) || (userIsLoggedIn() && authService.roleMatch(['Admin', 'Moderator']))">
             <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
           </div>
         </div>
         <div class="card-footer">
-          <div class="btn-group d-flex" *ngIf="isAuthorized()">
-              <button class="btn btn-primary w-100" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
-              <button class="btn btn-success w-100" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button>
+          <div class="btn-group d-flex" *ngIf="userIsAuthorized()">
+              <button class="btn btn-primary w-100" [disabled]="!ad.isApproved" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
+              <button class="btn btn-success w-100" [disabled]="!ad.isApproved" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button>
           </div>
         </div>
       </div>
@@ -61,7 +58,7 @@
                       [(ngModel)]="ad.description" disabled style="background-color:#FFF !important;color:black;text-align: justify;"></textarea>
             </tab>
             <tab heading="Снимки">
-              <p *ngIf="galleryImages.length == 0">Няма налични снимки</p>
+              <p *ngIf="galleryImages.length == 0" class="text-center pt-3">Няма налични снимки</p>
               <ngx-gallery style="margin-left:120px;margin-top:13px;" *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
             <!-- the recipient must be other user -->
@@ -69,7 +66,7 @@
               <app-ad-messages #adMsgs [adId]="ad.id" [recipientId]="recipientId"></app-ad-messages>
             </tab>
             <!-- not my ad so the recipient is the owner of the ad -->
-            <tab heading="Съобщения" *ngIf="recipientId === null && isAuthorized()" (selectTab)="adMsgs2.loadMessages()">
+            <tab heading="Съобщения" *ngIf="recipientId === null && userIsAuthorized()" (selectTab)="adMsgs2.loadMessages()">
               <app-ad-messages #adMsgs2 [adId]="ad.id" [recipientId]="ad.userId"></app-ad-messages>
             </tab>
         </tabset>

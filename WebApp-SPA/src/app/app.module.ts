@@ -36,7 +36,7 @@ import { UserAdsComponent } from './ads/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import { AdEditResolver } from './_resolvers/ad-edit.resolver';
 import { TimeAgoPipe } from 'time-ago-pipe';
-import { NewAddComponent } from './ads/ad-add/ad-add.component';
+import { NewAdComponent } from './ads/ad-add/ad-add.component';
 import { AdMessagesComponent } from './ads/ad-messages/ad-messages.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PhotoEditorComponent } from './ads/photo-editor/photo-editor.component';
@@ -84,7 +84,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       AdDetailComponent,
       UserEditComponent,
       AdEditComponent,
-      NewAddComponent,
+      NewAdComponent,
       AdMessagesComponent,
       PhotoEditorComponent,
       TimeAgoPipe,

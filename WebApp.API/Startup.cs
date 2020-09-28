@@ -35,7 +35,7 @@ namespace WebApp.API
                 .AddApiControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seed seeder)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, Seed seeder*/)
         {
             if (env.IsDevelopment())
             {
