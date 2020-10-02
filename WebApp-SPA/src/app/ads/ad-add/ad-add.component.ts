@@ -40,12 +40,16 @@ export class NewAdComponent implements OnInit {
       description: ['', Validators.maxLength(1000)],
       location: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
       price: [''],
-      isUsed: [null]
-    }, {validator: this.priceValidator});
+      isUsed: ['']
+    }, {validator: [this.priceValidator, this.isUsedValidator]});
   }
 
   priceValidator(g: FormGroup) {
-    return g.get('price').value >= 0 ? null : {mismatch: true};
+    return g.get('price').value >= 0 ? null : {priceMismatch: true};
+  }
+
+  isUsedValidator(g: FormGroup) {
+    return g.get('isUsed').value !== '' ? null : {isUsedMismatch: true};
   }
 
   get categoryId() {

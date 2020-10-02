@@ -113,6 +113,7 @@ namespace WebApp.API.Controllers
             var ads = await _context.Ads
                 .IgnoreQueryFilters()
                 .Where(a => a.IsApproved == false)
+                .OrderByDescending(a => a.DateAdded)
                 .ProjectTo<AdForListDTO>(configuration)
                 .ToListAsync();
 

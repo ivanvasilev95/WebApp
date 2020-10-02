@@ -10,7 +10,7 @@
   </div>
   <hr/>
   <div class="row">
-    <div *ngFor="let ad of user?.ads" class="col-lg-2 col-md-3 col-sm-6">
+    <div *ngFor="let ad of user?.ads.sort(comparator)" class="col-lg-2 col-md-3 col-sm-6">
       <app-ad [ad]="ad"></app-ad>
     </div>
   </div>

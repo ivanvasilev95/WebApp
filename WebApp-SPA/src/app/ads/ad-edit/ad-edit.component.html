@@ -4,27 +4,27 @@
         <h4>Редакция на обява</h4>
     </div>
   </div>
+  <div class="row">
+    <div *ngIf="editForm?.dirty || descriptionForm?.dirty" class="col alert alert-info">
+      <strong>Информация:</strong> Вие направихте промени. Всички незапазени промени ще бъдат изтрити!
+    </div>
+  </div>
   <div class="row mb-4">
     <div class="col-sm-4"> <!-- left part -->
       <div class="card">
-        <ng-container *ngIf="ad?.photoUrl !== null;else NoPhoto">
-          <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
-        </ng-container>
-        <ng-template #NoPhoto>
-          <img src="assets/img/default.jpg" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
-        </ng-template>
-        <div class="card-body">
+        <img src="{{ad.photoUrl !== null ? ad.photoUrl : 'assets/img/default.jpg'}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
+        <!-- <div class="card-body">
           <div>
             <strong>Заглавие:</strong> {{ad.title}}
           </div>
-          <div *ngIf="ad.price == null">
-            <strong>Цена:</strong> По договаряне
-          </div>
-          <div *ngIf="ad.price != null && ad.price == 0">
-            <strong>Цена:</strong> Безплатно
-          </div>
-          <div *ngIf="ad.price != null && ad.price != 0">
-            <strong>Цена:</strong> {{ad.price}} лв.
+          <div>
+            <strong>Цена: </strong>
+            <span *ngIf="ad.price == null;else show_price">
+              По договаряне
+            </span>
+            <ng-template #show_price>
+              {{ad.price === 0 ? 'Безплатно' : ((ad.price | number : '1.2-2') + ' лв.')}}
+            </ng-template>
           </div>
           <div>
             <strong>Адрес:</strong> {{ad.location}}
@@ -35,11 +35,11 @@
           <div>
             <strong>Добавена:</strong> {{ad.dateAdded | date}}
           </div>
-          <div *ngIf="ad?.isUsed!=null">
-            <strong>Състояние: </strong><ng-container *ngIf="ad?.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
+          <div *ngIf="ad?.isUsed != null">
+            <strong>Състояние: </strong> {{ ad?.isUsed ? 'използвано' : 'ново'}}
           </div>
-        </div>
-        <div class="card-footer" *ngIf="!this.adTabs.tabs[2].active">
+        </div> -->
+        <div class="card-body" *ngIf="!this.adTabs.tabs[2].active"> <!-- class="card-footer" -->
           <div class="btn-group d-flex">
             <button *ngIf="this.adTabs.tabs[0].active" [disabled]="!editForm?.dirty" form="editForm" class="btn btn-success btn-block">Редактирай</button>
             <button *ngIf="this.adTabs.tabs[1].active" [disabled]="!descriptionForm?.dirty" form="descriptionForm" class="btn btn-success btn-block">Редактирай</button>
@@ -50,7 +50,7 @@
     <div class="col-sm-8"> <!-- right part -->
       <div class="tab-panel">
         <tabset class="ad-tabset" #adTabs>
-            <tab heading="Детайли">
+            <tab heading="Детайли" (selectTab)="resetForm('description')">
                 <form #editForm="ngForm" id="editForm" name="editForm" (ngSubmit)="updateAd()">
                     <h6>Заглавие на обявата</h6>
                     <input type="text" class="form-control" name="title" [(ngModel)]="ad.title">
@@ -61,28 +61,24 @@
                     <h6 class="mt-2">Адрес</h6>
                     <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
                     <h6 class="mt-2">Цена</h6>
-                    <input type="number" class="form-control" name="price" [(ngModel)]="ad.price" min="0" oninput="validity.valid||(value='');">
-                    <div *ngIf="ad.isUsed!==null">
-                      <h6 class="mt-2">Състояние</h6>
-                      <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
-                        <option [ngValue]="true">използвано</option>
-                        <option [ngValue]="false">ново</option>
-                      </select>
-                    </div>
+                    <input type="number" class="form-control" name="price" [(ngModel)]="ad.price" min="0" step="0.01" placeholder="По договаряне" oninput="validity.valid||(value='');">
+                    <h6 class="mt-2">Състояние</h6>
+                    <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
+                      <option [ngValue]="false">ново</option>
+                      <option [ngValue]="true">използвано</option>
+                      <option [ngValue]="null">неопределено</option>
+                    </select>
                 </form>
             </tab>
-            <tab heading="Описание">
+            <tab heading="Описание" (selectTab)="resetForm('details')">
               <form #descriptionForm="ngForm" id="descriptionForm" name="descriptionForm" (ngSubmit)="updateAd()">
                 <textarea class="form-control" name="description" rows="10" [(ngModel)]="ad.description" pre></textarea>
               </form>
             </tab>
-            <tab heading="Снимки">
+            <tab heading="Снимки" (selectTab)="resetForm('both')">
               <app-photo-editor [photos]="ad.photos" [adId]="ad.id" (getAdPhotoChange)="updateMainPhoto($event)"></app-photo-editor>
             </tab>
         </tabset>
-      </div>
-      <div *ngIf="editForm?.dirty || descriptionForm?.dirty" class="alert alert-info mt-3">
-        <strong>Информация:</strong> Вие направихте промени. Всички незапазени промени ще бъдат изтрити!
       </div>
     </div>
   </div>

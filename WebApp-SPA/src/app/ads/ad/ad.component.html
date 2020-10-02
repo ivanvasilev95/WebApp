@@ -1,23 +1,15 @@
-<div class="card mb-2">
+<div class="card mb-2 mt-4">
   <div class="card-img-wrapper">
-    <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
-      <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.isApproved ? ad.title : ad.title + ' (очаква одобрение)'}}" placement="top"> <!-- try with custom pipe -->
-    </ng-container>
-    <ng-template #NoPhoto>
-      <img src="assets/img/default.jpg" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ad.isApproved ? ad.title : ad.title + ' (очаква одобрение)'}}" placement="top"> 
-    </ng-template>
+    <img src="{{ad.photoUrl !== null ? ad.photoUrl : 'assets/img/default.jpg'}}" alt="{{ad.id}}" class="card-img-top" [routerLink]="['/ads/', ad.id]" style="width:158px;height:140px;cursor:pointer;" tooltip="{{ ad | isApproved }}" placement="top">
   </div>
   <div class="card-body p-1">
     <p class="card-text text-center">
-      <span *ngIf="ad.price == null">
+      <span *ngIf="ad.price == null;else show_price">
         По договаряне
       </span>
-      <span *ngIf="ad.price != null && ad.price == 0">
-        Безплатно
-      </span>
-      <span *ngIf="ad.price != null && ad.price != 0">
-        {{ad.price | number : '1.2-2'}} лв.
-      </span>
+      <ng-template #show_price>
+        {{ad.price === 0 ? 'Безплатно' : ((ad.price | number : '1.2-2') + ' лв.')}}
+      </ng-template>
     </p>
   </div>
 </div>

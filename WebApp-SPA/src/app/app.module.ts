@@ -52,6 +52,7 @@ import { AdManagementComponent } from './admin/ad-management/ad-management.compo
 import { CategoryManagementComponent } from './admin/category-management/category-management.component';
 import { RolesModalComponent } from './admin/roles-modal/roles-modal.component';
 
+import { IsApprovedPipe } from './_pipes/isApproved.pipe';
 import { UserService } from './_services/user.service';
 import { CategoryService } from './_services/category.service';
 import { PhotoService } from './_services/photo.service';
@@ -88,6 +89,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       AdMessagesComponent,
       PhotoEditorComponent,
       TimeAgoPipe,
+      IsApprovedPipe,
       LoginComponent,
       AuthPanelComponent,
       AboutComponent,

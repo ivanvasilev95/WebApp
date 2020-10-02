@@ -62,7 +62,8 @@ namespace WebApp.API.Data.Repositories
             var ads =  await _context.Ads
                 .Include(a => a.Photos)
                 .Where(a => a.UserId == userId)
-                .OrderByDescending(a => a.DateAdded)
+                .OrderBy(a => a.IsApproved)
+                .ThenByDescending(a => a.DateAdded)
                 .IgnoreQueryFilters()
                 .ToListAsync();
 

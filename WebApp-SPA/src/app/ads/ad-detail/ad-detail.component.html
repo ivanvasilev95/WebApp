@@ -9,21 +9,16 @@
     <!-- left part -->
     <div class="col-sm-4">
       <div class="card">
-        <ng-container *ngIf="ad.photoUrl !== null;else NoPhoto">
-          <img src="{{ad.photoUrl}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="height:350px;">
-        </ng-container>
-        <ng-template #NoPhoto>
-          <img src="assets/img/default.jpg" class="card-img-top img-thumbnail" style="height:350px;">
-        </ng-template>
+        <img src="{{ad.photoUrl !== null ? ad.photoUrl : 'assets/img/default.jpg'}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="height:350px;">
         <div class="card-body">
-          <div *ngIf="ad.price == null">
-            <strong>Цена:</strong> По договаряне
-          </div>
-          <div *ngIf="ad.price != null && ad.price == 0">
-            <strong>Цена:</strong> Безплатно
-          </div>
-          <div *ngIf="ad.price != null && ad.price != 0">
-            <strong>Цена:</strong> {{ad.price | number : '1.2-2'}} лв.
+          <div>
+            <strong>Цена: </strong>
+            <span *ngIf="ad.price == null;else show_price">
+              По договаряне
+            </span>
+            <ng-template #show_price>
+              {{ad.price === 0 ? 'Безплатно' : ((ad.price | number : '1.2-2') + ' лв.')}}
+            </ng-template>
           </div>
           <div>
             <strong>Адрес:</strong> {{ad.location}}
@@ -32,19 +27,19 @@
             <strong>Добавена:</strong> {{ad.dateAdded | date}}
           </div>
           <div *ngIf="ad.isUsed!=null">
-            <strong>Състояние: </strong><ng-container *ngIf="ad.isUsed;else Other">използвано</ng-container><ng-template #Other>ново</ng-template>
+            <strong>Състояние: </strong> {{ ad?.isUsed ? 'използвано' : 'ново'}}
           </div>
           <div class="mt-1" *ngIf="adLikesCount !== null">
             <i>Наблюдаващи обявата: {{adLikesCount}}</i>
           </div>
-          <div class="mt-2" *ngIf="!userIsLoggedIn() || (userIsLoggedIn() && isNotLoggedInUserAd()) || (userIsLoggedIn() && authService.roleMatch(['Admin', 'Moderator']))">
+          <div class="mt-2"> <!-- *ngIf="!userIsLoggedIn() || (userIsLoggedIn() && isNotLoggedInUserAd()) || (userIsLoggedIn() && authService.roleMatch(['Admin', 'Moderator']))" -->
             <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
           </div>
         </div>
         <div class="card-footer">
-          <div class="btn-group d-flex" *ngIf="userIsAuthorized()">
+          <div class="btn-group d-flex" *ngIf="userHasRights() && ad.isApproved">
               <button class="btn btn-primary w-100" [disabled]="!ad.isApproved" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
-              <button class="btn btn-success w-100" [disabled]="!ad.isApproved" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button>
+              <!-- <button class="btn btn-success w-100" [disabled]="!ad.isApproved" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button> -->
           </div>
         </div>
       </div>
@@ -59,16 +54,18 @@
             </tab>
             <tab heading="Снимки">
               <p *ngIf="galleryImages.length == 0" class="text-center pt-3">Няма налични снимки</p>
-              <ngx-gallery style="margin-left:120px;margin-top:13px;" *ngIf="galleryImages.length != 0" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+              <ngx-gallery *ngIf="galleryImages.length != 0" style="margin-left:120px;margin-top:13px;" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
-            <!-- the recipient must be other user -->
-            <tab heading="Съобщения" *ngIf="recipientId !== null" (selectTab)="adMsgs.loadMessages()">
-              <app-ad-messages #adMsgs [adId]="ad.id" [recipientId]="recipientId"></app-ad-messages>
-            </tab>
-            <!-- not my ad so the recipient is the owner of the ad -->
-            <tab heading="Съобщения" *ngIf="recipientId === null && userIsAuthorized()" (selectTab)="adMsgs2.loadMessages()">
-              <app-ad-messages #adMsgs2 [adId]="ad.id" [recipientId]="ad.userId"></app-ad-messages>
-            </tab>
+            <ng-container *ngIf="ad.isApproved">
+              <!-- the recipient must be other user -->
+              <tab heading="Съобщения" *ngIf="recipientId !== null" (selectTab)="adMsgs.loadMessages()">
+                <app-ad-messages #adMsgs [ad]="ad" [recipientId]="recipientId"></app-ad-messages>
+              </tab>
+              <!-- not my ad so the recipient is the owner of the ad -->
+              <tab heading="Съобщение" *ngIf="recipientId === null && userHasRights()" (selectTab)="adMsgs2.loadMessages()">
+                <app-ad-messages #adMsgs2 [ad]="ad" [recipientId]="ad.userId"></app-ad-messages>
+              </tab>
+            </ng-container>
         </tabset>
       </div>
     </div>

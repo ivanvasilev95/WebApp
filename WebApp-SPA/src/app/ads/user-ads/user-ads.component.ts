@@ -28,4 +28,11 @@ export class UserAdsComponent implements OnInit {
         this.router.navigate(['']);
       });
   }
+
+  comparator(a, b) {
+    if (a.isApproved === b.isApproved) {
+       return a.dateAdded < b.dateAdded ? 1 : -1;
+    }
+    return a.isApproved > b.isApproved ? 1 : -1;
+ }
 }

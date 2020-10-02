@@ -97,7 +97,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  userIsAuthorized(): boolean {
+  userHasRights(): boolean {
     return this.userIsLoggedIn() && this.isNotLoggedInUserAd();
   }
 

@@ -36,24 +36,35 @@
         </div>
         <!-- condition -->
         <div class="form-group">
-          <select class="custom-select" (change)="selectCondition($event)" formControlName="isUsed"> <!-- [ngClass]="{'is-invalid': createAdForm.get('isUsed').errors && createAdForm.get('isUsed').touched}" -->
-            <option value="null">Избери състояние</option> <!--disabled-->
-            <option value="true">използвано</option>
+          <select class="custom-select" 
+            (change)="selectCondition($event)"
+            formControlName="isUsed"
+            [ngClass]="{'is-invalid': createAdForm.get('isUsed').errors
+              && createAdForm.get('isUsed').touched
+              || createAdForm.get('isUsed').touched
+              && createAdForm.hasError('isUsedMismatch')}">
+            <option value="" disabled>Избери състояние</option>
             <option value="false">ново</option>
+            <option value="true">използвано</option>
+            <option value="null">неопределено</option>
           </select>
+          <div class="invalid-feedback" *ngIf="createAdForm.hasError('isUsedMismatch') && createAdForm.get('isUsed').touched">
+            Състоянието е задължително
+          </div>
         </div>
         <!-- price -->
         <div class="form-group">
           <input type="number"
+            step="0.01"
             [ngClass]="{'is-invalid': createAdForm.get('price').errors 
               && createAdForm.get('price').touched
               || createAdForm.get('price').touched
-              && createAdForm.hasError('mismatch')}"
+              && createAdForm.hasError('priceMismatch')}"
             class="form-control" 
             formControlName="price" 
             placeholder="Цена">
           <div class="invalid-feedback" 
-            *ngIf="createAdForm.hasError('mismatch') 
+            *ngIf="createAdForm.hasError('priceMismatch') 
               && createAdForm.get('price').touched">
               Цената трябва да бъде положително число
           </div>

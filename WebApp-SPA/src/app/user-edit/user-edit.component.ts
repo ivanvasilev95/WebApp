@@ -31,13 +31,16 @@ export class UserEditComponent implements OnInit {
   }
 
   updateUser() {
-    if (this.user.fullName === '') { this.user.fullName = null; }
-    if (this.user.email === '') { this.user.email = null; }
-    if (this.user.address === '') { this.user.address = null; }
+    if (this.user.fullName.trim() === '') { this.user.fullName = null; }
+    if (this.user.address.trim() === '') { this.user.address = null; }
+    if (this.user.email.trim() === '') {
+      this.user.email = null;
+    } else  if (this.user.email !== null && this.user.email !== undefined) {
+      this.user.email = this.user.email.toLowerCase().trim();
+    }
 
     this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(next => {
       this.alertify.success('Профилът е редактиран успешно');
-      this.user.email = this.user.email.toLowerCase();
       this.editForm.reset(this.user);
     }, error => {
       this.alertify.error(error);

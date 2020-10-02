@@ -22,7 +22,10 @@ namespace WebApp.API.Data.Repositories
 
         public async Task<User> GetUser(int id, bool includeNotApprovedAds)
         {
-            var query = _context.Users.Include(u => u.Ads).ThenInclude(a => a.Photos).AsQueryable();
+            var query = _context.Users
+                .Include(u => u.Ads).ThenInclude(a => a.Photos)
+                .Include(u => u.Ads).ThenInclude(a => a.Category)
+                .AsQueryable();
 
             if (includeNotApprovedAds) {
                 query = query.IgnoreQueryFilters();

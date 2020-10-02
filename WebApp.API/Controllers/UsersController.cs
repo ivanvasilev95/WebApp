@@ -58,7 +58,7 @@ namespace WebApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            userForUpdateDTO.Email = userForUpdateDTO.Email?.ToLower().Trim();
+            // userForUpdateDTO.Email = userForUpdateDTO.Email?.ToLower().Trim();
             await ValidateEmail(userForUpdateDTO.Email, id);
 
             var userFromRepo = await _userRepo.GetUser(id, false);
@@ -82,8 +82,9 @@ namespace WebApp.API.Controllers
 
             // logged user is admin and email field is not empty or is not admin
             if ((loggedUserId == 1 && !string.IsNullOrWhiteSpace(email)) || loggedUserId != 1) {
-                if (!IsValidEmailAddress(email))
+                if (!IsValidEmailAddress(email)) {
                     throw new Exception("Имейлът адресът не е валиден");
+                }
                 
                 if (await _userRepo.EmailIsNotAvailable(userId, email)) {
                     throw new Exception("Вече има регистриран потребител с този имейл адрес");

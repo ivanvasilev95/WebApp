@@ -4,6 +4,7 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Message } from 'src/app/_models/message';
 import { tap } from 'rxjs/operators';
 import { MessageService } from 'src/app/_services/message.service';
+import { Ad } from 'src/app/_models/ad';
 
 @Component({
   selector: 'app-ad-messages',
@@ -12,7 +13,7 @@ import { MessageService } from 'src/app/_services/message.service';
 })
 export class AdMessagesComponent implements OnInit {
   @Input() recipientId: number;
-  @Input() adId: number;
+  @Input() ad: Ad;
   messages: Message[];
   newMessage: any = {};
 
@@ -26,7 +27,7 @@ export class AdMessagesComponent implements OnInit {
 
   loadMessages() {
     const loggedUserId = +this.authService.decodedToken.nameid;
-    this.messageService.getMessageThread(this.adId, this.recipientId)
+    this.messageService.getMessageThread(this.ad.id, this.recipientId)
       .pipe(
         tap(messages => {
             for (const message of messages) {
@@ -53,7 +54,7 @@ export class AdMessagesComponent implements OnInit {
 
     const senderId = +this.authService.decodedToken.nameid;
 
-    this.newMessage.adId = this.adId;
+    this.newMessage.adId = this.ad.id;
     this.newMessage.senderId = senderId;
 
     this.newMessage.recipientId = this.recipientId;

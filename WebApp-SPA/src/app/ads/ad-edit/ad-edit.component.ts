@@ -56,4 +56,14 @@ export class AdEditComponent implements OnInit {
   updateMainPhoto(photoUrl: string) {
     this.ad.photoUrl = photoUrl;
   }
+
+  resetForm(tab: string) {
+    this.adService.getAd(this.ad.id).subscribe(ad => { this.ad = ad; });
+    if (tab === 'description' || 'both') {
+      this.descriptionForm.reset(this.ad.description);
+    }
+    if (tab === 'details' || 'both') {
+      this.editForm.reset(this.ad);
+    }
+  }
 }
