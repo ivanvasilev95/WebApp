@@ -12,7 +12,6 @@ import { User } from 'src/app/_models/user';
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
-  user: User;
 
   constructor(private authService: AuthService, private router: Router,
               private alertify: AlertifyService, private fb: FormBuilder) { }
@@ -23,7 +22,7 @@ export class RegisterComponent implements OnInit {
 
   createRegisterForm() {
     this.registerForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
+      userName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]],
@@ -37,13 +36,16 @@ export class RegisterComponent implements OnInit {
 
   register() {
     if (this.registerForm.valid) {
-      this.user = Object.assign({}, this.registerForm.value);
-      this.authService.register(this.user).subscribe(() => {
+      const user: User = Object.assign({}, this.registerForm.value);
+      user.userName = user.userName.toLowerCase().trim();
+      user.email = user.email.toLowerCase().trim();
+
+      this.authService.register(user).subscribe(() => {
         this.alertify.success('Регистрацията е направена успешно');
       }, error => {
         this.alertify.error(error);
       }, () => {
-        this.authService.login(this.user).subscribe(() => {
+        this.authService.login(user).subscribe(() => {
           this.router.navigate(['']);
         });
       });

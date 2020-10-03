@@ -7,11 +7,11 @@ import { MessageService } from '../_services/message.service';
 import { AuthService } from '../_services/auth.service';
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.component.html',
-  styleUrls: ['./messages.component.css']
+  selector: 'app-user-messages',
+  templateUrl: './user-messages.component.html',
+  styleUrls: ['./user-messages.component.css']
 })
-export class MessagesComponent implements OnInit {
+export class UserMessagesComponent implements OnInit {
   messages: Message[];
   pagination: Pagination;
   messageContainer = 'Unread';

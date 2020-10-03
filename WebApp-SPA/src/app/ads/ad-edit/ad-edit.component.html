@@ -1,6 +1,6 @@
 <div class="container mt-4">
   <div class="row">
-    <div class="col-sm-4">
+    <div class="col">
         <h4>Редакция на обява</h4>
     </div>
   </div>
@@ -12,33 +12,9 @@
   <div class="row mb-4">
     <div class="col-sm-4"> <!-- left part -->
       <div class="card">
-        <img src="{{ad.photoUrl !== null ? ad.photoUrl : 'assets/img/default.jpg'}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
-        <!-- <div class="card-body">
-          <div>
-            <strong>Заглавие:</strong> {{ad.title}}
-          </div>
-          <div>
-            <strong>Цена: </strong>
-            <span *ngIf="ad.price == null;else show_price">
-              По договаряне
-            </span>
-            <ng-template #show_price>
-              {{ad.price === 0 ? 'Безплатно' : ((ad.price | number : '1.2-2') + ' лв.')}}
-            </ng-template>
-          </div>
-          <div>
-            <strong>Адрес:</strong> {{ad.location}}
-          </div>
-          <div>
-            <strong>Категория:</strong> {{ad.categoryName}}
-          </div>
-          <div>
-            <strong>Добавена:</strong> {{ad.dateAdded | date}}
-          </div>
-          <div *ngIf="ad?.isUsed != null">
-            <strong>Състояние: </strong> {{ ad?.isUsed ? 'използвано' : 'ново'}}
-          </div>
-        </div> -->
+        <div class="card-img-wrapper">
+          <img src="{{ad.photoUrl !== null ? ad.photoUrl : 'assets/img/default.jpg'}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="width:350px;height:350px;">
+        </div>
         <div class="card-body" *ngIf="!this.adTabs.tabs[2].active"> <!-- class="card-footer" -->
           <div class="btn-group d-flex">
             <button *ngIf="this.adTabs.tabs[0].active" [disabled]="!editForm?.dirty" form="editForm" class="btn btn-success btn-block">Редактирай</button>

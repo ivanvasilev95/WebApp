@@ -19,7 +19,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { AlertifyService } from './_services/alertify.service';
 import { AdListComponent } from './ads/ad-list/ad-list.component';
 import { FavoritesComponent } from './favorites/favorites.component';
-import { MessagesComponent } from './messages/messages.component';
+import { UserMessagesComponent } from './user-messages/user-messages.component';
 import { appRoutes } from './routes';
 import { AuthGuard } from './_guards/auth.guard';
 import { AdService } from './_services/ad.service';
@@ -78,7 +78,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       RegisterComponent,
       AdListComponent,
       FavoritesComponent,
-      MessagesComponent,
+      UserMessagesComponent,
       MyAdsComponent,
       UserAdsComponent,
       AdComponent,

@@ -46,6 +46,12 @@ export class AdMessagesComponent implements OnInit {
   }
 
   sendMessage() {
+    this.newMessage.content = this.newMessage.content.trim();
+    if (this.newMessage.content === '') {
+      this.alertify.error('Съобщението не може да бъде празно');
+      return;
+    }
+
     const messageLength = this.newMessage.content.length;
     if (isNaN(messageLength) || messageLength < 5) {
       this.alertify.error('Съобщението трябва да бъде поне 5 символа');

@@ -10,7 +10,7 @@ import { map, tap } from 'rxjs/operators';
 })
 export class MessageService {
   public static unreadMessagesCount: number;
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl + 'messages/';
 
   constructor(private http: HttpClient) {}
 
@@ -23,7 +23,7 @@ export class MessageService {
       params = params.append('pageSize', itemsPerPage.toString());
     }
 
-    return this.http.get<Message[]>(this.baseUrl + 'messages', {observe: 'response', params})
+    return this.http.get<Message[]>(this.baseUrl, {observe: 'response', params})
       .pipe(
         map(response => {
           const paginatedResult: PaginatedResult<Message[]> = new PaginatedResult<Message[]>();
@@ -37,23 +37,23 @@ export class MessageService {
   }
 
   getMessageThread(adId: number, recipientId: number) {
-    return this.http.get<Message[]>(this.baseUrl + 'messages/thread/' + adId + '/' + recipientId);
+    return this.http.get<Message[]>(this.baseUrl + 'thread/' + adId + '/' + recipientId);
   }
 
   sendMessage(message: Message) {
-    return this.http.post(this.baseUrl + 'messages', message);
+    return this.http.post(this.baseUrl, message);
   }
 
   deleteMessage(id: number) {
-    return this.http.post(this.baseUrl + 'messages/' + id, {});
+    return this.http.post(this.baseUrl + id, {});
   }
 
   markMessageAsRead(id: number) {
-    this.http.post(this.baseUrl + 'messages/' + id + '/read', {}).subscribe();
+    this.http.post(this.baseUrl + id + '/read', {}).subscribe();
   }
 
   getUnreadMessagesCount() {
-    return this.http.get(this.baseUrl + 'messages/user/unread')
+    return this.http.get(this.baseUrl + 'user/unread')
       .pipe(
         tap((count: number) => { MessageService.unreadMessagesCount = count; })
       );

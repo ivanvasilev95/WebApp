@@ -1,4 +1,4 @@
-<div class="container mt-3">
+<div class="container mt-4">
   <div>
     <h4>{{ad.title}}</h4>
   </div>
@@ -8,9 +8,11 @@
   <div class="row mb-4">
     <!-- left part -->
     <div class="col-sm-4">
-      <div class="card">
-        <img src="{{ad.photoUrl !== null ? ad.photoUrl : 'assets/img/default.jpg'}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="height:350px;">
-        <div class="card-body">
+      <div class="card pb-2">
+        <div class="card-img-wrapper">
+          <img src="{{ad.photoUrl !== null ? ad.photoUrl : 'assets/img/default.jpg'}}" alt="{{ad.id}}" class="card-img-top img-thumbnail" style="height:350px;">
+        </div>
+        <div class="card-body mt-2">
           <div>
             <strong>Цена: </strong>
             <span *ngIf="ad.price == null;else show_price">
@@ -26,18 +28,18 @@
           <div>
             <strong>Добавена:</strong> {{ad.dateAdded | date}}
           </div>
-          <div *ngIf="ad.isUsed!=null">
+          <div *ngIf="ad.isUsed !== null">
             <strong>Състояние: </strong> {{ ad?.isUsed ? 'използвано' : 'ново'}}
           </div>
-          <div class="mt-1" *ngIf="adLikesCount !== null">
+          <div class="mt-1" *ngIf="adLikesCount !== null && ad.isApproved">
             <i>Наблюдаващи обявата: {{adLikesCount}}</i>
           </div>
-          <div class="mt-2"> <!-- *ngIf="!userIsLoggedIn() || (userIsLoggedIn() && isNotLoggedInUserAd()) || (userIsLoggedIn() && authService.roleMatch(['Admin', 'Moderator']))" -->
+          <div class="mt-1"> <!-- *ngIf="!userIsLoggedIn() || userHasRights() || (userIsLoggedIn() && authService.roleMatch(['Admin', 'Moderator']))" -->
             <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
           </div>
         </div>
-        <div class="card-footer">
-          <div class="btn-group d-flex" *ngIf="userHasRights() && ad.isApproved">
+        <div class="card-footer" *ngIf="userHasRights() && ad.isApproved">
+          <div class="btn-group d-flex" >
               <button class="btn btn-primary w-100" [disabled]="!ad.isApproved" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
               <!-- <button class="btn btn-success w-100" [disabled]="!ad.isApproved" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button> -->
           </div>

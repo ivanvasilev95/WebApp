@@ -7,19 +7,19 @@ import { Category } from '../_models/category';
   providedIn: 'root'
 })
 export class CategoryService {
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl + 'categories/';
 
   constructor(private http: HttpClient) { }
 
   getCategories() {
-    return this.http.get<Category[]>(this.baseUrl + 'categories');
+    return this.http.get<Category[]>(this.baseUrl);
   }
 
   addCategory(category: any) {
-    return this.http.post(this.baseUrl + 'categories', category);
+    return this.http.post(this.baseUrl, category);
   }
 
   removeCategory(id: number) {
-    return this.http.delete(this.baseUrl + 'categories/' + id);
+    return this.http.delete(this.baseUrl + id);
   }
 }

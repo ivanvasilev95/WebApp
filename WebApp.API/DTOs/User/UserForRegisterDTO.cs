@@ -12,7 +12,7 @@ namespace WebApp.API.DTOs.User
         }
         
         [Required]
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         public string FullName { get; set; }

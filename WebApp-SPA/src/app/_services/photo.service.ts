@@ -6,15 +6,15 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class PhotoService {
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl + 'photos/';
 
   constructor(private http: HttpClient) { }
 
   setMainPhoto(id: number) {
-    return this.http.post(this.baseUrl + 'photos/' + id + '/setMain', {});
+    return this.http.post(this.baseUrl + id + '/setMain', {});
   }
 
   deletePhoto(id: number) {
-    return this.http.delete(this.baseUrl + 'photos/' + id);
+    return this.http.delete(this.baseUrl + id);
   }
 }

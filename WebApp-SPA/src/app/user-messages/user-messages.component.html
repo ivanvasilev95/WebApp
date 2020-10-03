@@ -13,10 +13,8 @@
       </button>
     </div>
   </div>
- 
-  <div class="text-center" *ngIf="messages?.length === 0">
-    <h5 style="margin-top: 50px;">Нямате съобщения</h5>
-  </div>
+
+  <p *ngIf="messages?.length === 0" class="text-center" style="margin-top: 50px;">Нямате съобщения</p>
   
   <div class="row" *ngIf="messages?.length > 0">
     <table class="table table-hover" style="cursor: pointer;border: 1px solid gainsboro;">
@@ -40,7 +38,7 @@
         <td>{{message.adTitle}}</td>
         <td *ngIf="!senderDeletedIt(message)" style="text-align: justify;">{{message.content}}</td>
         <td *ngIf="senderDeletedIt(message)" style="text-align: justify;"><i>[съобщението е премахнато]</i></td>
-        <td>{{message.messageSent | timeAgo}}</td>
+        <td>{{message.messageSent | date}}</td> <!-- message.messageSent | timeAgo -->
         <td>
           <button *ngIf="senderIsLoggedUser(message)" class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(message.id)">Изтрий</button>
         </td>

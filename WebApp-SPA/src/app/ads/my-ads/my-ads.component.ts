@@ -28,7 +28,7 @@ export class MyAdsComponent implements OnInit {
   deleteAd(adId: number) {
     if (confirm('Сигурни ли сте, че искате да изтриете тази обява?')) {
       this.adService.deleteAd(adId).subscribe(res => {
-        this.loadUserAds();
+        this.userAds.splice(this.userAds.findIndex(a => a.id === adId), 1);
         this.alertify.success('Обявата е премахната успешно');
       }, error => {
         this.alertify.error(error);

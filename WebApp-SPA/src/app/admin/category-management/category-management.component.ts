@@ -25,11 +25,6 @@ export class CategoryManagementComponent implements OnInit {
 
   addCategory() {
     const name = this.newCategoryName.trim();
-    if (name.length < 4 || name.length > 20) {
-      this.alertify.error('Невалидно име на категория');
-      return;
-    }
-
     this.categoryService.addCategory({name}).subscribe((category: Category) => {
       this.alertify.success('Категорията е добавена успешно');
       this.categories.push(category);

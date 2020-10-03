@@ -1,24 +1,24 @@
 <form [formGroup]="loginForm" (ngSubmit)="login()">
   <div class="form-group">
     <input type="text" 
-      [ngClass]="{'is-invalid': loginForm.get('username').errors 
-        && loginForm.get('username').touched}"
+      [ngClass]="{'is-invalid': loginForm.get('userName').errors 
+        && loginForm.get('userName').touched}"
       class="form-control" 
-      formControlName="username" 
+      formControlName="userName" 
       placeholder="Потребителско име">
     <div class="invalid-feedback" 
-      *ngIf="loginForm.get('username').hasError('required')
-        && loginForm.get('username').touched" style="text-align: left;">
+      *ngIf="loginForm.get('userName').hasError('required')
+        && loginForm.get('userName').touched" style="text-align: left;">
         Потребителското име е задължително
     </div>
     <div class="invalid-feedback"
-      *ngIf="loginForm.get('username').hasError('minlength')
-        && loginForm.get('username').touched" style="text-align: left;">
+      *ngIf="loginForm.get('userName').hasError('minlength')
+        && loginForm.get('userName').touched" style="text-align: left;">
         Потребителското име трябва да бъде поне 4 символа
     </div>
     <div class="invalid-feedback"
-      *ngIf="loginForm.get('username').hasError('maxlength')
-        && loginForm.get('username').touched" style="text-align: left;">
+      *ngIf="loginForm.get('userName').hasError('maxlength')
+        && loginForm.get('userName').touched" style="text-align: left;">
         Потребителското име не трябва да надвишава 10 символа
     </div>
   </div>

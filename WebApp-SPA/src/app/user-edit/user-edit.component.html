@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h4>Редакция на профил</h4>
+  <h4>Редакция на профила</h4>
   <hr>
   <div class="row">
     <div class="col-md-9 personal-info">
@@ -11,7 +11,7 @@
       </div>
       <form #editForm="ngForm" id="editForm" (ngSubmit)="updateUser()" style="padding-top:5px;">
         <div class="form-group">
-          <label for="username" class="col-lg-3 control-label">Потребителско име:</label>
+          <label for="userName" class="col-lg-3 control-label">Потребителско име:</label>
           <div class="col-lg-8">
             <input type="text" class="form-control" name="userName" [(ngModel)]="user.userName" disabled>
           </div>

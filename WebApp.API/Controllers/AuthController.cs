@@ -40,7 +40,10 @@ namespace WebApp.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
-            userForRegisterDTO.Email = userForRegisterDTO.Email.ToLower().Trim();
+            if (await _userManager.FindByNameAsync(userForRegisterDTO.UserName) != null) {
+                return BadRequest("Вече има регистриран потребител с това потребителско име");
+            }
+
             if (await _userManager.FindByEmailAsync(userForRegisterDTO.Email) != null) {
                 return BadRequest("Вече има регистриран потребител с този имейл адрес");
             }
@@ -62,7 +65,7 @@ namespace WebApp.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
         {
-            var user = await _userManager.FindByNameAsync(userForLoginDTO.Username);
+            var user = await _userManager.FindByNameAsync(userForLoginDTO.UserName);
 
             if (user == null)
                 return Unauthorized("Невалидено потребителско име или парола");

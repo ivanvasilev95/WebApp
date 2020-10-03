@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AdListComponent } from './ads/ad-list/ad-list.component';
 import { FavoritesComponent } from './favorites/favorites.component';
-import { MessagesComponent } from './messages/messages.component';
+import { UserMessagesComponent } from './user-messages/user-messages.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { MyAdsComponent } from './ads/my-ads/my-ads.component';
 import { AdDetailComponent } from './ads/ad-detail/ad-detail.component';
@@ -38,12 +38,12 @@ export const appRoutes: Routes = [
         canActivate: [AuthGuard],
         children: [
             { path: 'favorites', component: FavoritesComponent },
-            { path: 'messages', component: MessagesComponent,
+            { path: 'messages', component: UserMessagesComponent,
                 resolve: {messages: MessagesResolver} },
             { path: 'user/edit', component: UserEditComponent,
                 resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },
-            { path: 'user/ad/:id/edit', component: AdEditComponent,
+            { path: 'ads/:id/edit', component: AdEditComponent,
                 resolve: {ad: AdEditResolver} },
             { path: 'admin', component: AdminPanelComponent, data: {roles: ['Admin', 'Moderator']} }
         ]

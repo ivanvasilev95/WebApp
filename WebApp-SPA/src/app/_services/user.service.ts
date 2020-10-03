@@ -8,15 +8,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrl + 'users/';
 
   constructor(private http: HttpClient) {}
 
   getUser(id: number): Observable<User> {
-    return this.http.get<User>(this.baseUrl + 'users/' + id);
+    return this.http.get<User>(this.baseUrl + id);
   }
 
   updateUser(id: number, user: User) {
-    return this.http.put(this.baseUrl + 'users/' + id, user);
+    return this.http.put(this.baseUrl + id, user);
   }
 }

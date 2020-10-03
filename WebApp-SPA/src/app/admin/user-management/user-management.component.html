@@ -1,17 +1,21 @@
 <div *ngIf="users !== null && users?.length !== 0" class="row mt-2">
-  <table  class="table">
-    <tr>
-      <th style="width: 10%">ID</th>
-      <th style="width: 30%">Потребителско име</th>
-      <th style="width: 40%">Активни роли</th>
-      <th style="width: 20%"></th>
-    </tr>
-    <tr *ngFor="let user of users">
-      <td>{{user.id}}</td>
-      <td>{{user.userName}}</td>
-      <td>{{user.roles.join(', ')}}</td>
-      <td><button class="btn btn-info" (click)="editRolesModal(user)">Преглед на ролите</button></td>
-    </tr>
+  <div class="col">
+    <table  class="table">
+      <tr>
+        <th style="width: 10%">ID</th>
+        <th style="width: 30%">Потребителско име</th>
+        <th style="width: 40%">Активни роли</th>
+        <th style="width: 20%"></th>
+      </tr>
+      <tr *ngFor="let user of users">
+        <td>{{user.id}}</td>
+        <td>{{user.userName}}</td>
+        <td>{{user.roles.join(', ')}}</td>
+        <td><button class="btn btn-info" (click)="editRolesModal(user)">Преглед на ролите</button></td>
+      </tr>
   </table>
+  </div>
 </div>
-<p *ngIf="users === null || users?.length === 0" style="text-align: center; margin-top: 20px;">Няма намерени потребители.</p>
+<p *ngIf="users === null || users?.length === 0" style="text-align: center; margin-top: 20px;">
+  Няма намерени потребители.
+</p>

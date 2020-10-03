@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-body">
+  <div class="card-body" #scrollMe [scrollTop]="scrollMe.scrollHeight">
     <div *ngIf="messages?.length === 0">
       <i>Изпратете съобщение като използвате полето отдолу</i>
     </div>

@@ -10,14 +10,14 @@ import { MessageService } from './message.service';
   providedIn: 'root'
 })
 export class AuthService {
-  baseURL = environment.apiUrl + 'auth/';
+  baseUrl = environment.apiUrl + 'auth/';
   jwtHelper = new JwtHelperService();
   decodedToken: any;
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
 
   login(model: any) {
-    return this.http.post(this.baseURL + 'login', model)
+    return this.http.post(this.baseUrl + 'login', model)
       .pipe(
         map((response: any) => { // could be tap operator
           const user = response;
@@ -31,7 +31,7 @@ export class AuthService {
   }
 
   register(user: User) {
-    return this.http.post(this.baseURL + 'register', user);
+    return this.http.post(this.baseUrl + 'register', user);
   }
 
   loggedIn() {
