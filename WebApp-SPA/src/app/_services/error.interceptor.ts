@@ -17,10 +17,16 @@ export class ErrorInterceptor implements HttpInterceptor {
                     if (error.status === 401 || error.status === 404
                     || (error.status === 400 && !error.error.errors) || error.status === 500) {
                         if (typeof error.error === 'object') { // if not then it's string
-                            // return throwError('Грешка на сървъра');
-                            return throwError(error.statusText);
+                            if (error.error.constructor === Array) { // if it's an array object
+                                let errorData = '';
+                                error.error.forEach(err => {
+                                    errorData += err.description;
+                                });
+                                return throwError(errorData);
+                            }
+                            return throwError(error.statusText); // 'Грешка на сървъра'
                         }
-                        return throwError(error.error); // error message
+                        return throwError(error.error); // string error message
                     }
                     /*
                     // global exception error

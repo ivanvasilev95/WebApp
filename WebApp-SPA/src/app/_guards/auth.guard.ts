@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
     if (roles) {
       if (!this.authService.loggedIn()) {
         this.alertify.error('Нямате право на достъп до тази страница');
-        this.router.navigate(['']);
+        this.router.navigate(['/auth']);
         return false;
       }
       const match = this.authService.roleMatch(roles);
@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
     }
 
     this.alertify.error('Нямате право на достъп до тази страница');
-    this.router.navigate(['']);
+    this.router.navigate(['/auth']);
     return false;
   }
 }

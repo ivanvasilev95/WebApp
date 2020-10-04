@@ -28,6 +28,9 @@
     <div class="invalid-feedback" *ngIf="registerForm.get('fullName').hasError('minlength') && registerForm.get('fullName').touched" style="text-align: left;">
         Твоето име трябва да съдържа поне 2 символа
     </div>
+    <div class="invalid-feedback" *ngIf="registerForm.get('fullName').hasError('maxlength') && registerForm.get('fullName').touched" style="text-align: left;">
+      Твоето име не трябва да надвишава 15 символа
+  </div>
   </div>
 
   <div class="form-group">
