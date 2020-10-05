@@ -41,7 +41,7 @@ namespace WebApp.API.Controllers
                 AdId = adId
             };
 
-            _likesRepo.Add(like);
+            await _likesRepo.Add(like);
 
             if(await _likesRepo.SaveAll())
                 return Ok();

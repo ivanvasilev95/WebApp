@@ -6,7 +6,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Repositories
 {
-    public class LikesRepository : RepositoryBase, ILikesRepository
+    public class LikesRepository : BaseRepository<Like>, ILikesRepository
     {
         public LikesRepository(DataContext context) : base(context){ }
 

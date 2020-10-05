@@ -4,7 +4,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Interfaces
 {
-    public interface ICategoryRepository : IRepositoryBase
+    public interface ICategoryRepository : IBaseRepository<Category>
     {
         Task<Category> GetCategory(int id);
         Task<IEnumerable<Category>> GetCategories();

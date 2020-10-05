@@ -8,7 +8,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Repositories
 {
-    public class MessageRepository : RepositoryBase, IMessageRepository
+    public class MessageRepository : BaseRepository<Message>, IMessageRepository
     {
         public MessageRepository(DataContext context): base(context) { }
 

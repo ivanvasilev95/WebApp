@@ -5,7 +5,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Interfaces
 {
-    public interface IMessageRepository : IRepositoryBase
+    public interface IMessageRepository : IBaseRepository<Message>
     {
         Task<Message> GetMessage(int id);
         Task<PagedList<Message>> GetUserMessages(MessageParams messageParams);

@@ -86,7 +86,7 @@ namespace WebApp.API.Controllers
 
             var message = _mapper.Map<Message>(messageForCreationDTO);
 
-            _messageRepo.Add(message);
+            await _messageRepo.Add(message);
 
             if (await _messageRepo.SaveAll()) {
                 var messageToReturn = _mapper.Map<MessageToReturnDTO>(message);

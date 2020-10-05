@@ -2,23 +2,23 @@ using System.Threading.Tasks;
 
 namespace WebApp.API.Data.Repositories
 {
-    public abstract class RepositoryBase
+    public abstract class BaseRepository<T> where T: class
     {
         protected readonly DataContext _context;
 
-        public RepositoryBase(DataContext context)
+        public BaseRepository(DataContext context)
         {
             _context = context;
         }
 
-        public void Add(object entity) // make it async and maybe generic
+        public async Task Add(T entity)
         {
-            _context.Add(entity);
+            await _context.AddAsync<T>(entity);
         }
 
-        public void Delete(object entity)
+        public void Delete(T entity)
         {
-            _context.Remove(entity);
+            _context.Remove<T>(entity);
         }
 
         public async Task<bool> SaveAll()

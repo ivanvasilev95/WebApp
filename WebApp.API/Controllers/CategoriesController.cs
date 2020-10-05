@@ -50,7 +50,7 @@ namespace WebApp.API.Controllers
                 return BadRequest("Категорията вече съществува.");
             
             var categoryToCreate = _mapper.Map<Category>(categoryForCreationDTO);
-            _categoryRepo.Add(categoryToCreate);
+            await _categoryRepo.Add(categoryToCreate);
             await _categoryRepo.SaveAll();
 
             var categoryToReturn = _mapper.Map<CategoryToReturnDTO>(categoryToCreate);

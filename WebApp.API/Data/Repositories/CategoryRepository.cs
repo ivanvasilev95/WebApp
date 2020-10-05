@@ -7,7 +7,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Repositories
 {
-    public class CategoryRepository : RepositoryBase, ICategoryRepository
+    public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
     {
         public CategoryRepository(DataContext context) : base(context) {}
 

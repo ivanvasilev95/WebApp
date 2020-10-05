@@ -47,7 +47,7 @@ namespace WebApp.API.Controllers
         public async Task<IActionResult> CreateAd(AdForCreateDTO adForCreateDTO)
         {
             var adToCreate = _mapper.Map<Ad>(adForCreateDTO);
-            _adsRepo.Add(adToCreate);
+            await _adsRepo.Add(adToCreate);
             await _adsRepo.SaveAll();
 
             var adToReturn = _mapper.Map<AdForDetailedDTO>(await _adsRepo.GetAd(adToCreate.Id));

@@ -8,7 +8,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Repositories
 {
-    public class AdsRepository : RepositoryBase, IAdsRepository
+    public class AdsRepository : BaseRepository<Ad>, IAdsRepository
     {
         public AdsRepository(DataContext context) : base(context) { }
 
