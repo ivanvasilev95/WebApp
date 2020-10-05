@@ -35,7 +35,7 @@ namespace WebApp.API.Controllers
         [HttpGet("thread")]
         public async Task<IActionResult> GetMessageThread([FromQuery]int adId, [FromQuery]int recipientId)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(this.User.GetId());
             var messageFromRepo = await _messageRepo.GetMessageThread(userId, recipientId, adId);
             var messageThread = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messageFromRepo);
 
@@ -55,7 +55,7 @@ namespace WebApp.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserMessages([FromQuery]MessageParams messageParams)
         {
-            messageParams.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            messageParams.UserId = int.Parse(this.User.GetId());
             
             var messagesFromRepo = await _messageRepo.GetUserMessages(messageParams);
             var messages = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messagesFromRepo);
@@ -71,7 +71,7 @@ namespace WebApp.API.Controllers
         {
             var sender = await _userRepo.GetUser(messageForCreationDTO.SenderId, false);
             
-            if (sender.Id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            if (sender.Id != int.Parse(this.User.GetId()))
                 return Unauthorized();
 
             var ad = await _adsRepo.GetAd(messageForCreationDTO.AdId);
@@ -99,7 +99,7 @@ namespace WebApp.API.Controllers
         [HttpPost("{id}")]
         public async Task<IActionResult> DeleteMessage(int id)
         { 
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(this.User.GetId());
 
             var messageFromRepo = await _messageRepo.GetMessage(id);
             if (messageFromRepo == null) {
@@ -124,7 +124,7 @@ namespace WebApp.API.Controllers
         [HttpPost("{id}/read")]
         public async Task<IActionResult> MarkMessageAsRead(int id)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(this.User.GetId());
             var message = await _messageRepo.GetMessage(id);
 
             if(message.RecipientId != userId)
@@ -141,7 +141,7 @@ namespace WebApp.API.Controllers
         [HttpGet("user/unread")]
         public async Task<IActionResult> GetUnreadMessagesCount()
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(this.User.GetId());
             int count = await _messageRepo.GetUnreadMessagesCount(userId);
             
             return Ok(count);

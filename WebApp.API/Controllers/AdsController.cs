@@ -82,7 +82,7 @@ namespace WebApp.API.Controllers
         [HttpGet("personal")]
         public async Task<IActionResult> GetUserAds()
         {
-            int userId = int.Parse(this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(this.User.GetId());
             var ads = await _adsRepo.GetUserAds(userId);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(ads);
 
@@ -92,7 +92,7 @@ namespace WebApp.API.Controllers
         [HttpGet("liked")]
         public async Task<IActionResult> GetUserLikedAds()
         {
-            int userId = int.Parse(this.User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(this.User.GetId());
             var userLikedAds = await _adsRepo.GetUserLikedAds(userId);
             var adsToReturn = _mapper.Map<IEnumerable<AdForListDTO>>(userLikedAds);
 

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
+using WebApp.API.Extensions;
 using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
@@ -22,7 +23,7 @@ namespace WebApp.API.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> LikeAd([FromQuery]int adId)
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(this.User.GetId());
             
             var like = await _likesRepo.GetLike(userId, adId);
             if (like != null) {
@@ -52,7 +53,7 @@ namespace WebApp.API.Controllers
         [HttpDelete("remove")]
         public async Task<ActionResult<Like>> RemoveAdFromLiked([FromQuery]int adId) 
         {
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int userId = int.Parse(this.User.GetId());
                 
             var likeToRemove = await _likesRepo.GetLike(userId, adId);
             if(likeToRemove == null)

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.User;
+using WebApp.API.Extensions;
 
 namespace WebApp.API.Controllers
 {
@@ -42,12 +43,12 @@ namespace WebApp.API.Controllers
             return Ok(userToReturn);
         }
 
-        private bool IsUserEligible(int userId){
-            if (User.Identity.IsAuthenticated) {
-                var loggedUserRoles = ((ClaimsIdentity)User.Identity).Claims
+        private bool IsUserEligible(int userId) {
+            if (this.User.Identity.IsAuthenticated) {
+                var loggedInUserRoles = ((ClaimsIdentity)this.User.Identity).Claims
                     .Where(c => c.Type == ClaimTypes.Role)
                     .Select(c => c.Value);
-                return (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == userId || loggedUserRoles.Contains("Admin") || loggedUserRoles.Contains("Moderator"));
+                return (int.Parse(this.User.GetId()) == userId || loggedInUserRoles.Contains("Admin") || loggedInUserRoles.Contains("Moderator"));
             }
             return false;
         }
@@ -55,7 +56,7 @@ namespace WebApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)
         {
-            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            if (id != int.Parse(this.User.GetId()))
                 return Unauthorized();
 
             // userForUpdateDTO.Email = userForUpdateDTO.Email?.ToLower().Trim();
@@ -74,14 +75,14 @@ namespace WebApp.API.Controllers
         // user other than the main admin (with id = 1) must provide valid email address
         private async Task ValidateEmail(string email, int userId)
         {
-            var loggedUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var loggedInUserId = int.Parse(this.User.GetId());
 
             // is not admin and email filed is empty
-            if (string.IsNullOrWhiteSpace(email) && loggedUserId != 1)
+            if (string.IsNullOrWhiteSpace(email) && loggedInUserId != 1)
                 throw new Exception("Полето имейл не може да бъде празно");
 
             // logged user is admin and email field is not empty or is not admin
-            if ((loggedUserId == 1 && !string.IsNullOrWhiteSpace(email)) || loggedUserId != 1) {
+            if ((loggedInUserId == 1 && !string.IsNullOrWhiteSpace(email)) || loggedInUserId != 1) {
                 if (!IsValidEmailAddress(email)) {
                     throw new Exception("Имейлът адресът не е валиден");
                 }

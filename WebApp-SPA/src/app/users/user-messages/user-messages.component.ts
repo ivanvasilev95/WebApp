@@ -76,7 +76,7 @@ export class UserMessagesComponent implements OnInit {
     return message.senderDeleted && message.recipientId === +this.authService.decodedToken.nameid;
   }
 
-  senderIsLoggedUser(message: Message) {
+  senderIsLoggedInUser(message: Message) {
     return message.senderId === +this.authService.decodedToken.nameid;
   }
 
