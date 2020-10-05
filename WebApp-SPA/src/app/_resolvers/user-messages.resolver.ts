@@ -7,7 +7,7 @@ import { Message } from '../_models/message';
 import { MessageService } from '../_services/message.service';
 
 @Injectable()
-export class MessagesResolver implements Resolve<Message[]> {
+export class UserMessagesResolver implements Resolve<Message[]> {
     pageNumber = 1;
     pageSize = 5;
     messageContainer = 'Unread';

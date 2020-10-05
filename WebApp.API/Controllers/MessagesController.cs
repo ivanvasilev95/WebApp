@@ -32,8 +32,8 @@ namespace WebApp.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("thread/{adId}/{recipientId}")]
-        public async Task<IActionResult> GetMessageThread(int adId, int recipientId)
+        [HttpGet("thread")]
+        public async Task<IActionResult> GetMessageThread([FromQuery]int adId, [FromQuery]int recipientId)
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var messageFromRepo = await _messageRepo.GetMessageThread(userId, recipientId, adId);

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import { UserEditComponent } from '../user-edit/user-edit.component';
+import { UserEditComponent } from '../users/user-edit/user-edit.component';
 import { CanDeactivate } from '@angular/router';
 
 @Injectable()

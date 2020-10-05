@@ -18,21 +18,21 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { AlertifyService } from './_services/alertify.service';
 import { AdListComponent } from './ads/ad-list/ad-list.component';
-import { FavoritesComponent } from './favorites/favorites.component';
-import { UserMessagesComponent } from './user-messages/user-messages.component';
+import { UserFavoritesComponent } from './users/user-favorites/user-favorites.component';
+import { UserMessagesComponent } from './users/user-messages/user-messages.component';
 import { appRoutes } from './routes';
 import { AuthGuard } from './_guards/auth.guard';
 import { AdService } from './_services/ad.service';
-import { MyAdsComponent } from './ads/my-ads/my-ads.component';
+import { MyAdsComponent } from './users/my-ads/my-ads.component';
 import { AdComponent } from './ads/ad/ad.component';
 import { AdDetailComponent } from './ads/ad-detail/ad-detail.component';
 import { AdDetailResolver } from './_resolvers/ad-detail.resolver';
 import { AdListResolver } from './_resolvers/ad-list.resolver';
-import { UserEditComponent } from './user-edit/user-edit.component';
+import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { UserEditResolver } from './_resolvers/user-edit.resolver';
-import { MessagesResolver } from './_resolvers/messages.resolver';
+import { UserMessagesResolver } from './_resolvers/user-messages.resolver';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
-import { UserAdsComponent } from './ads/user-ads/user-ads.component';
+import { UserAdsComponent } from './users/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import { AdEditResolver } from './_resolvers/ad-edit.resolver';
 import { TimeAgoPipe } from 'time-ago-pipe';
@@ -58,6 +58,7 @@ import { CategoryService } from './_services/category.service';
 import { PhotoService } from './_services/photo.service';
 import { MessageService } from './_services/message.service';
 import { AuthPanelComponent } from './auth/auth-panel/auth-panel.component';
+import { LikeService } from './_services/like.service';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -77,7 +78,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       HomeComponent,
       RegisterComponent,
       AdListComponent,
-      FavoritesComponent,
+      UserFavoritesComponent,
       UserMessagesComponent,
       MyAdsComponent,
       UserAdsComponent,
@@ -128,11 +129,12 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       AuthGuard,
       NewAdGuard,
       AdService,
+      LikeService,
       AdDetailResolver,
       AdListResolver,
       AdEditResolver,
       UserEditResolver,
-      MessagesResolver,
+      UserMessagesResolver,
       PreventUnsavedChanges,
       UserService,
       MessageService,

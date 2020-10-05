@@ -26,16 +26,16 @@ export class AdMessagesComponent implements OnInit {
   }
 
   loadMessages() {
-    const loggedUserId = +this.authService.decodedToken.nameid;
     this.messageService.getMessageThread(this.ad.id, this.recipientId)
       .pipe(
         tap(messages => {
-            for (const message of messages) {
-              if (message.isRead === false && message.recipientId === loggedUserId /* && message.senderDeleted === false */) {
-                this.messageService.markMessageAsRead(message.id);
-                MessageService.unreadMessagesCount--;
-              }
+          const loggedUserId = +this.authService.decodedToken.nameid;
+          for (const message of messages) {
+            if (message.isRead === false && message.recipientId === loggedUserId /* && message.senderDeleted === false */) {
+              this.messageService.markMessageAsRead(message.id).subscribe();
+              MessageService.unreadMessagesCount--;
             }
+          }
         })
       )
       .subscribe(result => {

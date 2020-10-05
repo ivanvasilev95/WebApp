@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
+import { LikeService } from 'src/app/_services/like.service';
 
 @Component({
   selector: 'app-ad-detail',
@@ -20,7 +21,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   recipientId: number;
   adLikesCount: number = null;
 
-  constructor(private adService: AdService, public authService: AuthService,
+  constructor(private likeService: LikeService, public authService: AuthService,
               private alertify: AlertifyService, private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -71,7 +72,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   }
 
   getAdLikesCount() {
-    this.adService.getAdLikesCount(this.ad.id).subscribe((count: number) => {
+    this.likeService.getAdLikesCount(this.ad.id).subscribe((count: number) => {
       this.adLikesCount = count;
     });
   }
@@ -90,7 +91,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   }
 
   addToLikedAds(adId: number) {
-    this.adService.addAdToLiked(adId).subscribe(data => {
+    this.likeService.addAdToLiked(adId).subscribe(data => {
       this.alertify.success('Вие добавихте ' + this.ad.title + ' в Наблюдавани');
     }, error => {
       this.alertify.error(error);

@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { User } from '../_models/user';
 import { NgForm } from '@angular/forms';
-import { AlertifyService } from '../_services/alertify.service';
-import { AuthService } from '../_services/auth.service';
-import { UserService } from '../_services/user.service';
+import { User } from 'src/app/_models/user';
+import { AlertifyService } from 'src/app/_services/alertify.service';
+import { AuthService } from 'src/app/_services/auth.service';
+import { UserService } from 'src/app/_services/user.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -31,13 +31,7 @@ export class UserEditComponent implements OnInit {
   }
 
   updateUser() {
-    if (this.user.fullName.trim() === '') { this.user.fullName = null; }
-    if (this.user.address.trim() === '') { this.user.address = null; }
-    if (this.user.email.trim() === '') {
-      this.user.email = null;
-    } else  if (this.user.email !== null && this.user.email !== undefined) {
-      this.user.email = this.user.email.toLowerCase().trim();
-    }
+    this.checkUserProperties();
 
     this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(next => {
       this.alertify.success('Профилът е редактиран успешно');
@@ -45,5 +39,15 @@ export class UserEditComponent implements OnInit {
     }, error => {
       this.alertify.error(error);
     });
+  }
+
+  checkUserProperties() {
+    if (this.user.fullName.trim() === '') { this.user.fullName = null; }
+    if (this.user.address.trim() === '') { this.user.address = null; }
+    if (this.user.email.trim() === '') {
+      this.user.email = null;
+    } else  if (this.user.email !== null && this.user.email !== undefined) {
+      this.user.email = this.user.email.toLowerCase().trim();
+    }
   }
 }

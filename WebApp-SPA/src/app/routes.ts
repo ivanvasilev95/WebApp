@@ -1,20 +1,20 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AdListComponent } from './ads/ad-list/ad-list.component';
-import { FavoritesComponent } from './favorites/favorites.component';
-import { UserMessagesComponent } from './user-messages/user-messages.component';
+import { UserFavoritesComponent } from './users/user-favorites/user-favorites.component';
+import { UserMessagesComponent } from './users/user-messages/user-messages.component';
 import { AuthGuard } from './_guards/auth.guard';
-import { MyAdsComponent } from './ads/my-ads/my-ads.component';
+import { MyAdsComponent } from './users/my-ads/my-ads.component';
 import { AdDetailComponent } from './ads/ad-detail/ad-detail.component';
 import { AdDetailResolver } from './_resolvers/ad-detail.resolver';
 import { AdListResolver } from './_resolvers/ad-list.resolver';
 import { UserEditResolver } from './_resolvers/user-edit.resolver';
-import { UserEditComponent } from './user-edit/user-edit.component';
+import { UserEditComponent } from './users/user-edit/user-edit.component';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes.guard';
-import { UserAdsComponent } from './ads/user-ads/user-ads.component';
+import { UserAdsComponent } from './users/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import { NewAdComponent } from './ads/ad-add/ad-add.component';
-import { MessagesResolver } from './_resolvers/messages.resolver';
+import { UserMessagesResolver } from './_resolvers/user-messages.resolver';
 import { NewAdGuard } from './_guards/new-ad.guard';
 import { AboutComponent } from './about/about.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
@@ -37,9 +37,9 @@ export const appRoutes: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [AuthGuard],
         children: [
-            { path: 'favorites', component: FavoritesComponent },
+            { path: 'favorites', component: UserFavoritesComponent },
             { path: 'messages', component: UserMessagesComponent,
-                resolve: {messages: MessagesResolver} },
+                resolve: {messages: UserMessagesResolver} },
             { path: 'user/edit', component: UserEditComponent,
                 resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },

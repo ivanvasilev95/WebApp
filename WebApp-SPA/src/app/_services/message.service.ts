@@ -15,13 +15,7 @@ export class MessageService {
   constructor(private http: HttpClient) {}
 
   getMessages(page?: number, itemsPerPage?: number, messageContainer?: string) {
-    let params = new HttpParams();
-    params = params.append('MessageContainer', messageContainer);
-
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page.toString());
-      params = params.append('pageSize', itemsPerPage.toString());
-    }
+    const params = this.addHttpParamsForMessages(page, itemsPerPage, messageContainer)
 
     return this.http.get<Message[]>(this.baseUrl, {observe: 'response', params})
       .pipe(
@@ -36,8 +30,24 @@ export class MessageService {
       );
   }
 
+  private addHttpParamsForMessages(page?: number, itemsPerPage?: number, messageContainer?: string): HttpParams {
+    let params = new HttpParams();
+    params = params.append('MessageContainer', messageContainer);
+
+    if (page != null && itemsPerPage != null) {
+      params = params.append('pageNumber', page.toString());
+      params = params.append('pageSize', itemsPerPage.toString());
+    }
+
+    return params;
+  }
+
   getMessageThread(adId: number, recipientId: number) {
-    return this.http.get<Message[]>(this.baseUrl + 'thread/' + adId + '/' + recipientId);
+    let params = new HttpParams();
+    params = params.append('adId', adId.toString());
+    params = params.append('recipientId', recipientId.toString());
+
+    return this.http.get<Message[]>(this.baseUrl + 'thread', {params});
   }
 
   sendMessage(message: Message) {
@@ -49,7 +59,7 @@ export class MessageService {
   }
 
   markMessageAsRead(id: number) {
-    this.http.post(this.baseUrl + id + '/read', {}).subscribe();
+    return this.http.post(this.baseUrl + id + '/read', {});
   }
 
   getUnreadMessagesCount() {

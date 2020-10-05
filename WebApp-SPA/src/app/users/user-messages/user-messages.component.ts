@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Message } from '../_models/message';
 import { ActivatedRoute } from '@angular/router';
-import { AlertifyService } from '../_services/alertify.service';
-import { Pagination, PaginatedResult } from '../_models/pagination';
-import { MessageService } from '../_services/message.service';
-import { AuthService } from '../_services/auth.service';
+import { Message } from 'src/app/_models/message';
+import { PaginatedResult, Pagination } from 'src/app/_models/pagination';
+import { AlertifyService } from 'src/app/_services/alertify.service';
+import { AuthService } from 'src/app/_services/auth.service';
+import { MessageService } from 'src/app/_services/message.service';
 
 @Component({
   selector: 'app-user-messages',
@@ -26,26 +26,6 @@ export class UserMessagesComponent implements OnInit {
       this.messages = data.messages.result;
       this.pagination = data.messages.pagination;
     });
-  }
-
-  isNotRead(message: Message) {
-    return !message.isRead && message.senderId !== +this.authService.decodedToken.nameid;
-  }
-
-  senderDeletedIt(message: Message) {
-    return message.senderDeleted && message.recipientId === +this.authService.decodedToken.nameid;
-  }
-
-  senderIsLoggedUser(message: Message) {
-    return message.senderId === +this.authService.decodedToken.nameid;
-  }
-
-  recipientOfTheAd(message: Message): number {
-    if (message.senderId === +this.authService.decodedToken.nameid) {
-      return message.recipientId;
-    } else {
-      return message.senderId;
-    }
   }
 
   loadMessages(messageFilter: string = null, returnToFirstPage: boolean = false) {
@@ -86,5 +66,25 @@ export class UserMessagesComponent implements OnInit {
         this.alertify.error(error);
       });
     });
+  }
+
+  isNotRead(message: Message) {
+    return !message.isRead && message.senderId !== +this.authService.decodedToken.nameid;
+  }
+
+  senderDeletedIt(message: Message) {
+    return message.senderDeleted && message.recipientId === +this.authService.decodedToken.nameid;
+  }
+
+  senderIsLoggedUser(message: Message) {
+    return message.senderId === +this.authService.decodedToken.nameid;
+  }
+
+  recipientOfTheMessage(message: Message): number {
+    if (message.senderId === +this.authService.decodedToken.nameid) {
+      return message.recipientId;
+    } else {
+      return message.senderId;
+    }
   }
 }
