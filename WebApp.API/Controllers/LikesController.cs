@@ -11,21 +11,21 @@ namespace WebApp.API.Controllers
     {
         private readonly IAdsRepository _adsRepo;
         private readonly ILikesRepository _likesRepo;
-        
+        private readonly int _loggedInUserId;
+
         public LikesController(
             IAdsRepository adsRepo, 
             ILikesRepository likesRepo)
         {
             _adsRepo = adsRepo;
             _likesRepo = likesRepo;
+            _loggedInUserId = int.Parse(this.User.GetId());
         }
         
         [HttpPost("add")]
         public async Task<IActionResult> LikeAd([FromQuery]int adId)
-        {
-            int userId = int.Parse(this.User.GetId());
-            
-            var like = await _likesRepo.GetLike(userId, adId);
+        {   
+            var like = await _likesRepo.GetLike(_loggedInUserId, adId);
             if (like != null) {
                 return BadRequest("Обявата вече е добавена в Наблюдавани");
             }
@@ -34,11 +34,11 @@ namespace WebApp.API.Controllers
             if(ad == null)
                 return NotFound("Обявата не е намерена");
 
-            if(ad.UserId == userId)
+            if(ad.UserId == _loggedInUserId)
                 return BadRequest("Не може да добавяте собствени обяви в Наблюдавани");
 
             like = new Like {
-                UserId = userId,
+                UserId = _loggedInUserId,
                 AdId = adId
             };
 
@@ -52,10 +52,8 @@ namespace WebApp.API.Controllers
 
         [HttpDelete("remove")]
         public async Task<ActionResult<Like>> RemoveAdFromLiked([FromQuery]int adId) 
-        {
-            int userId = int.Parse(this.User.GetId());
-                
-            var likeToRemove = await _likesRepo.GetLike(userId, adId);
+        {       
+            var likeToRemove = await _likesRepo.GetLike(_loggedInUserId, adId);
             if(likeToRemove == null)
                 return NotFound();
 

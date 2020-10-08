@@ -15,8 +15,8 @@ using WebApp.API.DTOs.User;
 
 namespace WebApp.API.Controllers
 {
-    [AllowAnonymous]
     [ApiController]
+    [AllowAnonymous]
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {

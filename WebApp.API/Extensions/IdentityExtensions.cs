@@ -7,8 +7,8 @@ namespace WebApp.API.Extensions
     {
         public static string GetId(this ClaimsPrincipal user)
             => user
-                .Claims
-                .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
+                ?.Claims
+                ?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
                 ?.Value;
         
         public static string GetUserName(this ClaimsPrincipal user)

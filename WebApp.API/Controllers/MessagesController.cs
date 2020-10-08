@@ -18,7 +18,7 @@ namespace WebApp.API.Controllers
         private readonly IMessageRepository _messageRepo;
         private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
-        
+        private readonly int _loggedInUserId;
 
         public MessagesController(
             IAdsRepository adsRepo, 
@@ -30,13 +30,13 @@ namespace WebApp.API.Controllers
             _messageRepo = messageRepo;
             _userRepo = userRepo;
             _mapper = mapper;
+            _loggedInUserId = int.Parse(this.User.GetId());
         }
 
         [HttpGet("thread")]
         public async Task<IActionResult> GetMessageThread([FromQuery]int adId, [FromQuery]int recipientId)
         {
-            int userId = int.Parse(this.User.GetId());
-            var messageFromRepo = await _messageRepo.GetMessageThread(userId, recipientId, adId);
+            var messageFromRepo = await _messageRepo.GetMessageThread(_loggedInUserId, recipientId, adId);
             var messageThread = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messageFromRepo);
 
             return Ok(messageThread);
@@ -55,7 +55,7 @@ namespace WebApp.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserMessages([FromQuery]MessageParams messageParams)
         {
-            messageParams.UserId = int.Parse(this.User.GetId());
+            messageParams.UserId = _loggedInUserId;
             
             var messagesFromRepo = await _messageRepo.GetUserMessages(messageParams);
             var messages = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messagesFromRepo);
@@ -99,17 +99,15 @@ namespace WebApp.API.Controllers
         [HttpPost("{id}")]
         public async Task<IActionResult> DeleteMessage(int id)
         { 
-            int userId = int.Parse(this.User.GetId());
-
             var messageFromRepo = await _messageRepo.GetMessage(id);
             if (messageFromRepo == null) {
                 return BadRequest("Съобщението не е намерено");
             }
 
-            if (messageFromRepo.SenderId == userId)
+            if (messageFromRepo.SenderId == _loggedInUserId)
                 messageFromRepo.SenderDeleted = true;
 
-            if (messageFromRepo.RecipientId == userId)
+            if (messageFromRepo.RecipientId == _loggedInUserId)
                 messageFromRepo.RecipientDeleted = true;
 
             // if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
@@ -124,10 +122,9 @@ namespace WebApp.API.Controllers
         [HttpPost("{id}/read")]
         public async Task<IActionResult> MarkMessageAsRead(int id)
         {
-            int userId = int.Parse(this.User.GetId());
             var message = await _messageRepo.GetMessage(id);
 
-            if(message.RecipientId != userId)
+            if(message.RecipientId != _loggedInUserId)
                 return Unauthorized();
             
             message.IsRead = true;
@@ -141,8 +138,7 @@ namespace WebApp.API.Controllers
         [HttpGet("user/unread")]
         public async Task<IActionResult> GetUnreadMessagesCount()
         {
-            int userId = int.Parse(this.User.GetId());
-            int count = await _messageRepo.GetUnreadMessagesCount(userId);
+            int count = await _messageRepo.GetUnreadMessagesCount(_loggedInUserId);
             
             return Ok(count);
         }
