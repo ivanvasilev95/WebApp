@@ -15,6 +15,10 @@ export class CategoryManagementComponent implements OnInit {
   constructor(private categoryService: CategoryService, private alertify: AlertifyService) { }
 
   ngOnInit() {
+    this.getCategories();
+  }
+
+  getCategories() {
     this.categoryService.getCategories().subscribe((categories: Category[]) => {
       this.categories = categories;
     },
@@ -37,7 +41,7 @@ export class CategoryManagementComponent implements OnInit {
 
   removeCategory(categoryId: number) {
     this.alertify.confirm('Сигурни ли сте, че искате да изтриете тази категория?', () => {
-      this.categoryService.removeCategory(categoryId).subscribe(res => {
+      this.categoryService.removeCategory(categoryId).subscribe(() => {
         this.categories.splice(this.categories.findIndex(c => c.id === categoryId), 1);
         this.alertify.success('Категорията е премахната успешно');
       },

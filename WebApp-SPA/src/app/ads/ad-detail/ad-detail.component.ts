@@ -72,7 +72,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   }
 
   getAdLikesCount() {
-    this.likeService.getAdLikesCount(this.ad.id).subscribe((count: number) => {
+    this.likeService.getAdLikesCount(this.ad.id).subscribe(count => {
       this.adLikesCount = count;
     });
   }
@@ -91,7 +91,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   }
 
   addToLikedAds(adId: number) {
-    this.likeService.addAdToLiked(adId).subscribe(data => {
+    this.likeService.addAdToLiked(adId).subscribe(() => {
       this.alertify.success('Вие добавихте ' + this.ad.title + ' в Наблюдавани');
     }, error => {
       this.alertify.error(error);

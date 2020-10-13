@@ -15,7 +15,7 @@ export class MessageService {
   constructor(private http: HttpClient) {}
 
   getMessages(page?: number, itemsPerPage?: number, messageContainer?: string) {
-    const params = this.addHttpParamsForMessages(page, itemsPerPage, messageContainer)
+    const params = this.addHttpParamsForMessages(page, itemsPerPage, messageContainer);
 
     return this.http.get<Message[]>(this.baseUrl, {observe: 'response', params})
       .pipe(
@@ -63,7 +63,7 @@ export class MessageService {
   }
 
   getUnreadMessagesCount() {
-    return this.http.get(this.baseUrl + 'user/unread')
+    return this.http.get(this.baseUrl + 'unread/count')
       .pipe(
         tap((count: number) => { MessageService.unreadMessagesCount = count; })
       );

@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using WebApp.API.Data;
 using WebApp.API.Data.Interfaces;
-using WebApp.API.Data.Repositories;
+using WebApp.API.Data.Services;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
 
@@ -73,12 +73,14 @@ namespace WebApp.API.Extensions
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
             => services
-                .AddScoped<IAdsRepository, AdsRepository>()
-                .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<ILikesRepository, LikesRepository>()
-                .AddScoped<IMessageRepository, MessageRepository>()
-                .AddScoped<IPhotoRepository, PhotoRepository>()
-                .AddScoped<ICategoryRepository, CategoryRepository>()
+                .AddTransient<IAuthService, AuthService>()
+                .AddTransient<IAdminService, AdminService>()
+                .AddTransient<ICategoryService, CategoryService>()
+                .AddTransient<IUserService, UserService>()
+                .AddTransient<ILikeService, LikeService>()
+                .AddTransient<IPhotoService, PhotoService>()
+                .AddTransient<IMessageService, MessageService>()
+                .AddTransient<IAdService, AdService>()
                 .AddScoped<LogUserActivity>();
                 // .AddTransient<Seed>();
 

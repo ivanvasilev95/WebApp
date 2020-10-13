@@ -64,8 +64,8 @@ export class AdService {
     return this.http.put(this.baseUrl + adId, ad);
   }
 
-  createAd(ad: Ad) {
-    return this.http.post(this.baseUrl, ad);
+  createAd(ad: Ad): Observable<number> {
+    return this.http.post<number>(this.baseUrl, ad);
   }
 
   getUserLikedAds() {

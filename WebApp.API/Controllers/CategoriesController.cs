@@ -1,79 +1,62 @@
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.Category;
 using WebApp.API.Models;
-using AutoMapper;
 
 namespace WebApp.API.Controllers
 {
     public class CategoriesController : ApiController
     {
-        private readonly ICategoryRepository _categoryRepo;
-        private readonly IMapper _mapper;
+        private readonly ICategoryService _categories;
 
-        public CategoriesController(ICategoryRepository categoryRepo, IMapper mapper)
+        public CategoriesController(ICategoryService categories)
         {
-            _categoryRepo = categoryRepo;
-            _mapper = mapper;
+            _categories = categories;
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> All()
+        {
+            var categories = await _categories.AllAsync();
+
+            return Ok(categories);
         }
 
         [HttpGet("{id}", Name = "GetCategory")]
         [AllowAnonymous]
         public async Task<IActionResult> GetCategory(int id)
         {
-            var category = await _categoryRepo.GetCategory(id);
-            if (category == null)
-                return NotFound("Категорията не е намерена");
+            var result = await _categories.ByIdAsync(id);
+            if (result.Failure)
+                return NotFound(result.Error);
      
-            return Ok(_mapper.Map<Category, CategoryToReturnDTO>(category));
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetCategories()
-        {
-            var categories = await _categoryRepo.GetCategories();
-            
-            return Ok(_mapper.Map<IEnumerable<Category>, IEnumerable<CategoryToReturnDTO>>(categories));
+            return Ok(result.Data);
         }
 
         [HttpPost]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> AddCategory(CategoryForCreationDTO categoryForCreationDTO)
+        public async Task<IActionResult> Create(CategoryForCreationDTO categoryForCreationDTO)
         {
-            categoryForCreationDTO.Name = categoryForCreationDTO.Name.Trim();
+            var result = await _categories.CreateAsync(categoryForCreationDTO);
+            if (result.Failure)
+                return BadRequest(result.Error);
 
-            if (await _categoryRepo.CheckIfCategoryExists(categoryForCreationDTO.Name))
-                return BadRequest("Категорията вече съществува.");
-            
-            var categoryToCreate = _mapper.Map<Category>(categoryForCreationDTO);
-            await _categoryRepo.Add(categoryToCreate);
-            await _categoryRepo.SaveAll();
-
-            var categoryToReturn = _mapper.Map<CategoryToReturnDTO>(categoryToCreate);
-
-            return CreatedAtRoute("GetCategory", new {controller = "Categories", id = categoryToCreate.Id}, categoryToReturn);
+            // test it
+            return CreatedAtRoute("GetCategory", new {controller = "Categories", id = result.Data.Id}, result.Data);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<ActionResult<Category>> RemoveCategory(int id) 
+        public async Task<ActionResult<Category>> Delete(int id) 
         {
-            var categoryToDelete = await _categoryRepo.GetCategory(id);
-            if (categoryToDelete == null)
-                return NotFound("Категорията не е намерена");
-            
-            if (categoryToDelete.Ads.Count > 0) {
-                return BadRequest("Има налични обяви по тази категория");
-            }
+            var result = await _categories.DeleteAsync(id);
+            if (result.Failure)
+                return BadRequest(result.Error);
 
-            _categoryRepo.Delete(categoryToDelete);
-            await _categoryRepo.SaveAll();
-
-            return categoryToDelete;
+            return Ok();
         }
     }
 }

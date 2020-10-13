@@ -89,9 +89,9 @@ export class NewAdComponent implements OnInit {
       const ad: Ad = Object.assign({}, this.createAdForm.value);
       ad.userId = +this.authService.decodedToken.nameid;
 
-      this.adService.createAd(ad).subscribe((newAd: Ad) => {
+      this.adService.createAd(ad).subscribe(newAdId => {
         this.alertify.success('Обявата е създадена успешно.');
-        this.router.navigate(['/user/ad/' + newAd.id + '/edit']);
+        this.router.navigate(['/user/ad/' + newAdId + '/edit']);
       }, error => {
         this.alertify.error(error); // 'Грешка при създаването на обявата.'
       });

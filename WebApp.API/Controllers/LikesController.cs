@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
@@ -9,64 +8,46 @@ namespace WebApp.API.Controllers
 {
     public class LikesController : ApiController
     {
-        private readonly IAdsRepository _adsRepo;
-        private readonly ILikesRepository _likesRepo;
-        private readonly int _loggedInUserId;
+        private readonly ILikeService _likes;
 
-        public LikesController(
-            IAdsRepository adsRepo, 
-            ILikesRepository likesRepo)
+        public LikesController(ILikeService likes)
         {
-            _adsRepo = adsRepo;
-            _likesRepo = likesRepo;
-            _loggedInUserId = int.Parse(this.User.GetId());
+            _likes = likes;
         }
         
         [HttpPost("add")]
         public async Task<IActionResult> LikeAd([FromQuery]int adId)
-        {   
-            var like = await _likesRepo.GetLike(_loggedInUserId, adId);
-            if (like != null) {
-                return BadRequest("Обявата вече е добавена в Наблюдавани");
+        {
+            var loggedInUserId = int.Parse(this.User.GetId());
+            
+            var result = await _likes.Like(loggedInUserId, adId);
+            if (result.Failure)
+            {
+                return BadRequest(result.Error);
             }
 
-            var ad = await _adsRepo.GetAd(adId);
-            if(ad == null)
-                return NotFound("Обявата не е намерена");
-
-            if(ad.UserId == _loggedInUserId)
-                return BadRequest("Не може да добавяте собствени обяви в Наблюдавани");
-
-            like = new Like {
-                UserId = _loggedInUserId,
-                AdId = adId
-            };
-
-            await _likesRepo.Add(like);
-
-            if(await _likesRepo.SaveAll())
-                return Ok();
-            
-            return BadRequest("Грешка при добавяне на обявата в Наблюдавани");
+            return Ok();
         }
 
         [HttpDelete("remove")]
         public async Task<ActionResult<Like>> RemoveAdFromLiked([FromQuery]int adId) 
-        {       
-            var likeToRemove = await _likesRepo.GetLike(_loggedInUserId, adId);
-            if(likeToRemove == null)
+        {      
+            var loggedInUserId = int.Parse(this.User.GetId());
+            
+            var result = await _likes.Unlike(loggedInUserId, adId);
+            if (result.Failure)
+            {
                 return NotFound();
+            }
 
-            _likesRepo.Delete(likeToRemove);
-            await _likesRepo.SaveAll();
-
-            return likeToRemove;
+            return Ok();
         }
 
         [HttpGet("count")]
         public async Task<IActionResult> GetAdLikesCount([FromQuery]int adId)
         {
-            var count = await _likesRepo.GetAdLikesCount(adId);
+            var count = await _likes.AdLikesCount(adId);
+
             return Ok(count);
         }
     }

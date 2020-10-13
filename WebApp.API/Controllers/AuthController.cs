@@ -1,17 +1,11 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 using WebApp.API.DTOs.User;
+using WebApp.API.Data.Interfaces;
 
 namespace WebApp.API.Controllers
 {
@@ -20,43 +14,40 @@ namespace WebApp.API.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
         public AuthController(
-            IConfiguration config,
-            IMapper mapper,
             UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            IAuthService authService,
+            IMapper mapper)
         {
-            _config = config;
-            _mapper = mapper;
             _userManager = userManager;
-            _signInManager = signInManager;
+            _authService = authService;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
-            if (await _userManager.FindByNameAsync(userForRegisterDTO.UserName) != null) {
+            if (await _userManager.FindByNameAsync(userForRegisterDTO.UserName) != null) 
+            {
                 return BadRequest("Вече има регистриран потребител с това потребителско име");
             }
 
-            if (await _userManager.FindByEmailAsync(userForRegisterDTO.Email) != null) {
+            if (await _userManager.FindByEmailAsync(userForRegisterDTO.Email) != null) 
+            {
                 return BadRequest("Вече има регистриран потребител с този имейл адрес");
             }
 
             var userToCreate = _mapper.Map<User>(userForRegisterDTO);
-            var result = await _userManager.CreateAsync(userToCreate, userForRegisterDTO.Password);
 
-            if (result.Succeeded) {
+            var result = await _userManager.CreateAsync(userToCreate, userForRegisterDTO.Password);
+            if (result.Succeeded) 
+            {
                 await _userManager.AddToRoleAsync(userToCreate, "Member");
-                var userToReturn = _mapper.Map<UserForDetailedDTO>(userToCreate);
-                
-                return CreatedAtRoute("GetUser",
-                    new {controller = "Users", id = userToCreate.Id}, userToReturn);
+                return Ok();
             }
             
             return BadRequest(result.Errors);
@@ -66,53 +57,21 @@ namespace WebApp.API.Controllers
         public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
         {
             var user = await _userManager.FindByNameAsync(userForLoginDTO.UserName);
-
             if (user == null)
+            {
                 return Unauthorized("Невалидено потребителско име или парола");
+            }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDTO.Password, false);
-
-            if (result.Succeeded) {
+            var passwordValid = await _userManager.CheckPasswordAsync(user, userForLoginDTO.Password);
+            if (passwordValid) 
+            {
                 return Ok(new
                 {
-                    token = GenerateJwtToken(user).Result
+                    token = _authService.GenerateJwtToken(user).Result
                 });
             }
 
             return Unauthorized("Невалидено потребителско име или парола");  
-        }
-
-        private async Task<string> GenerateJwtToken(User user) 
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
-            };
-
-            var roles = await _userManager.GetRolesAsync(user);
-
-            foreach(var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
         }
     }
 }

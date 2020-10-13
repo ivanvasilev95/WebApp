@@ -1,147 +1,60 @@
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.Photo;
-using WebApp.API.Helpers;
-using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
     public class PhotosController : ApiController
     {
-        private readonly IMapper _mapper;
-        private readonly IAdsRepository _adsRepo;
-        private readonly IPhotoRepository _photoRepo;
-        private readonly IOptions<CloudinarySettings> _cloudinaryConfig;
-        private Cloudinary _cloudinary;
+        private readonly IPhotoService _photos;
 
-        public PhotosController(
-            IMapper mapper, 
-            IAdsRepository adsRepo,
-            IPhotoRepository photoRepo,
-            IOptions<CloudinarySettings> cloudinaryConfig)
+        public PhotosController(IPhotoService photos)
         {
-            _cloudinaryConfig = cloudinaryConfig;
-            _adsRepo = adsRepo;
-            _photoRepo = photoRepo;
-            _mapper = mapper;
-
-            Account acc = new Account(_cloudinaryConfig.Value.CloudName, _cloudinaryConfig.Value.ApiKey, _cloudinaryConfig.Value.ApiSecret);
-            _cloudinary = new Cloudinary(acc); 
+            _photos = photos;
         }
 
         [HttpGet("{id}", Name = "GetPhoto")]
         public async Task<IActionResult> GetPhoto(int id)
         {
-            var photoFromRepo = await _photoRepo.GetPhoto(id);
-            var photo = _mapper.Map<PhotoForReturnDTO>(photoFromRepo);
-            return Ok(photo);
+            var result = await _photos.ByIdAsync(id);
+            if (result.Failure)
+                return NotFound(result.Error);
+     
+            return Ok(result.Data);
         }
 
         [HttpPost("add")]
         public async Task<IActionResult> AddPhoto([FromQuery]int adId, [FromForm]PhotoForCreationDTO photoForCreationDTO)
         {
-            var file = photoForCreationDTO.File;
+            var result = await _photos.CreateAsync(adId, photoForCreationDTO);
+            if (result.Failure)
+                return BadRequest(result.Error);
 
-            if (file == null)
-                return BadRequest();
-
-            var uploadResult = UploadToCloudinary(file);
-
-            photoForCreationDTO.Url = uploadResult.Uri.ToString();
-            photoForCreationDTO.PublicId = uploadResult.PublicId;
-
-            var photo = _mapper.Map<Photo>(photoForCreationDTO);
-
-            var adFromRepo = await _adsRepo.GetAd(adId);
-            if (!adFromRepo.Photos.Any(p => p.IsMain))
-                photo.IsMain = true;
-            
-            adFromRepo.Photos.Add(photo);
-
-            if (await _adsRepo.SaveAll()) {
-                var photoToReturn = _mapper.Map<PhotoForReturnDTO>(photo);
-                return CreatedAtRoute("GetPhoto", new {controller = "Photos", id = photo.Id}, photoToReturn);
-            }
-            
-            return BadRequest("Не може да се добави снимката");
+            // test it
+            return CreatedAtRoute("GetPhoto", new {controller = "Photos", id = result.Data.Id}, result.Data);
         }
         
-        private ImageUploadResult UploadToCloudinary(IFormFile file) 
-        {
-            var uploadResult = new ImageUploadResult();
-
-            if(file.Length > 0) 
-            {
-                using (var stream = file.OpenReadStream()) 
-                {
-                    var uploadParams = new ImageUploadParams() 
-                    {
-                        File = new FileDescription(file.Name, stream),
-                        Transformation = new Transformation().Width(500).Height(500)
-                    };
-                    uploadResult = _cloudinary.Upload(uploadParams);
-                }
-            }
-
-            return uploadResult;
-        }
-
         [HttpPost("{id}/setMain")]
         public async Task<IActionResult> SetMainPhoto(int id)
         {
-            var photoFromRepo = await _photoRepo.GetPhoto(id);
+            var result = await _photos.SetMainAsync(id);
+            if (result.Failure)
+            {
+                return BadRequest(result.Error);
+            }
 
-            if (photoFromRepo.IsMain)
-                return BadRequest("Тази снимка вече е зададена като главна");
-            
-            var currentMainPhoto = await _photoRepo.GetAdMainPhoto(photoFromRepo.AdId);
-            currentMainPhoto.IsMain = false;
-
-            photoFromRepo.IsMain = true;
-
-            if (await _photoRepo.SaveAll())
-                return NoContent();
-            
-            return BadRequest("Не може да се зададе снимката като главна");
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemovePhoto(int id)
         {
-            var photoFromRepo = await _photoRepo.GetPhoto(id);
-            if (photoFromRepo.IsMain)
-                return BadRequest("Тази снимка е зададена като главна и не може да се изтрие");
-            
-            DeletePhoto(photoFromRepo);
+            var result = await _photos.DeleteAsync(id);
+            if (result.Failure)
+                return BadRequest(result.Error);
 
-            if (await _photoRepo.SaveAll())
-                return Ok();
-            
-            return BadRequest("Грешка при изтриване на снимката");
-        }
-
-        private void DeletePhoto(Photo photo) 
-        {
-            if (photo.PublicId != null)
-            {
-                var deleteParams = new DeletionParams(photo.PublicId);
-
-                var result = _cloudinary.Destroy(deleteParams);
-
-                if(result.Result == "ok")
-                    _photoRepo.Delete(photo);
-            }
-            else 
-            {
-                _photoRepo.Delete(photo);
-            }
+            return Ok();
         }
     }
 }

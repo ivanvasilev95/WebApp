@@ -1,43 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.Message;
 using WebApp.API.Extensions;
 using WebApp.API.Helpers;
-using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
     public class MessagesController : ApiController
     {
-        private readonly IAdsRepository _adsRepo;
-        private readonly IMessageRepository _messageRepo;
-        private readonly IUserRepository _userRepo;
-        private readonly IMapper _mapper;
-        private readonly int _loggedInUserId;
+        private readonly IMessageService _messages;
 
-        public MessagesController(
-            IAdsRepository adsRepo, 
-            IMessageRepository messageRepo,
-            IUserRepository userRepo, 
-            IMapper mapper)
+        public MessagesController(IMessageService messages)
         {
-            _adsRepo = adsRepo;
-            _messageRepo = messageRepo;
-            _userRepo = userRepo;
-            _mapper = mapper;
-            _loggedInUserId = int.Parse(this.User.GetId());
+            _messages = messages;
         }
 
         [HttpGet("thread")]
         public async Task<IActionResult> GetMessageThread([FromQuery]int adId, [FromQuery]int recipientId)
         {
-            var messageFromRepo = await _messageRepo.GetMessageThread(_loggedInUserId, recipientId, adId);
-            var messageThread = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messageFromRepo);
+            var currentUserId = int.Parse(this.User.GetId());
+            var messageThread = await _messages.MessageThreadAsync(adId, currentUserId, recipientId);
 
             return Ok(messageThread);
         }
@@ -45,100 +28,74 @@ namespace WebApp.API.Controllers
         [HttpGet("{id}", Name = "GetMessage")]
         public async Task<IActionResult> GetMessage(int id)
         {
-            var messageFromRepo = await _messageRepo.GetMessage(id);
-            if (messageFromRepo == null)
+            var result = await _messages.ByIdAsync(id);
+            if (result.Failure)
+            {
                 return NotFound();
+            }
 
-            return Ok(messageFromRepo);
+            return Ok(result.Data);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUserMessages([FromQuery]MessageParams messageParams)
         {
-            messageParams.UserId = _loggedInUserId;
+            messageParams.UserId = int.Parse(this.User.GetId());
             
-            var messagesFromRepo = await _messageRepo.GetUserMessages(messageParams);
-            var messages = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messagesFromRepo);
-            
-            Response.AddPagination(messagesFromRepo.CurrentPage, messagesFromRepo.PageSize,
-                messagesFromRepo.TotalCount, messagesFromRepo.TotalPages);
-            
+            var messages = await _messages.UserMessagesAsync(messageParams, this.Response);
+
             return Ok(messages);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateMessage(MessageForCreationDTO messageForCreationDTO)
         {
-            var sender = await _userRepo.GetUser(messageForCreationDTO.SenderId, false);
-            
-            if (sender.Id != int.Parse(this.User.GetId()))
+            if (messageForCreationDTO.SenderId != int.Parse(this.User.GetId()))
                 return Unauthorized();
 
-            var ad = await _adsRepo.GetAd(messageForCreationDTO.AdId);
-
-            if (ad == null)
-                return BadRequest("Обявата не е намерена");
-
-            var recipient = await _userRepo.GetUser(messageForCreationDTO.RecipientId, false);
-
-            if (recipient == null)
-                return BadRequest("Потребителят не е намерен");
-
-            var message = _mapper.Map<Message>(messageForCreationDTO);
-
-            await _messageRepo.Add(message);
-
-            if (await _messageRepo.SaveAll()) {
-                var messageToReturn = _mapper.Map<MessageToReturnDTO>(message);
-                return CreatedAtRoute("GetMessage", new { controller = "Messages", id = message.Id }, messageToReturn);
+            var result = await _messages.CreateAsync(messageForCreationDTO);
+            if (result.Failure)
+            {
+                return BadRequest(result.Error);
             }
 
-            throw new Exception("Грешка при запазване на съобщението");
+            // test it
+            return CreatedAtRoute("GetMessage", new {controller = "Messages", id = result.Data.Id}, result.Data);
         }
 
         [HttpPost("{id}")]
         public async Task<IActionResult> DeleteMessage(int id)
-        { 
-            var messageFromRepo = await _messageRepo.GetMessage(id);
-            if (messageFromRepo == null) {
-                return BadRequest("Съобщението не е намерено");
+        {
+            var currentUserId = int.Parse(this.User.GetId());
+
+            var result = await _messages.DeleteAsync(id, currentUserId);
+            if (result.Failure)
+            {
+                return BadRequest(result.Error);
             }
 
-            if (messageFromRepo.SenderId == _loggedInUserId)
-                messageFromRepo.SenderDeleted = true;
-
-            if (messageFromRepo.RecipientId == _loggedInUserId)
-                messageFromRepo.RecipientDeleted = true;
-
-            // if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
-            //     _messageRepo.Delete(messageFromRepo);
-            
-            if (await _messageRepo.SaveAll())
-                return NoContent();
-
-            return BadRequest("Грешка при изтриване на съобщението");
+            return NoContent();
         }
 
         [HttpPost("{id}/read")]
         public async Task<IActionResult> MarkMessageAsRead(int id)
         {
-            var message = await _messageRepo.GetMessage(id);
+            var currentUserId = int.Parse(this.User.GetId());
 
-            if(message.RecipientId != _loggedInUserId)
+            var result = await _messages.MarkAsReadAsync(id, currentUserId);
+            if (result.Failure)
+            {
                 return Unauthorized();
-            
-            message.IsRead = true;
-            message.DateRead = DateTime.Now;
-
-            await _messageRepo.SaveAll();
+            }
 
             return NoContent();
         }
 
-        [HttpGet("user/unread")]
+        [HttpGet("unread/count")]
         public async Task<IActionResult> GetUnreadMessagesCount()
         {
-            int count = await _messageRepo.GetUnreadMessagesCount(_loggedInUserId);
+            var currentUserId = int.Parse(this.User.GetId());
+            var count = await _messages.UnreadMessagesCountAsync(currentUserId);
             
             return Ok(count);
         }

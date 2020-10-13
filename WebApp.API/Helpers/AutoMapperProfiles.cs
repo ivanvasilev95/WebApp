@@ -32,10 +32,19 @@ namespace WebApp.API.Helpers
             CreateMap<AdForCreateDTO, Ad>();
             
             CreateMap<User, UserForDetailedDTO>();
-            CreateMap<UserForUpdateDTO, User>();
             CreateMap<UserForRegisterDTO, User>();
+            CreateMap<UserForUpdateDTO, User>()
+                .ForMember(dest => dest.NormalizedEmail, opt => {
+                    opt.MapFrom(src => src.Email != null ?  src.Email.ToUpper() : null);
+                });
 
-            CreateMap<Message, MessageToReturnDTO>();
+            CreateMap<Message, MessageToReturnDTO>()
+                .ForMember(dest => dest.SenderUsername, opt => {
+                    opt.MapFrom(src => src.Sender.UserName);
+                })
+                .ForMember(dest => dest.RecipientUsername, opt => {
+                    opt.MapFrom(src => src.Recipient.UserName);
+                });
             CreateMap<MessageForCreationDTO, Message>().ReverseMap();
 
             CreateMap<Photo, PhotoForReturnDTO>();  

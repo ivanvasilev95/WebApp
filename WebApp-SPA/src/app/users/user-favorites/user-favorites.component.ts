@@ -27,7 +27,7 @@ export class UserFavoritesComponent implements OnInit {
   }
 
   removeAdFromLiked(adId: number) {
-    this.likeService.removeAdFromLiked(adId).subscribe(res => {
+    this.likeService.removeAdFromLiked(adId).subscribe(() => {
       this.ads.splice(this.ads.findIndex(a => a.id === adId), 1);
       this.alertify.success('Обявата беше премахната от Наблюдавани');
     }, error => {

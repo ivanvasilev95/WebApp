@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
         if (this.authService.roleMatch(['Admin', 'Moderator'])) {
           this.router.navigate(['/admin']);
         } else {
-          this.router.navigate(['/user/ads']);
+          this.router.navigate(['']);
         }
       }, error => {
         this.alertify.error(error);

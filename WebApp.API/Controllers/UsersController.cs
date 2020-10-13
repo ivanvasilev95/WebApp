@@ -14,43 +14,35 @@ namespace WebApp.API.Controllers
 {
     public class UsersController : ApiController
     {
-        private readonly IUserRepository _userRepo;
-        private readonly IPhotoRepository _photoRepo;
-        private readonly IMapper _mapper;
-        private readonly int _loggedInUserId;
+        private readonly IUserService _userService;
 
-        public UsersController(
-            IUserRepository userRepo,
-            IPhotoRepository photoRepo, 
-            IMapper mapper)
+        public UsersController(IUserService userService)
         {
-            _userRepo = userRepo;
-            _photoRepo = photoRepo;
-            _mapper = mapper;
-            _loggedInUserId = int.Parse(this.User.GetId() ?? "0");
+            _userService = userService;
         }
 
         [AllowAnonymous]
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            bool isLoggedInUserOrAdminOrModerator = IsUserEligible(id);
-            var user = await _userRepo.GetUser(id, isLoggedInUserOrAdminOrModerator);
-            if(user == null) {
-                return NotFound("Потребителят не е намерен");
+            bool includeNotApprovedAds = IsUserEligible(id);
+            var result = await _userService.ByIdAsync(id, includeNotApprovedAds);
+            if(result.Failure)
+            {
+                return NotFound(result.Error);
             }
 
-            var userToReturn = _mapper.Map<UserForDetailedDTO>(user);
-
-            return Ok(userToReturn);
+            return Ok(result.Data);
         }
 
-        private bool IsUserEligible(int userId) {
+        private bool IsUserEligible(int userId) // move to user service
+        {
+            var loggedInUserId = int.Parse(this.User.GetId() ?? "0");
             if (this.User.Identity.IsAuthenticated) {
                 var loggedInUserRoles = ((ClaimsIdentity)this.User.Identity).Claims
                     .Where(c => c.Type == ClaimTypes.Role)
                     .Select(c => c.Value);
-                return (_loggedInUserId == userId || loggedInUserRoles.Contains("Admin") || loggedInUserRoles.Contains("Moderator"));
+                return (loggedInUserId == userId || loggedInUserRoles.Contains("Admin") || loggedInUserRoles.Contains("Moderator"));
             }
             return false;
         }
@@ -58,52 +50,17 @@ namespace WebApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)
         {
-            if (id != _loggedInUserId)
+            var loggedInUserId = int.Parse(this.User.GetId());
+            if (id != loggedInUserId)
                 return Unauthorized();
 
-            // userForUpdateDTO.Email = userForUpdateDTO.Email?.ToLower().Trim();
-            await ValidateEmail(id, userForUpdateDTO.Email);
-
-            var userFromRepo = await _userRepo.GetUser(id, false);
-            userFromRepo.NormalizedEmail = userForUpdateDTO.Email?.ToUpper();
-            _mapper.Map(userForUpdateDTO, userFromRepo);
-
-            //if (await _userRepo.SaveAll())
-                return NoContent();
-            
-            //throw new Exception($"Updating user {id} failed on save.");
-        }
-
-        // user other than the main admin (with id = 1) must provide valid email address
-        private async Task ValidateEmail(int userId, string email)
-        {
-            // is not admin and email filed is empty
-            if (string.IsNullOrWhiteSpace(email) && userId != 1)
-                throw new Exception("Полето имейл не може да бъде празно");
-
-            // logged user is admin and email field is not empty or is not admin
-            if ((userId == 1 && !string.IsNullOrWhiteSpace(email)) || userId != 1) {
-                if (!IsValidEmailAddress(email)) {
-                    throw new Exception("Имейлът адресът не е валиден");
-                }
-                
-                if (await _userRepo.EmailIsNotAvailable(userId, email)) {
-                    throw new Exception("Вече има регистриран потребител с този имейл адрес");
-                }
-            }
-        }
-
-        private bool IsValidEmailAddress(string input)
-        {
-            try
+            var result = await _userService.UpdateAsync(id, userForUpdateDTO);
+            if (result.Failure)
             {
-                var email = new MailAddress(input);
-                return true;
+                return BadRequest(result.Error);
             }
-            catch
-            {
-                return false;
-            }
+
+            return NoContent();
         }
     }
 }

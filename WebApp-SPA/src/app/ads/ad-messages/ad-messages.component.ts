@@ -65,7 +65,7 @@ export class AdMessagesComponent implements OnInit {
 
     this.newMessage.recipientId = this.recipientId;
 
-    this.messageService.sendMessage(this.newMessage).subscribe((message: Message) => {
+    this.messageService.sendMessage(this.newMessage).subscribe(message => {
       this.messages.push(message);
       this.newMessage.content = '';
     }, error => {

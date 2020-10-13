@@ -19,19 +19,19 @@ export class AdminService {
     return this.http.get<string[]>(this.baseUrl + 'roles');
   }
 
-  updateUserRoles(user: User, roles: {}) {
-    return this.http.post(this.baseUrl + 'editRoles/' + user.userName, roles);
+  updateUserRoles(userName: string, roles: {}) {
+    return this.http.post(this.baseUrl + 'editRoles/' + userName, roles);
   }
 
   getAdsForApproval() {
     return this.http.get(this.baseUrl + 'adsForModeration');
   }
 
-  approveAd(adId) {
-    return this.http.post(this.baseUrl + 'approveAd/' + adId, {});
+  approveAd(id) {
+    return this.http.post(this.baseUrl + 'approveAd/' + id, {});
   }
 
-  rejectAd(adId) {
-    return this.http.post(this.baseUrl + 'rejectAd/' + adId, {});
+  rejectAd(id) {
+    return this.http.post(this.baseUrl + 'rejectAd/' + id, {});
   }
 }
