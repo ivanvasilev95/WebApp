@@ -28,6 +28,27 @@ namespace WebApp.API.Controllers
             _mapper = mapper;
         }
 
+                [HttpPost("login")]
+        public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
+        {
+            var user = await _userManager.FindByNameAsync(userForLoginDTO.UserName);
+            if (user == null)
+            {
+                return Unauthorized("Невалидено потребителско име или парола");
+            }
+
+            var passwordValid = await _userManager.CheckPasswordAsync(user, userForLoginDTO.Password);
+            if (passwordValid) 
+            {
+                return Ok(new
+                {
+                    token = _authService.GenerateJwtToken(user).Result
+                });
+            }
+
+            return Unauthorized("Невалидено потребителско име или парола");  
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
@@ -51,27 +72,6 @@ namespace WebApp.API.Controllers
             }
             
             return BadRequest(result.Errors);
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
-        {
-            var user = await _userManager.FindByNameAsync(userForLoginDTO.UserName);
-            if (user == null)
-            {
-                return Unauthorized("Невалидено потребителско име или парола");
-            }
-
-            var passwordValid = await _userManager.CheckPasswordAsync(user, userForLoginDTO.Password);
-            if (passwordValid) 
-            {
-                return Ok(new
-                {
-                    token = _authService.GenerateJwtToken(user).Result
-                });
-            }
-
-            return Unauthorized("Невалидено потребителско име или парола");  
         }
     }
 }

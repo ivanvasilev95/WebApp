@@ -13,7 +13,7 @@ export class UserEditResolver implements Resolve<User> {
                 private router: Router, private alertify: AlertifyService) {}
 
     resolve(route: ActivatedRouteSnapshot): Observable<User> {
-        return this.userService.getUser(this.authService.decodedToken.nameid).pipe(
+        return this.userService.getUserForEdit(this.authService.decodedToken.nameid).pipe(
             catchError(error => {
                 this.alertify.error(error); // 'Проблем с получаването на данните'
                 this.router.navigate(['']);

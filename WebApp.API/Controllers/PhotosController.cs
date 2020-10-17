@@ -7,52 +7,45 @@ namespace WebApp.API.Controllers
 {
     public class PhotosController : ApiController
     {
-        private readonly IPhotoService _photos;
+        private readonly IPhotoService _photoService;
 
-        public PhotosController(IPhotoService photos)
+        public PhotosController(IPhotoService photoService)
         {
-            _photos = photos;
+            _photoService = photoService;
         }
 
-        [HttpGet("{id}", Name = "GetPhoto")]
-        public async Task<IActionResult> GetPhoto(int id)
+        [HttpPost]
+        public async Task<IActionResult> Add([FromQuery]int adId, [FromForm]PhotoForCreationDTO photoForCreationDTO)
         {
-            var result = await _photos.ByIdAsync(id);
-            if (result.Failure)
-                return NotFound(result.Error);
-     
-            return Ok(result.Data);
-        }
-
-        [HttpPost("add")]
-        public async Task<IActionResult> AddPhoto([FromQuery]int adId, [FromForm]PhotoForCreationDTO photoForCreationDTO)
-        {
-            var result = await _photos.CreateAsync(adId, photoForCreationDTO);
-            if (result.Failure)
-                return BadRequest(result.Error);
-
-            // test it
-            return CreatedAtRoute("GetPhoto", new {controller = "Photos", id = result.Data.Id}, result.Data);
-        }
-        
-        [HttpPost("{id}/setMain")]
-        public async Task<IActionResult> SetMainPhoto(int id)
-        {
-            var result = await _photos.SetMainAsync(id);
+            var result = await _photoService.AddAsync(adId, photoForCreationDTO);
             if (result.Failure)
             {
                 return BadRequest(result.Error);
             }
 
-            return NoContent();
+            return Created(nameof(this.Add), result.Data);
+        }
+        
+        [HttpPost("{id}/setMain")]
+        public async Task<IActionResult> SetMain(int id)
+        {
+            var result = await _photoService.SetMainAsync(id);
+            if (result.Failure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> RemovePhoto(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await _photos.DeleteAsync(id);
+            var result = await _photoService.DeleteAsync(id);
             if (result.Failure)
+            {
                 return BadRequest(result.Error);
+            }
 
             return Ok();
         }

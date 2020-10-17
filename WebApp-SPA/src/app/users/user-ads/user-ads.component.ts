@@ -16,11 +16,11 @@ export class UserAdsComponent implements OnInit {
               private router: Router, private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.getUser();
+    this.getUserWithAds();
   }
 
-  getUser() {
-    this.userService.getUser(+this.route.snapshot.params.id).subscribe((user: User) => {
+  getUserWithAds() {
+    this.userService.getUserWithAds(+this.route.snapshot.params.id).subscribe(user => {
         this.user = user;
       },
       error => {

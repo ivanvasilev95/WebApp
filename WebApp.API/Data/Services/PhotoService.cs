@@ -28,19 +28,7 @@ namespace WebApp.API.Data.Services
             _cloudinary = new Cloudinary(acc); 
         }
 
-        public async Task<Result<PhotoForReturnDTO>> ByIdAsync(int id)
-        {
-            var photo = await GetPhotoAsync(id);
-
-            if (photo == null)
-            {
-                return "Снимката не е намерена";
-            }
-     
-            return _mapper.Map<Photo, PhotoForReturnDTO>(photo);
-        }
-
-        public async Task<Result<Photo>> CreateAsync(int adId, PhotoForCreationDTO model)
+        public async Task<Result<PhotoForReturnDTO>> AddAsync(int adId, PhotoForCreationDTO model)
         {
             var file = model.File;
 
@@ -68,7 +56,7 @@ namespace WebApp.API.Data.Services
 
             if (await _context.SaveChangesAsync() > 0)
             {
-                return photo;
+                return _mapper.Map<Photo, PhotoForReturnDTO>(photo);
             }
             
             return "Не може да се добави снимката";

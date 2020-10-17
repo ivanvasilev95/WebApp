@@ -32,6 +32,6 @@ export class AdminService {
   }
 
   rejectAd(id) {
-    return this.http.post(this.baseUrl + 'rejectAd/' + id, {});
+    return this.http.delete(this.baseUrl + 'rejectAd/' + id);
   }
 }

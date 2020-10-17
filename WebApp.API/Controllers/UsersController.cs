@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
-using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
@@ -22,11 +20,10 @@ namespace WebApp.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{id}", Name = "GetUser")]
-        public async Task<IActionResult> GetUser(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserWithAds(int id)
         {
-            bool includeNotApprovedAds = IsUserEligible(id);
-            var result = await _userService.ByIdAsync(id, includeNotApprovedAds);
+            var result = await _userService.GetUserWithAdsAsync(id, this.User);
             if(result.Failure)
             {
                 return NotFound(result.Error);
@@ -35,32 +32,24 @@ namespace WebApp.API.Controllers
             return Ok(result.Data);
         }
 
-        private bool IsUserEligible(int userId) // move to user service
+        [HttpGet("{id}/edit")]
+        public async Task<IActionResult> GetUserForEdit(int id)
         {
-            var loggedInUserId = int.Parse(this.User.GetId() ?? "0");
-            if (this.User.Identity.IsAuthenticated) {
-                var loggedInUserRoles = ((ClaimsIdentity)this.User.Identity).Claims
-                    .Where(c => c.Type == ClaimTypes.Role)
-                    .Select(c => c.Value);
-                return (loggedInUserId == userId || loggedInUserRoles.Contains("Admin") || loggedInUserRoles.Contains("Moderator"));
-            }
-            return false;
+            var user = await _userService.GetUserForEditAsync(id);
+
+            return Ok(user);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)
         {
-            var loggedInUserId = int.Parse(this.User.GetId());
-            if (id != loggedInUserId)
-                return Unauthorized();
-
-            var result = await _userService.UpdateAsync(id, userForUpdateDTO);
+            var result = await _userService.UpdateUserAsync(id, userForUpdateDTO);
             if (result.Failure)
             {
                 return BadRequest(result.Error);
             }
 
-            return NoContent();
+            return Ok();
         }
     }
 }

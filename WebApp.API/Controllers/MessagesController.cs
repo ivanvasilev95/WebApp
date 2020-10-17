@@ -9,32 +9,20 @@ namespace WebApp.API.Controllers
 {
     public class MessagesController : ApiController
     {
-        private readonly IMessageService _messages;
+        private readonly IMessageService _messageService;
 
-        public MessagesController(IMessageService messages)
+        public MessagesController(IMessageService messageService)
         {
-            _messages = messages;
+            _messageService = messageService;
         }
 
         [HttpGet("thread")]
         public async Task<IActionResult> GetMessageThread([FromQuery]int adId, [FromQuery]int recipientId)
         {
             var currentUserId = int.Parse(this.User.GetId());
-            var messageThread = await _messages.MessageThreadAsync(adId, currentUserId, recipientId);
+            var messageThread = await _messageService.MessageThreadAsync(adId, currentUserId, recipientId);
 
             return Ok(messageThread);
-        }
-
-        [HttpGet("{id}", Name = "GetMessage")]
-        public async Task<IActionResult> GetMessage(int id)
-        {
-            var result = await _messages.ByIdAsync(id);
-            if (result.Failure)
-            {
-                return NotFound();
-            }
-
-            return Ok(result.Data);
         }
 
         [HttpGet]
@@ -42,7 +30,7 @@ namespace WebApp.API.Controllers
         {
             messageParams.UserId = int.Parse(this.User.GetId());
             
-            var messages = await _messages.UserMessagesAsync(messageParams, this.Response);
+            var messages = await _messageService.UserMessagesAsync(messageParams, this.Response);
 
             return Ok(messages);
         }
@@ -53,28 +41,27 @@ namespace WebApp.API.Controllers
             if (messageForCreationDTO.SenderId != int.Parse(this.User.GetId()))
                 return Unauthorized();
 
-            var result = await _messages.CreateAsync(messageForCreationDTO);
+            var result = await _messageService.CreateAsync(messageForCreationDTO);
             if (result.Failure)
             {
                 return BadRequest(result.Error);
             }
 
-            // test it
-            return CreatedAtRoute("GetMessage", new {controller = "Messages", id = result.Data.Id}, result.Data);
+            return Created(nameof(this.CreateMessage), result.Data);
         }
 
-        [HttpPost("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
             var currentUserId = int.Parse(this.User.GetId());
 
-            var result = await _messages.DeleteAsync(id, currentUserId);
+            var result = await _messageService.DeleteAsync(id, currentUserId);
             if (result.Failure)
             {
                 return BadRequest(result.Error);
             }
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpPost("{id}/read")]
@@ -82,20 +69,20 @@ namespace WebApp.API.Controllers
         {
             var currentUserId = int.Parse(this.User.GetId());
 
-            var result = await _messages.MarkAsReadAsync(id, currentUserId);
+            var result = await _messageService.MarkAsReadAsync(id, currentUserId);
             if (result.Failure)
             {
                 return Unauthorized();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpGet("unread/count")]
         public async Task<IActionResult> GetUnreadMessagesCount()
         {
             var currentUserId = int.Parse(this.User.GetId());
-            var count = await _messages.UnreadMessagesCountAsync(currentUserId);
+            var count = await _messageService.UnreadMessagesCountAsync(currentUserId);
             
             return Ok(count);
         }

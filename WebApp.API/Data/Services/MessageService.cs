@@ -24,23 +24,7 @@ namespace WebApp.API.Data.Services
             _mapper = mapper;
         }
 
-        public async Task<Result<MessageToReturnDTO>> ByIdAsync(int id)
-        {
-            var message = await _context
-                .Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Recipient)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (message == null)
-            {
-                return "Съобщението не е намерено";
-            }
-     
-            return _mapper.Map<Message, MessageToReturnDTO>(message);
-        }
-
-        public async Task<Result<Message>> CreateAsync(MessageForCreationDTO model)
+        public async Task<Result<MessageToReturnDTO>> CreateAsync(MessageForCreationDTO model)
         {
             var adExists = await _context
                 .Ads
@@ -66,12 +50,12 @@ namespace WebApp.API.Data.Services
 
             if (await _context.SaveChangesAsync() > 0)
             {
-                return message;
+                return _mapper.Map<Message, MessageToReturnDTO>(await this.GetMessageAsync(message.Id));
             }
             
             return "Грешка при запазване на съобщението";
         }
-
+        
         public async Task<Result> DeleteAsync(int messageId, int currentUserId)
         {
             var message = await GetMessageAsync(messageId);
@@ -118,12 +102,15 @@ namespace WebApp.API.Data.Services
         {
             return await _context
                 .Messages
+                .Include(m => m.Sender)
+                .Include(m => m.Recipient)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<IEnumerable<MessageToReturnDTO>> MessageThreadAsync(int adId, int currentUserId, int otherUserId)
         {
-            var messages = await _context.Messages
+            var messages = await _context
+                .Messages
                 .Include(u => u.Sender)
                 .Include(a => a.Ad)
                 .Include(u => u.Recipient)

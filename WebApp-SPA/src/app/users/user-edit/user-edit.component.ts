@@ -33,7 +33,7 @@ export class UserEditComponent implements OnInit {
   updateUser() {
     this.checkUserProperties();
 
-    this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(next => {
+    this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(() => {
       this.alertify.success('Профилът е редактиран успешно');
       this.editForm.reset(this.user);
     }, error => {
@@ -44,10 +44,12 @@ export class UserEditComponent implements OnInit {
   checkUserProperties() {
     if (this.user.fullName.trim() === '') { this.user.fullName = null; }
     if (this.user.address.trim() === '') { this.user.address = null; }
-    if (this.user.email.trim() === '') {
-      this.user.email = null;
-    } else  if (this.user.email !== null && this.user.email !== undefined) {
-      this.user.email = this.user.email.toLowerCase().trim();
+    if (this.user.email !== null && this.user.email !== undefined) {
+      if (this.user.email.trim() === '') {
+        this.user.email = null;
+      } else {
+        this.user.email = this.user.email.toLowerCase().trim();
+      }
     }
   }
 }

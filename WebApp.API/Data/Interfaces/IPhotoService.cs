@@ -7,9 +7,8 @@ namespace WebApp.API.Data.Interfaces
 {
     public interface IPhotoService
     {
-        Task<Result<Photo>> CreateAsync(int adId, PhotoForCreationDTO model);
+        Task<Result<PhotoForReturnDTO>> AddAsync(int adId, PhotoForCreationDTO model);
         Task<Result> DeleteAsync(int id);
         Task<Result> SetMainAsync(int id);
-        Task<Result<PhotoForReturnDTO>> ByIdAsync(int id);
     }
 }

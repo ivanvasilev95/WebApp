@@ -9,50 +9,38 @@ namespace WebApp.API.Controllers
 {
     public class CategoriesController : ApiController
     {
-        private readonly ICategoryService _categories;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(ICategoryService categories)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _categories = categories;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var categories = await _categories.AllAsync();
+            var categories = await _categoryService.AllAsync();
 
             return Ok(categories);
-        }
-
-        [HttpGet("{id}", Name = "GetCategory")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetCategory(int id)
-        {
-            var result = await _categories.ByIdAsync(id);
-            if (result.Failure)
-                return NotFound(result.Error);
-     
-            return Ok(result.Data);
         }
 
         [HttpPost]
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Create(CategoryForCreationDTO categoryForCreationDTO)
         {
-            var result = await _categories.CreateAsync(categoryForCreationDTO);
+            var result = await _categoryService.CreateAsync(categoryForCreationDTO);
             if (result.Failure)
                 return BadRequest(result.Error);
 
-            // test it
-            return CreatedAtRoute("GetCategory", new {controller = "Categories", id = result.Data.Id}, result.Data);
+            return Created(nameof(this.Created), result.Data);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<ActionResult<Category>> Delete(int id) 
         {
-            var result = await _categories.DeleteAsync(id);
+            var result = await _categoryService.DeleteAsync(id);
             if (result.Failure)
                 return BadRequest(result.Error);
 

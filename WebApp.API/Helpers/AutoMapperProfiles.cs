@@ -33,6 +33,7 @@ namespace WebApp.API.Helpers
             
             CreateMap<User, UserForDetailedDTO>();
             CreateMap<UserForRegisterDTO, User>();
+            CreateMap<User, UserForUpdateDTO>();
             CreateMap<UserForUpdateDTO, User>()
                 .ForMember(dest => dest.NormalizedEmail, opt => {
                     opt.MapFrom(src => src.Email != null ?  src.Email.ToUpper() : null);

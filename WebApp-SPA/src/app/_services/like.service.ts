@@ -13,7 +13,7 @@ export class LikeService {
   constructor(private http: HttpClient) { }
 
   addAdToLiked(adId: number) {
-    return this.http.post(this.baseUrl + 'add', {}, {params: this.createQueryString(adId)});
+    return this.http.post(this.baseUrl, {}, {params: this.createQueryString(adId)});
   }
 
   removeAdFromLiked(adId: number) {

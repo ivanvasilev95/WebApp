@@ -10,27 +10,27 @@ namespace WebApp.API.Controllers
 {
     public class AdsController : ApiController
     {
-        private readonly IAdService _ads;
+        private readonly IAdService _adService;
         
-        public AdsController(IAdService ads)
+        public AdsController(IAdService adService)
         {
-            _ads = ads;
+            _adService = adService;
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> All([FromQuery]UserParams userParams)
         {
-            var ads = await _ads.AllAsync(userParams, this.Response);
+            var ads = await _adService.AllAsync(userParams, this.Response);
 
             return Ok(ads);
         }
 
-        [HttpGet("{id}", Name = "GetAd")]
+        [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAd(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var result = await _ads.ByIdAsync(id);
+            var result = await _adService.ByIdAsync(id);
             if (result.Failure)
                 return NotFound(result.Error);
      
@@ -40,7 +40,7 @@ namespace WebApp.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AdForCreateDTO adForCreateDTO)
         {
-           var id = await _ads.CreateAsync(adForCreateDTO);
+           var id = await _adService.CreateAsync(adForCreateDTO);
 
             return Created(nameof(this.Create), id);
         }
@@ -48,7 +48,7 @@ namespace WebApp.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id) 
         {
-            var result = await _ads.DeleteAsync(id);
+            var result = await _adService.DeleteAsync(id);
             if (result.Failure)
             {
                 return BadRequest();
@@ -62,7 +62,7 @@ namespace WebApp.API.Controllers
         {
             int userId = int.Parse(this.User.GetId());
 
-            var ads = await _ads.UserAdsAsync(userId);
+            var ads = await _adService.UserAdsAsync(userId);
 
             return Ok(ads);
         }
@@ -72,7 +72,7 @@ namespace WebApp.API.Controllers
         {
             int userId = int.Parse(this.User.GetId());
 
-            var ads = await _ads.UserLikedAdsAsync(userId);
+            var ads = await _adService.UserLikedAdsAsync(userId);
 
             return Ok(ads);
         }
@@ -80,13 +80,13 @@ namespace WebApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, AdForUpdateDTO adForUpdateDTO)
         {
-            var result = await _ads.UpdateAsync(id, adForUpdateDTO);
+            var result = await _adService.UpdateAsync(id, adForUpdateDTO);
             if (result.Failure)
             {
                 return BadRequest();
             }
 
-            return NoContent();
+            return Ok();
         }
     }
 }

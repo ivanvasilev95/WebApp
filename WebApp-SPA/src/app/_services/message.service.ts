@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { PaginatedResult } from '../_models/pagination';
 import { Message } from '../_models/message';
 import { map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -50,12 +51,12 @@ export class MessageService {
     return this.http.get<Message[]>(this.baseUrl + 'thread', {params});
   }
 
-  sendMessage(message: Message) {
-    return this.http.post(this.baseUrl, message);
+  sendMessage(message: Message): Observable<Message> {
+    return this.http.post<Message>(this.baseUrl, message);
   }
 
   deleteMessage(id: number) {
-    return this.http.post(this.baseUrl + id, {});
+    return this.http.delete(this.baseUrl + id);
   }
 
   markMessageAsRead(id: number) {

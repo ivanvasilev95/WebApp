@@ -12,8 +12,12 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getUser(id: number): Observable<User> {
+  getUserWithAds(id: number): Observable<User> {
     return this.http.get<User>(this.baseUrl + id);
+  }
+
+  getUserForEdit(id: number): Observable<User> {
+    return this.http.get<User>(this.baseUrl + id + '/edit');
   }
 
   updateUser(id: number, user: User) {

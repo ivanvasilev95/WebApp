@@ -81,7 +81,11 @@ namespace WebApp.API.Data.Services
 
         public async Task<Result<AdForDetailedDTO>> ByIdAsync(int id)
         {
-            var ad = await GetAdAsync(id);
+            var ad = await _context.Ads
+                .Include(a => a.Category)
+                .Include(a => a.Photos)
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (ad == null)
             {
@@ -104,10 +108,7 @@ namespace WebApp.API.Data.Services
 
         public async Task<Result> DeleteAsync(int id)
         {
-            var ad = await _context
-                .Ads
-                .Where(a => a.Id == id)
-                .FirstOrDefaultAsync();
+            var ad = await this.GetAdAsync(id);
 
             if (ad == null)
             {
@@ -130,19 +131,16 @@ namespace WebApp.API.Data.Services
             }
 
              _mapper.Map(adForUpdateDTO, ad);
-             
-             await _context.SaveChangesAsync(); // check if it's necessary
 
              return true;
         }
 
         private async Task<Ad> GetAdAsync(int id)
         {
-            var ad = await _context.Ads
-                .Include(a => a.Category)
-                .Include(a => a.Photos)
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(a => a.Id == id);
+            var ad = await _context
+                .Ads
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
 
             return ad;
         }

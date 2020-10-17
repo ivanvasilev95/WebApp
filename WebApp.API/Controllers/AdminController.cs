@@ -61,7 +61,7 @@ namespace WebApp.API.Controllers
         }
 
         [Authorize(Policy = "ModerateAdRole")]
-        [HttpPost("rejectAd/{id}")]
+        [HttpDelete("rejectAd/{id}")]
         public async Task<IActionResult> RejectAd(int id) 
         {
             await _adminService.RejectAd(id);

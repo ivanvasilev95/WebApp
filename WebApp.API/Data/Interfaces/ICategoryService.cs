@@ -8,9 +8,8 @@ namespace WebApp.API.Data.Interfaces
 {
     public interface ICategoryService
     {
-         Task<Result<Category>> CreateAsync(CategoryForCreationDTO model);
+         Task<Result<CategoryToReturnDTO>> CreateAsync(CategoryForCreationDTO model);
          Task<Result> DeleteAsync(int id);
          Task<IEnumerable<CategoryToReturnDTO>> AllAsync();
-         Task<Result<CategoryToReturnDTO>> ByIdAsync(int id);
     }
 }

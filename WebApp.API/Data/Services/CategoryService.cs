@@ -21,7 +21,7 @@ namespace WebApp.API.Data.Services
             _mapper = mapper;
         }
 
-        public async Task<Result<Category>> CreateAsync(CategoryForCreationDTO model)
+        public async Task<Result<CategoryToReturnDTO>> CreateAsync(CategoryForCreationDTO model)
         {
             var categoryAlreadyAdded = await _context
                 .Categories
@@ -37,14 +37,18 @@ namespace WebApp.API.Data.Services
             await _context.AddAsync(category);
             await _context.SaveChangesAsync();
 
-            return  category;
+            return  _mapper.Map<Category, CategoryToReturnDTO>(category);
         }
 
         // implement update category also
 
         public async Task<Result> DeleteAsync(int id)
         {
-            var category = await this.FindByIdAsync(id);
+            var category = await _context
+                .Categories
+                .Include(c => c.Ads)
+                .Where(c => c.Id == id)
+                .FirstOrDefaultAsync();
 
             if (category == null)
             {
@@ -67,27 +71,6 @@ namespace WebApp.API.Data.Services
             return await _mapper
                 .ProjectTo<CategoryToReturnDTO>(_context.Set<Category>().AsNoTracking())
                 .ToListAsync();
-        }
-
-        public async Task<Result<CategoryToReturnDTO>> ByIdAsync(int id)
-        {
-            var category = await this.FindByIdAsync(id);
-
-            if (category == null)
-            {
-                return "Категорията не е намерена";
-            }
-     
-            return _mapper.Map<Category, CategoryToReturnDTO>(category);
-        }
-
-        private async Task<Category> FindByIdAsync(int id)
-        {
-            return await _context
-                .Set<Category>() // .Categories
-                .Include(c => c.Ads)
-                .Where(c => c.Id == id)
-                .FirstOrDefaultAsync();
         }
     }
 }

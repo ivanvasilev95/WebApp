@@ -1,10 +1,13 @@
 using System.Linq;
 using System.Net.Mail;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.User;
+using WebApp.API.Extensions;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
 
@@ -21,8 +24,9 @@ namespace WebApp.API.Data.Services
             _mapper = mapper;
         }
 
-        public async Task<Result<UserForDetailedDTO>> ByIdAsync(int id, bool includeNotApprovedAds)
+        public async Task<Result<UserForDetailedDTO>> GetUserWithAdsAsync(int id, ClaimsPrincipal currentUser)
         {
+            var includeNotApprovedAds = this.IsUserEligible(id, currentUser);
             var user = await FindByIdAsync(id, includeNotApprovedAds);
             if(user == null)
             {
@@ -32,7 +36,49 @@ namespace WebApp.API.Data.Services
             return _mapper.Map<UserForDetailedDTO>(user);
         }
 
-        public async Task<Result> UpdateAsync(int id, UserForUpdateDTO model)
+        private bool IsUserEligible(int userId, ClaimsPrincipal currentUser)
+        {
+            var currentUserId = int.Parse(currentUser.GetId() ?? "0");
+
+            if (currentUser.IsAuthenticated())
+            {
+                var currentUserRoles = currentUser.GetUserRoles();
+                return (currentUserId == userId || currentUserRoles.Contains("Admin") || currentUserRoles.Contains("Moderator"));
+            }
+
+            return false;
+        }
+
+        private async Task<User> FindByIdAsync(int id, bool includeNotApprovedAds)
+        {
+            var query = _context
+                .Users
+                .Include(u => u.Ads)
+                .ThenInclude(a => a.Photos)
+                .Include(u => u.Ads)
+                .ThenInclude(a => a.Category)
+                .AsQueryable();
+
+            if (includeNotApprovedAds)
+            {
+                query = query.IgnoreQueryFilters();
+            }
+
+            var user = await query.FirstOrDefaultAsync(u => u.Id == id);
+
+            return user;
+        }
+
+        public async Task<UserForUpdateDTO> GetUserForEditAsync(int id)
+        {
+            return await _context
+                .Users
+                .Where(u => u.Id == id)
+                .ProjectTo<UserForUpdateDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Result> UpdateUserAsync(int id, UserForUpdateDTO model)
         {
             var email = model.Email;
             
@@ -56,7 +102,10 @@ namespace WebApp.API.Data.Services
                 }
             }
 
-            var user = await FindByIdAsync(id, false); // user.NormalizedEmail = userForUpdateDTO.Email?.ToUpper(); moved to mapper profiles
+            var user = await _context
+                .Users
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
             
             _mapper.Map(model, user);
 
@@ -74,25 +123,6 @@ namespace WebApp.API.Data.Services
             {
                 return false;
             }
-        }
-
-        private async Task<User> FindByIdAsync(int id, bool includeNotApprovedAds)
-        {
-            var query = _context.Users
-                .Include(u => u.Ads)
-                .ThenInclude(a => a.Photos)
-                .Include(u => u.Ads)
-                .ThenInclude(a => a.Category)
-                .AsQueryable();
-
-            if (includeNotApprovedAds)
-            {
-                query = query.IgnoreQueryFilters();
-            }
-
-            var user = await query.FirstOrDefaultAsync(u => u.Id == id);
-
-            return user;
         }
 
         private async Task<bool> EmailIsNotAvailableAsync(int userId, string email)
