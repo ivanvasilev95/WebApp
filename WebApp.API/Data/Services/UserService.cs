@@ -13,16 +13,10 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService, IUserService
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
-
         public UserService(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+            : base(context, mapper) {}
 
         public async Task<Result<UserForDetailedDTO>> GetUserWithAdsAsync(int id, ClaimsPrincipal currentUser)
         {

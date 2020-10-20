@@ -8,16 +8,10 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Services
 {
-    public class LikeService : ILikeService
+    public class LikeService : BaseService, ILikeService
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
-
         public LikeService(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+            : base(context, mapper) {}
         
         public async Task<int> AdLikesCount(int adId)
         {

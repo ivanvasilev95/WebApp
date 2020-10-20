@@ -15,6 +15,7 @@ Web Bazar is an online platform for buying and selling goods and services writte
 - Administrator
     - Approve or reject pending ads
     - Manage user roles
+    - Manage ad categories
 
 **Tools and technologies used:** ASP.NET Core Web API, Entity Framework Core, Identity Framework, AutoMapper, Angular, AlertifyJS, Bootstrap
 

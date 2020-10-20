@@ -29,9 +29,9 @@ export class AdMessagesComponent implements OnInit {
     this.messageService.getMessageThread(this.ad.id, this.recipientId)
       .pipe(
         tap(messages => {
-          const loggedInUserId = +this.authService.decodedToken.nameid;
+          const currentUserId = +this.authService.decodedToken.nameid;
           for (const message of messages) {
-            if (message.isRead === false && message.recipientId === loggedInUserId /* && message.senderDeleted === false */) {
+            if (message.isRead === false && message.recipientId === currentUserId /* && message.senderDeleted === false */) {
               this.messageService.markMessageAsRead(message.id).subscribe();
               MessageService.unreadMessagesCount--;
             }

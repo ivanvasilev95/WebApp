@@ -13,16 +13,10 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Services
 {
-    public class MessageService : IMessageService
+    public class MessageService : BaseService, IMessageService
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
-
         public MessageService(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+            : base(context, mapper) {}
 
         public async Task<Result<MessageToReturnDTO>> CreateAsync(MessageForCreationDTO model)
         {

@@ -30,7 +30,7 @@ namespace WebApp.API.Extensions
             return new OkResult();
         }
 
-        public static async Task<ActionResult> ToActionResult<TData>(this Task<Result<TData>> resultTask)
+        public static async Task<ActionResult<TData>> ToActionResult<TData>(this Task<Result<TData>> resultTask)
         {
             var result = await resultTask;
 
@@ -39,7 +39,7 @@ namespace WebApp.API.Extensions
                 return new BadRequestObjectResult(result.Error);
             }
 
-            return new OkObjectResult(result.Data);
+            return result.Data;
         }
     }
 }

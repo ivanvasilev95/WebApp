@@ -10,16 +10,10 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Services
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : BaseService, ICategoryService
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
-
         public CategoryService(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+            : base(context, mapper) {}
 
         public async Task<Result<CategoryToReturnDTO>> CreateAsync(CategoryForCreationDTO model)
         {

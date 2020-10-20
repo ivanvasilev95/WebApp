@@ -12,16 +12,11 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Services
 {
-    public class AdService : IAdService
+    public class AdService : BaseService, IAdService
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
-
         public AdService(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+            : base(context, mapper) {}
+
         public async Task<IEnumerable<AdForListDTO>> AllAsync(UserParams userParams, HttpResponse response)
         {
             var ads = _context

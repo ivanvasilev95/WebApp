@@ -13,17 +13,13 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Data.Services
 {
-    public class PhotoService : IPhotoService
+    public class PhotoService : BaseService, IPhotoService
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
         private Cloudinary _cloudinary;
 
         public PhotoService(DataContext context, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
+            : base(context, mapper)
         {
-            _context = context;
-            _mapper = mapper;
-
             Account acc = new Account(cloudinaryConfig.Value.CloudName, cloudinaryConfig.Value.ApiKey, cloudinaryConfig.Value.ApiSecret);
             _cloudinary = new Cloudinary(acc); 
         }
