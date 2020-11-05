@@ -33,7 +33,22 @@ export class UserEditComponent implements OnInit {
   updateUser() {
     this.checkUserProperties();
 
-    this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(() => {
+    const userId = this.authService.decodedToken.nameid;
+    const email = this.user.email;
+
+    // is not admin and email filed is empty
+    if ((email === null || email === undefined) &&  userId !== 1) {
+      this.alertify.error('Полето имейл не може да бъде празно');
+      return;
+    }
+
+    // email is not valid
+    if (email !== null && email !== undefined && !this.validateEmail(email)) {
+      this.alertify.error('Имейлът адресът не е валиден');
+      return;
+    }
+
+    this.userService.updateUser(userId, this.user).subscribe(() => {
       this.alertify.success('Профилът е редактиран успешно');
       this.editForm.reset(this.user);
     }, error => {
@@ -51,5 +66,10 @@ export class UserEditComponent implements OnInit {
         this.user.email = this.user.email.toLowerCase().trim();
       }
     }
+  }
+
+  validateEmail(email) {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
   }
 }

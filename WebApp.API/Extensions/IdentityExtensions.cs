@@ -12,7 +12,7 @@ namespace WebApp.API.Extensions
                 .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
                 ?.Value;
         
-        public static IEnumerable<string> GetUserRoles(this ClaimsPrincipal user) 
+        public static IEnumerable<string> GetRoles(this ClaimsPrincipal user) 
             => ((ClaimsIdentity)user.Identity)
                     .Claims
                     .Where(c => c.Type == ClaimTypes.Role)

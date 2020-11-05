@@ -1,12 +1,8 @@
-using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.User;
-using WebApp.API.Extensions;
 
 namespace WebApp.API.Controllers
 {
@@ -21,9 +17,9 @@ namespace WebApp.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserWithAds(int id)
+        public async Task<IActionResult> GetUserWithAds([FromRoute]int id, [FromQuery]bool includeNotApprovedAds)
         {
-            var result = await _userService.GetUserWithAdsAsync(id, this.User);
+            var result = await _userService.GetUserWithAdsAsync(id, includeNotApprovedAds);
             if(result.Failure)
             {
                 return NotFound(result.Error);
