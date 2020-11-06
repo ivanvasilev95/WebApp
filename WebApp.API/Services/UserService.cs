@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.Data.Interfaces;
+using WebApp.API.Data;
 using WebApp.API.DTOs.User;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
+using WebApp.API.Services.Interfaces;
 
-namespace WebApp.API.Data.Services
+namespace WebApp.API.Services
 {
     public class UserService : BaseService, IUserService
     {
@@ -59,6 +60,11 @@ namespace WebApp.API.Data.Services
         public async Task<Result> UpdateUserAsync(int id, UserForUpdateDTO model)
         {
             var email = model.Email;
+
+            if (string.IsNullOrWhiteSpace(email) && id != 1)
+            {
+                return "Полето имейл не може да бъде празно";
+            }
 
             if (!string.IsNullOrWhiteSpace(email))
             {

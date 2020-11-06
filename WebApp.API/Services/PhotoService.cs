@@ -6,12 +6,13 @@ using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using WebApp.API.Data.Interfaces;
+using WebApp.API.Data;
 using WebApp.API.DTOs.Photo;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
+using WebApp.API.Services.Interfaces;
 
-namespace WebApp.API.Data.Services
+namespace WebApp.API.Services
 {
     public class PhotoService : BaseService, IPhotoService
     {

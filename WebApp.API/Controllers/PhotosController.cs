@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Data.Interfaces;
+using WebApp.API.Services.Interfaces;
 using WebApp.API.DTOs.Photo;
 
 namespace WebApp.API.Controllers

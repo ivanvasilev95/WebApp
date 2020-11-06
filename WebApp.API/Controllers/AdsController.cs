@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Data.Interfaces;
 using WebApp.API.DTOs.Ad;
 using WebApp.API.Extensions;
 using WebApp.API.Helpers;
+using WebApp.API.Services.Interfaces;
 
 namespace WebApp.API.Controllers
 {

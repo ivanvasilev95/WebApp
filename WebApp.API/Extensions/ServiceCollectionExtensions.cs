@@ -8,10 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using WebApp.API.Data;
-using WebApp.API.Data.Interfaces;
-using WebApp.API.Data.Services;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
+using WebApp.API.Services;
+using WebApp.API.Services.Interfaces;
 
 namespace WebApp.API.Extensions
 {

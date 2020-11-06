@@ -3,12 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.Data.Interfaces;
+using WebApp.API.Data;
 using WebApp.API.DTOs.Category;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
+using WebApp.API.Services.Interfaces;
 
-namespace WebApp.API.Data.Services
+namespace WebApp.API.Services
 {
     public class CategoryService : BaseService, ICategoryService
     {

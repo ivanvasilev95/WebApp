@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using WebApp.API.DTOs.Message;
 using WebApp.API.Helpers;
-using WebApp.API.Models;
 
-namespace WebApp.API.Data.Interfaces
+namespace WebApp.API.Services.Interfaces
 {
     public interface IMessageService
     {

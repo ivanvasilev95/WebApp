@@ -33,7 +33,7 @@ export class UserEditComponent implements OnInit {
   updateUser() {
     this.checkUserProperties();
 
-    const userId = this.authService.decodedToken.nameid;
+    const userId = +this.authService.decodedToken.nameid;
     const email = this.user.email;
 
     // is not admin and email filed is empty

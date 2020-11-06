@@ -7,13 +7,14 @@ using AutoMapper;
 using WebApp.API.DTOs.Ad;
 using AutoMapper.QueryableExtensions;
 using System.Collections.Generic;
-using WebApp.API.Data.Interfaces;
+using WebApp.API.Services.Interfaces;
 using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
 using WebApp.API.Helpers;
+using WebApp.API.Data;
 
-namespace WebApp.API.Data.Services
+namespace WebApp.API.Services
 {
     public class AdminService : IAdminService
     {
@@ -103,7 +104,7 @@ namespace WebApp.API.Data.Services
 
         public async Task ApproveAd(int id) 
         {
-            var ad = await GetById(id);
+            var ad = await GetByIdAsync(id);
 
             ad.IsApproved = true;
 
@@ -112,7 +113,7 @@ namespace WebApp.API.Data.Services
 
         public async Task RejectAd(int id) 
         {
-            var ad = await GetById(id);
+            var ad = await GetByIdAsync(id);
 
             RemoveAdPhotos(ad);
 
@@ -121,7 +122,7 @@ namespace WebApp.API.Data.Services
             await _context.SaveChangesAsync();
         }
 
-        private async Task<Ad> GetById(int id) 
+        private async Task<Ad> GetByIdAsync(int id) 
         {
             return await _context.Ads
                 .Include(a => a.Photos)

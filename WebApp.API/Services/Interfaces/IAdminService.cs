@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using WebApp.API.DTOs.Ad;
 using WebApp.API.Helpers;
 
-namespace WebApp.API.Data.Interfaces
+namespace WebApp.API.Services.Interfaces
 {
     public interface IAdminService
     {

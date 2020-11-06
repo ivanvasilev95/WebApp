@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.Data.Interfaces;
+using WebApp.API.Data;
 using WebApp.API.DTOs.Ad;
 using WebApp.API.Extensions;
 using WebApp.API.Helpers;
 using WebApp.API.Models;
+using WebApp.API.Services.Interfaces;
 
-namespace WebApp.API.Data.Services
+namespace WebApp.API.Services
 {
     public class AdService : BaseService, IAdService
     {

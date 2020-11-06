@@ -1,6 +1,7 @@
 using AutoMapper;
+using WebApp.API.Data;
 
-namespace WebApp.API.Data.Services
+namespace WebApp.API.Services
 {
     public abstract class BaseService
     {

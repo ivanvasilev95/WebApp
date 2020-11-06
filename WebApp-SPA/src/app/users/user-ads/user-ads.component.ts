@@ -36,7 +36,7 @@ export class UserAdsComponent implements OnInit {
 
   includeNotApprovedAds(userId) {
     if (this.authService.loggedIn()) {
-      return this.authService.decodedToken.nameid === userId || this.authService.roleMatch(['Admin', 'Moderator']);
+      return +this.authService.decodedToken.nameid === userId || this.authService.roleMatch(['Admin', 'Moderator']);
     }
 
     return false;

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.DTOs.Role;
-using WebApp.API.Data.Interfaces;
+using WebApp.API.Services.Interfaces;
 
 namespace WebApp.API.Controllers
 {

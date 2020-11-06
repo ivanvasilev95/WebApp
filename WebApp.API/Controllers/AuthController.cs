@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using WebApp.API.DTOs.User;
-using WebApp.API.Data.Interfaces;
+using WebApp.API.Services.Interfaces;
 
 namespace WebApp.API.Controllers
 {
