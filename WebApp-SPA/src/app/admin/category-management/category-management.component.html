@@ -1,4 +1,3 @@
-
 <div class="row mt-2">
   <div class="col-sm-10">
     <input type="text" [(ngModel)]="newCategoryName" class="form-control" placeholder="Добави нова категория">
@@ -17,7 +16,7 @@
       </tr>
       <tr *ngFor="let category of categories">
         <td>{{category.id}}</td>
-        <td>{{category.name}}</td>
+        <td [attr.contenteditable]="allowEdit" (click)="onClick()" (blur)="updateCategory($event, category)">{{category.name}}</td>
         <td><button class="btn btn-danger" (click)="removeCategory(category.id)">Премахни</button></td>
       </tr>
     </table>

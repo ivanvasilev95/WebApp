@@ -118,7 +118,7 @@ namespace WebApp.API.Services
             return true;
         }
 
-        public async Task<Result> UpdateAsync(int id, AdForUpdateDTO adForUpdateDTO)
+        public async Task<Result> UpdateAsync(int id, AdForUpdateDTO model)
         {
             var ad = await GetAdAsync(id);
             if (ad == null)
@@ -126,7 +126,7 @@ namespace WebApp.API.Services
                 return "Обявата не е намерена";
             }
 
-             _mapper.Map(adForUpdateDTO, ad);
+             _mapper.Map(model, ad);
 
              return true;
         }

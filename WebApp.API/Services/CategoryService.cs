@@ -18,11 +18,9 @@ namespace WebApp.API.Services
 
         public async Task<Result<CategoryToReturnDTO>> CreateAsync(CategoryForCreationDTO model)
         {
-            var categoryAlreadyAdded = await _context
-                .Categories
-                .AnyAsync(c => c.Name == model.Name);
+            var categoryAlreadyExists = await CategoryNameIsTakenAsync(model.Name);
 
-            if (categoryAlreadyAdded)
+            if (categoryAlreadyExists)
             {
                 return "Категорията вече съществува.";
             }
@@ -35,7 +33,30 @@ namespace WebApp.API.Services
             return  _mapper.Map<Category, CategoryToReturnDTO>(category);
         }
 
-        // implement update category also
+        public async Task<Result> UpdateAsync(int id, CategoryForCreationDTO model)
+        {
+            var categoryAlreadyExists = await CategoryNameIsTakenAsync(model.Name);
+
+            if (categoryAlreadyExists)
+            {
+                return "Категорията вече съществува.";
+            }
+
+            var category = await _context
+                .Categories
+                .Where(c => c.Id == id)
+                .FirstOrDefaultAsync();
+            
+            _mapper.Map(model, category);
+
+            return true;
+        }
+
+        private async Task<bool> CategoryNameIsTakenAsync(string name) {
+            return await _context
+                .Categories
+                .AnyAsync(c => c.Name.ToLower() == name.ToLower());
+        }
 
         public async Task<Result> DeleteAsync(int id)
         {

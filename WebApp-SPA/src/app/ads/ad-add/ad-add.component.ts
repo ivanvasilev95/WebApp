@@ -28,7 +28,7 @@ export class NewAdComponent implements OnInit {
   }
 
   getCategories() {
-    this.categoryService.getCategories().subscribe(
+    this.categoryService.getAll().subscribe(
       (categories: Category[]) => this.categories = categories,
       error => this.alertify.error(error));
   }

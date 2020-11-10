@@ -14,7 +14,7 @@ namespace WebApp.API.Services.Interfaces
          Task<IEnumerable<AdForListDTO>> UserLikedAdsAsync(int userId);
          Task<int> CreateAsync(AdForCreateDTO model);
 
-        Task<Result> UpdateAsync(int id, AdForUpdateDTO adForUpdateDTO);
+        Task<Result> UpdateAsync(int id, AdForUpdateDTO model);
 
         Task<Result> DeleteAsync(int id);
 

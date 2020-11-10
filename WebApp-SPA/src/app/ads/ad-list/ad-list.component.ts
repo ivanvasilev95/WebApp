@@ -32,7 +32,7 @@ export class AdListComponent implements OnInit {
   }
 
   getCategories() {
-    this.categoryService.getCategories().subscribe((categories: Category[]) => this.categories = categories,
+    this.categoryService.getAll().subscribe((categories: Category[]) => this.categories = categories,
     error => this.alertify.error(error));
   }
 

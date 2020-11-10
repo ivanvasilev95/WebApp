@@ -7,6 +7,7 @@ using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {
+    [Authorize(Policy = "RequireAdminRole")]
     public class CategoriesController : ApiController
     {
         private readonly ICategoryService _categoryService;
@@ -26,19 +27,27 @@ namespace WebApp.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> Create(CategoryForCreationDTO categoryForCreationDTO)
+        public async Task<IActionResult> Create(CategoryForCreationDTO model)
         {
-            var result = await _categoryService.CreateAsync(categoryForCreationDTO);
+            var result = await _categoryService.CreateAsync(model);
             if (result.Failure)
                 return BadRequest(result.Error);
 
             return Created(nameof(this.Created), result.Data);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, CategoryForCreationDTO model)
+        {
+            var result = await _categoryService.UpdateAsync(id, model);
+            if (result.Failure)
+                return BadRequest(result.Error);
+
+            return Ok();
+        }
+
         [HttpDelete("{id}")]
-        [Authorize(Policy = "RequireAdminRole")]
-        public async Task<ActionResult<Category>> Delete(int id) 
+        public async Task<IActionResult> Delete(int id) 
         {
             var result = await _categoryService.DeleteAsync(id);
             if (result.Failure)

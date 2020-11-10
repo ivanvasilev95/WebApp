@@ -28,7 +28,7 @@ namespace WebApp.API.Controllers
             _mapper = mapper;
         }
 
-                [HttpPost("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
         {
             var user = await _userManager.FindByNameAsync(userForLoginDTO.UserName);

@@ -17,7 +17,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                     if (error.status === 401 || error.status === 404
                     || (error.status === 400 && !error.error.errors) || error.status === 500) {
                         if (typeof error.error === 'object') { // if not then it's string
-                            if (error.error.constructor === Array) { // if it's an array object
+                            if (error.error !== null && error.error.constructor === Array) { // if it's an array object
                                 let errorData = '';
                                 error.error.forEach(err => {
                                     errorData += err.description;

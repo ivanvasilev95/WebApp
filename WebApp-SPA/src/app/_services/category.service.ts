@@ -11,15 +11,19 @@ export class CategoryService {
 
   constructor(private http: HttpClient) { }
 
-  getCategories() {
+  getAll() {
     return this.http.get<Category[]>(this.baseUrl);
   }
 
-  addCategory(category: any) {
+  add(category: any) {
     return this.http.post(this.baseUrl, category);
   }
 
-  removeCategory(id: number) {
+  update(id: number, category: any) {
+    return this.http.put(this.baseUrl + id, category);
+  }
+
+  remove(id: number) {
     return this.http.delete(this.baseUrl + id);
   }
 }
