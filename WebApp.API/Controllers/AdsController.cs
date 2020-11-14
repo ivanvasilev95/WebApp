@@ -21,7 +21,7 @@ namespace WebApp.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> All([FromQuery]UserParams userParams)
         {
-            var ads = await _adService.AllAsync(userParams, this.Response);
+            var ads = await _adService.AllAsync(userParams);
 
             return Ok(ads);
         }

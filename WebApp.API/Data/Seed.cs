@@ -31,7 +31,7 @@ namespace WebApp.API.Data
 
             var adminUser = new User { UserName = "admin" };
 
-            IdentityResult result = _userManager.CreateAsync(adminUser, "admin").Result;
+            IdentityResult result = _userManager.CreateAsync(adminUser, "admin1").Result;
             if (result.Succeeded)
             {
                 var admin = _userManager.FindByNameAsync("admin").Result;

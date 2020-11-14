@@ -16,8 +16,13 @@ namespace WebApp.API.Services
 {
     public class MessageService : BaseService, IMessageService
     {
-        public MessageService(DataContext context, IMapper mapper)
-            : base(context, mapper) {}
+        private readonly IHttpContextAccessor _contextAccessor;
+
+        public MessageService(DataContext context, IMapper mapper, IHttpContextAccessor contextAccessor)
+            : base(context, mapper)
+        {
+            _contextAccessor = contextAccessor;
+        }
 
         public async Task<Result<MessageToReturnDTO>> CreateAsync(MessageForCreationDTO model)
         {
@@ -127,7 +132,7 @@ namespace WebApp.API.Services
             return unreadMsgsCount;
         }
 
-        public async Task<IEnumerable<MessageToReturnDTO>> UserMessagesAsync(MessageParams messageParams, HttpResponse response)
+        public async Task<IEnumerable<MessageToReturnDTO>> UserMessagesAsync(MessageParams messageParams)
         {
             var messages = _context.Messages
                 .Include(u => u.Sender)
@@ -157,7 +162,7 @@ namespace WebApp.API.Services
 
             var paginatedMessages = await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
             
-            response.AddPagination(paginatedMessages.CurrentPage, paginatedMessages.PageSize,
+            _contextAccessor.HttpContext.Response.AddPagination(paginatedMessages.CurrentPage, paginatedMessages.PageSize,
                 paginatedMessages.TotalCount, paginatedMessages.TotalPages);
 
             return _mapper.Map<IEnumerable<MessageToReturnDTO>>(paginatedMessages);

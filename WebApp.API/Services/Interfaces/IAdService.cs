@@ -9,7 +9,7 @@ namespace WebApp.API.Services.Interfaces
     public interface IAdService
     {
          Task<Result<AdForDetailedDTO>> ByIdAsync(int id);
-         Task<IEnumerable<AdForListDTO>> AllAsync(UserParams userParams, HttpResponse response);
+         Task<IEnumerable<AdForListDTO>> AllAsync(UserParams userParams);
          Task<IEnumerable<AdForListDTO>> UserAdsAsync(int userId);
          Task<IEnumerable<AdForListDTO>> UserLikedAdsAsync(int userId);
          Task<int> CreateAsync(AdForCreateDTO model);

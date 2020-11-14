@@ -59,6 +59,7 @@ import { PhotoService } from './_services/photo.service';
 import { MessageService } from './_services/message.service';
 import { AuthPanelComponent } from './auth/auth-panel/auth-panel.component';
 import { LikeService } from './_services/like.service';
+import { ScrollTopComponent } from './scroll-top/scroll-top.component';
 
 export function tokenGetter() {
    return localStorage.getItem('token');
@@ -72,7 +73,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
 }
 
 @NgModule({
-   declarations: [
+   declarations: [	
       AppComponent,
       NavComponent,
       HomeComponent,
@@ -99,7 +100,8 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       UserManagementComponent,
       AdManagementComponent,
       CategoryManagementComponent,
-      RolesModalComponent
+      RolesModalComponent,
+      ScrollTopComponent
    ],
    imports: [
       BrowserModule,

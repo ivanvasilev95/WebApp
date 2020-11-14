@@ -30,7 +30,7 @@ namespace WebApp.API.Controllers
         {
             messageParams.UserId = int.Parse(this.User.GetId());
             
-            var messages = await _messageService.UserMessagesAsync(messageParams, this.Response);
+            var messages = await _messageService.UserMessagesAsync(messageParams);
 
             return Ok(messages);
         }

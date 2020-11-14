@@ -13,7 +13,9 @@ import { UserService } from 'src/app/_services/user.service';
 })
 export class UserEditComponent implements OnInit {
   user: User;
+
   @ViewChild('editForm', {static: false}) editForm: NgForm;
+
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
     if (this.editForm.dirty) {

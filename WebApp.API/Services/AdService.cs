@@ -15,10 +15,15 @@ namespace WebApp.API.Services
 {
     public class AdService : BaseService, IAdService
     {
-        public AdService(DataContext context, IMapper mapper)
-            : base(context, mapper) {}
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public async Task<IEnumerable<AdForListDTO>> AllAsync(UserParams userParams, HttpResponse response)
+        public AdService(DataContext context, IMapper mapper, IHttpContextAccessor contextAccessor)
+            : base(context, mapper)
+        {
+            _contextAccessor = contextAccessor;
+        }
+
+        public async Task<IEnumerable<AdForListDTO>> AllAsync(UserParams userParams)
         {
             var ads = _context
                 .Ads
@@ -70,7 +75,7 @@ namespace WebApp.API.Services
 
             var paginatedAds = await PagedList<Ad>.CreateAsync(ads, userParams.PageNumber, userParams.PageSize);
 
-            response.AddPagination(paginatedAds.CurrentPage, paginatedAds.PageSize, paginatedAds.TotalCount, paginatedAds.TotalPages);
+            _contextAccessor.HttpContext.Response.AddPagination(paginatedAds.CurrentPage, paginatedAds.PageSize, paginatedAds.TotalCount, paginatedAds.TotalPages);
 
             return _mapper.Map<IEnumerable<AdForListDTO>>(paginatedAds);
         }

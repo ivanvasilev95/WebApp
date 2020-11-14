@@ -48,7 +48,7 @@
             </tab>
             <tab heading="Описание" (selectTab)="resetForm('details')">
               <form #descriptionForm="ngForm" id="descriptionForm" name="descriptionForm" (ngSubmit)="updateAd()">
-                <textarea class="form-control" name="description" rows="10" [(ngModel)]="ad.description" pre></textarea>
+                <textarea class="form-control" name="description" rows="10" [(ngModel)]="ad.description" pre></textarea> <!-- style="white-space: pre" -->
               </form>
             </tab>
             <tab heading="Снимки" (selectTab)="resetForm('both')">
