@@ -32,6 +32,7 @@ namespace WebApp.API
                 .AddCloudinarySettingsConfiguration(this.Configuration)
                 .AddAutoMapper(typeof(Startup))
                 .AddCors()
+                .AddHttpContextAccessor()
                 .AddApiControllers();
         }
 
