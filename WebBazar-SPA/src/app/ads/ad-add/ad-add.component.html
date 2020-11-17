@@ -7,21 +7,12 @@
         <!-- title -->
         <div class="form-group">
           <input type="text" 
-            [ngClass]="{'is-invalid': createAdForm.get('title').errors 
-              && createAdForm.get('title').touched}"
+            [ngClass]="{'is-invalid': createAdForm.get('title').touched && createAdForm.hasError('titleMismatch')}"
             class="form-control" 
             formControlName="title" 
             placeholder="Заглавие">
-          <div class="invalid-feedback" 
-            *ngIf="createAdForm.get('title').hasError('required') 
-              && createAdForm.get('title').touched">
-              Заглавието е задължително
-          </div>
-          <div class="invalid-feedback" *ngIf="createAdForm.get('title').hasError('minlength') && createAdForm.get('title').touched">
-            Заглавието трябва да бъде поне 3 символа
-          </div>
-          <div class="invalid-feedback" *ngIf="createAdForm.get('title').hasError('maxlength') && createAdForm.get('title').touched">
-            Заглавието не трябва да надвишава 50 символа
+          <div class="invalid-feedback" *ngIf="createAdForm.hasError('titleMismatch')">
+            Заглавието трябва да бъде между 3 и 50 символа
           </div>
         </div>
         <!-- category -->
@@ -63,37 +54,32 @@
             class="form-control" 
             formControlName="price" 
             placeholder="Цена">
-          <div class="invalid-feedback" 
-            *ngIf="createAdForm.hasError('priceMismatch') 
-              && createAdForm.get('price').touched">
-              Цената трябва да бъде положително число
+          <div class="invalid-feedback" *ngIf="createAdForm.hasError('priceMismatch') && createAdForm.get('price').touched">
+            Цената трябва да бъде положително число
           </div>
         </div>
         <!-- location -->
         <div class="form-group">
           <input type="text" 
-            [ngClass]="{'is-invalid': createAdForm.get('location').errors 
-              && createAdForm.get('location').touched}"
+            [ngClass]="{'is-invalid': createAdForm.get('location').touched && createAdForm.hasError('locationMismatch')}"
             class="form-control" 
             formControlName="location" 
             placeholder="Адрес">
-          <div class="invalid-feedback" 
-            *ngIf="createAdForm.get('location').hasError('required') 
-              && createAdForm.get('location').touched">
-              Адресът е задължителен
-          </div>
-          <div class="invalid-feedback" *ngIf="createAdForm.get('location').hasError('minlength') && createAdForm.get('location').touched">
-            Адресът трябва да бъде поне 3 символа
-          </div>
-          <div class="invalid-feedback" *ngIf="createAdForm.get('location').hasError('maxlength') && createAdForm.get('location').touched">
-            Адресът не трябва да надвишава 35 символа
+          <div class="invalid-feedback" *ngIf="createAdForm.hasError('locationMismatch')">
+            Адресът трябва да бъде между 3 и 35 символа
           </div>
         </div>
         <!-- descrition -->
         <div class="form-group">
-          <textarea class="form-control" rows="4" formControlName="description" placeholder="Описание" [ngClass]="{'is-invalid': createAdForm.get('description').errors}"></textarea>
-          <div class="invalid-feedback" *ngIf="createAdForm.get('description').hasError('maxlength')">
-            Описанието не трябва да надвишава 1000 символа
+          <textarea
+            class="form-control" 
+            rows="4"
+            formControlName="description"
+            placeholder="Описание"
+            [ngClass]="{'is-invalid': createAdForm.hasError('descriptionMismatch')}">
+          </textarea>
+          <div class="invalid-feedback" *ngIf="createAdForm.hasError('descriptionMismatch')">
+            Описанието трябва да бъде между 10 и 1000 символа
           </div>
         </div>
         <div class="form-group text-center">

@@ -30,7 +30,7 @@ namespace WebApp.API.Data
                     .IsRequired();
 
                 userRole.HasOne(ur => ur.User)
-                    .WithMany(r => r.UserRoles)
+                    .WithMany(u => u.UserRoles)
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
             });
@@ -48,6 +48,16 @@ namespace WebApp.API.Data
             builder.Entity<Like>()
                 .HasKey(k => new {k.UserId, k.AdId});
                 
+            // builder.Entity<Ad>()
+            //     .HasMany(a => a.Photos)
+            //     .WithOne(p => p.Ad)
+            //     .OnDelete(DeleteBehavior.Restrict); // Restrict
+
+            // builder.Entity<Photo>()
+            //     .HasOne(p => p.Ad)
+            //     .WithMany(a => a.Photos)
+            //     .OnDelete(DeleteBehavior.Cascade); // Restrict
+
             builder.Entity<Ad>()
                 .HasQueryFilter(a => a.IsApproved);
         }

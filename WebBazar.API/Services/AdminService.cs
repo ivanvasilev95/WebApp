@@ -104,7 +104,9 @@ namespace WebApp.API.Services
 
         public async Task ApproveAd(int id) 
         {
-            var ad = await GetByIdAsync(id);
+            var ad = await _context.Ads
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             ad.IsApproved = true;
 
@@ -113,21 +115,19 @@ namespace WebApp.API.Services
 
         public async Task RejectAd(int id) 
         {
-            var ad = await GetByIdAsync(id);
-
-            RemoveAdPhotos(ad);
+            var ad = await _context.Ads
+                .Include(a => a.Photos)
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(a => a.Id == id);
+			
+			if (ad.Photos.Any())
+            {
+                RemoveAdPhotos(ad);
+            }
 
             _context.Ads.Remove(ad);
 
             await _context.SaveChangesAsync();
-        }
-
-        private async Task<Ad> GetByIdAsync(int id) 
-        {
-            return await _context.Ads
-                .Include(a => a.Photos)
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         private void RemoveAdPhotos(Ad ad) 

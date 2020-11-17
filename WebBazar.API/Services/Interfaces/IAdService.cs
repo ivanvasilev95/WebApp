@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using WebApp.API.DTOs.Ad;
 using WebApp.API.Helpers;
 

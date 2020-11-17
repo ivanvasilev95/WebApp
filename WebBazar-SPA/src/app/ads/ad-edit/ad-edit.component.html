@@ -4,8 +4,8 @@
         <h4>Редакция на обява</h4>
     </div>
   </div>
-  <div class="row">
-    <div *ngIf="editForm?.dirty || descriptionForm?.dirty" class="col alert alert-info">
+  <div *ngIf="editForm?.dirty || descriptionForm?.dirty" class="row">
+    <div class="col alert alert-info">
       <strong>Информация:</strong> Вие направихте промени. Всички незапазени промени ще бъдат изтрити!
     </div>
   </div>
@@ -28,7 +28,7 @@
         <tabset class="ad-tabset" #adTabs>
             <tab heading="Детайли" (selectTab)="resetForm('description')">
                 <form #editForm="ngForm" id="editForm" name="editForm" (ngSubmit)="updateAd()">
-                    <h6>Заглавие на обявата</h6>
+                    <h6>Заглавие</h6>
                     <input type="text" class="form-control" name="title" [(ngModel)]="ad.title">
                     <h6 class="mt-2">Категория</h6>
                     <select class="form-control" [(ngModel)]="ad.categoryId" name="categoryId" (change)="onCategorySelect()">
@@ -37,7 +37,7 @@
                     <h6 class="mt-2">Адрес</h6>
                     <input type="text" class="form-control" name="location" [(ngModel)]="ad.location">
                     <h6 class="mt-2">Цена</h6>
-                    <input type="number" class="form-control" name="price" [(ngModel)]="ad.price" min="0" step="0.01" placeholder="По договаряне" oninput="validity.valid||(value='');">
+                    <input type="number" class="form-control" name="price" [(ngModel)]="ad.price" min="0" step="0.01" placeholder="По договаряне" oninput="validity.valid||(value=null);"> <!-- value='' -->
                     <h6 class="mt-2">Състояние</h6>
                     <select class="form-control" [(ngModel)]="ad.isUsed" name="isUsed">
                       <option [ngValue]="false">ново</option>
@@ -47,7 +47,7 @@
                 </form>
             </tab>
             <tab heading="Описание" (selectTab)="resetForm('details')">
-              <form #descriptionForm="ngForm" id="descriptionForm" name="descriptionForm" (ngSubmit)="updateAd()">
+              <form #descriptionForm="ngForm" id="descriptionForm" name="descriptionForm" (ngSubmit)="updateDescription()">
                 <textarea class="form-control" name="description" rows="10" [(ngModel)]="ad.description" pre></textarea> <!-- style="white-space: pre" -->
               </form>
             </tab>

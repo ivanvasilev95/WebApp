@@ -9,7 +9,7 @@
     <div class="invalid-feedback" 
       *ngIf="loginForm.get('userName').hasError('required')
         && loginForm.get('userName').touched" style="text-align: left;">
-        Потребителското име е задължително
+        Полето "Потребителско име" е задължително
     </div>
     <div class="invalid-feedback"
       *ngIf="loginForm.get('userName').hasError('minlength')

@@ -36,11 +36,26 @@ export class UserEditComponent implements OnInit {
     this.checkUserProperties();
 
     const userId = +this.authService.decodedToken.nameid;
+    const fullName = this.user.fullName;
     const email = this.user.email;
+    const address = this.user.address;
 
-    // is not admin and email filed is empty
+    // user is not main admin and full name field is invalid
+    if (userId !== 1) {
+      if (fullName === null || fullName === undefined) {
+        this.alertify.error('Полето \'Твоето име\' не може да бъде празно');
+        return;
+      }
+      if (fullName.length < 2 || fullName.length > 15) {
+        this.alertify.error('Полето \'Твоето име\' не трябва да бъде по-късо от 2 или по-дълго от 15 символа');
+        return;
+      }
+      this.user.fullName = this.user.fullName.trim();
+    }
+
+    // is not main admin and email field is empty
     if ((email === null || email === undefined) &&  userId !== 1) {
-      this.alertify.error('Полето имейл не може да бъде празно');
+      this.alertify.error('Полето \'Имейл адрес\' не може да бъде празно');
       return;
     }
 
@@ -48,6 +63,16 @@ export class UserEditComponent implements OnInit {
     if (email !== null && email !== undefined && !this.validateEmail(email)) {
       this.alertify.error('Имейлът адресът не е валиден');
       return;
+    }
+
+    // validate address, if it's not null
+    if (address !== null) {
+      if (address.trim().length < 5 || address.trim().length > 25) {
+        this.alertify.error('Полето \'Населено място\' не трябва да бъде по-късо от 5 или по-дълго от 25 символа');
+        return;
+      } else {
+        this.user.address = this.user.address.trim();
+      }
     }
 
     this.userService.updateUser(userId, this.user).subscribe(() => {
@@ -59,8 +84,8 @@ export class UserEditComponent implements OnInit {
   }
 
   checkUserProperties() {
-    if (this.user.fullName.trim() === '') { this.user.fullName = null; }
-    if (this.user.address.trim() === '') { this.user.address = null; }
+    if (this.user.fullName !== null && this.user.fullName.trim() === '') { this.user.fullName = null; }
+    if (this.user.address !== null && this.user.address.trim() === '') { this.user.address = null; }
     if (this.user.email !== null && this.user.email !== undefined) {
       if (this.user.email.trim() === '') {
         this.user.email = null;
@@ -71,7 +96,7 @@ export class UserEditComponent implements OnInit {
   }
 
   validateEmail(email) {
-    const re = /\S+@\S+\.\S+/;
+    const re = /\S+@\S+/; // /\S+@\S+\.\S+/
     return re.test(email);
   }
 }

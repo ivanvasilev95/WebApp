@@ -14,7 +14,7 @@
   </div>
   <hr>
   <p *ngIf="ads?.length == 0" style="text-align: center;">Няма намерени обяви.</p>
-  <div *ngIf="ads?.length !== 0" class="row mt-4">
+  <div *ngIf="ads?.length !== 0" class="row">
     <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
       <app-ad [ad]="ad"></app-ad>
     </div>  

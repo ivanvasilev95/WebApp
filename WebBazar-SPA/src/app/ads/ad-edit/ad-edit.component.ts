@@ -40,13 +40,60 @@ export class AdEditComponent implements OnInit {
   }
 
   updateAd() {
-    this.adService.updateAd(this.ad.id, this.ad).subscribe(next => {
+    let fieldsAreValid = true;
+
+    if (this.validateField(this.ad.title, 'Заглавие', 3, 50)) {
+      this.ad.title = this.ad.title.trim();
+    } else {
+      fieldsAreValid = false;
+    }
+
+    if (this.validateField(this.ad.location, 'Адрес', 3, 35)) {
+      this.ad.location = this.ad.location.trim();
+    } else {
+      fieldsAreValid = false;
+    }
+
+    if (!fieldsAreValid) {
+      return;
+    }
+
+    this.adService.updateAd(this.ad.id, this.ad).subscribe(() => {
       this.alertify.success('Обявата е редактирана успешно');
       this.editForm.reset(this.ad);
       this.descriptionForm.reset(this.ad);
     }, error => {
       this.alertify.error(error);
     });
+  }
+
+  validateField(field, title, min, max) {
+    if (field === null || field.trim() === '') {
+      this.alertify.error('Полето \'' + title + '\' е задължително');
+      return false;
+    }
+
+    if (field.trim().length < min || field.trim().length > max) {
+      this.alertify.error('Полето \'' + title + '\' не трябва да бъде по-късо от ' + min + ' или по-дълго от ' + max + ' символа');
+      return false;
+    }
+
+    return true;
+  }
+
+  updateDescription() {
+    if (this.ad.description !== null && this.ad.description.trim() !== '') {
+      if (this.ad.description.trim().length < 10 || this.ad.description.trim().length > 1000) {
+        this.alertify.error('Полето \'Описание\' не трябва да бъде по-късо от 10 или по-дълго от 1000 символа');
+        return;
+      } else {
+        this.ad.description = this.ad.description.trim();
+      }
+    } else {
+      this.ad.description = null;
+    }
+
+    this.updateAd();
   }
 
   onCategorySelect() {
@@ -59,11 +106,19 @@ export class AdEditComponent implements OnInit {
 
   resetForm(tab: string) {
     this.adService.getAd(this.ad.id).subscribe(ad => { this.ad = ad; });
-    if (tab === 'description' || 'both') {
+    if (tab === 'description') {
       this.descriptionForm.reset(this.ad.description);
     }
-    if (tab === 'details' || 'both') {
+    if (tab === 'details') {
       this.editForm.reset(this.ad);
+    }
+    if (tab === 'both') {
+      if (this.editForm.dirty === true) {
+        this.editForm.reset(this.ad);
+      }
+      if (this.descriptionForm.dirty === true) {
+        this.descriptionForm.reset(this.ad.description);
+      }
     }
   }
 }

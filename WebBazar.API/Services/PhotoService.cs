@@ -21,7 +21,7 @@ namespace WebApp.API.Services
         public PhotoService(DataContext context, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
             : base(context, mapper)
         {
-            Account acc = new Account(cloudinaryConfig.Value.CloudName, cloudinaryConfig.Value.ApiKey, cloudinaryConfig.Value.ApiSecret);
+            var acc = new Account(cloudinaryConfig.Value.CloudName, cloudinaryConfig.Value.ApiKey, cloudinaryConfig.Value.ApiSecret);
             _cloudinary = new Cloudinary(acc); 
         }
 
@@ -43,6 +43,8 @@ namespace WebApp.API.Services
 
             var ad = await _context
                 .Ads
+                .IgnoreQueryFilters()
+                .Include(a => a.Photos)
                 .Where(a => a.Id == adId)
                 .FirstOrDefaultAsync();
 

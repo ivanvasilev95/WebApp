@@ -35,13 +35,37 @@ export class NewAdComponent implements OnInit {
 
   createNewAdForm() {
     this.createAdForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      title: [''],
       categoryId: ['', Validators.required],
-      description: ['', Validators.maxLength(1000)],
-      location: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
+      description: [''],
+      location: [''],
       price: [''],
       isUsed: ['']
-    }, {validator: [this.priceValidator, this.isUsedValidator]});
+    }, {validator: [this.titleValidator, this.descriptionValidator, this.locationValidator, this.priceValidator, this.isUsedValidator]});
+  }
+
+  titleValidator(g: FormGroup) {
+    const title = g.get('title').value.trim();
+    if (title.length < 3 || title.length > 50) {
+      return {titleMismatch: true};
+    }
+    return null;
+  }
+
+  descriptionValidator(g: FormGroup) {
+    const description = g.get('description').value.trim();
+    if (description !== '' && (description.length < 10 || description.length > 1000)) {
+      return {descriptionMismatch: true};
+    }
+    return null;
+  }
+
+  locationValidator(g: FormGroup) {
+    const location = g.get('location').value.trim();
+    if (location.length < 3 || location.length > 35) {
+      return {locationMismatch: true};
+    }
+    return null;
   }
 
   priceValidator(g: FormGroup) {
@@ -88,10 +112,13 @@ export class NewAdComponent implements OnInit {
     if (this.createAdForm.valid) {
       const ad: Ad = Object.assign({}, this.createAdForm.value);
       ad.userId = +this.authService.decodedToken.nameid;
+      ad.title = ad.title.trim();
+      ad.location = ad.location.trim();
+      ad.description = ad.description.trim() === '' ? null : ad.description.trim();
 
       this.adService.createAd(ad).subscribe(newAdId => {
-        this.alertify.success('Обявата е създадена успешно.');
-        this.router.navigate(['/user/ad/' + newAdId + '/edit']);
+        this.alertify.success('Обявата е създадена успешно');
+        this.router.navigate(['/ads/' + newAdId + '/edit']);
       }, error => {
         this.alertify.error(error); // 'Грешка при създаването на обявата.'
       });

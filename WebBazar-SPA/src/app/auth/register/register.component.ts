@@ -3,8 +3,6 @@ import { AuthService } from 'src/app/_services/auth.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from 'src/app/_models/user';
-
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -22,22 +20,53 @@ export class RegisterComponent implements OnInit {
 
   createRegisterForm() {
     this.registerForm = this.fb.group({
-      userName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
-      fullName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(15)]],
+      userName: [''],
+      fullName: [''],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]],
+      password: [''],
       confirmPassword: ['', Validators.required]
-    }, {validator: this.passwordMatchValidator});
+    }, {validator: [this.userNameValidator, this.fullNameValidator, this.passwordValidator, this.passwordMatchValidator]});
+  }
+
+  userNameValidator(g: FormGroup) {
+    const userName = g.get('userName').value === null ? '' : g.get('userName').value.trim();
+    const regex = /\s/g; // checks if string contains whitespaces
+    if (regex.test(userName) || userName.length < 4 || userName.length > 10) {
+      return {userNameMismatch: true};
+    }
+    return null;
+  }
+
+  fullNameValidator(g: FormGroup) {
+    const fullName = g.get('fullName').value === null ? '' : g.get('fullName').value.trim();
+    if (fullName.length < 2 || fullName.length > 15) {
+      return {fullNameMismatch: true};
+    }
+    return null;
+  }
+
+  passwordValidator(g: FormGroup) {
+    const password = g.get('password').value === null ? '' : g.get('password').value.trim();
+    const regex = /\s/g; // checks if string contains whitespaces
+    if (regex.test(password) || password.length < 6 || password.length > 12) {
+      return {passwordMismatch: true};
+    }
+    return null;
   }
 
   passwordMatchValidator(g: FormGroup) {
-    return g.get('password').value === g.get('confirmPassword').value ? null : {mismatch: true};
+    const password = g.get('password').value === null ? '' : g.get('password').value.trim();
+    const confirmPassword = g.get('confirmPassword').value === null ? '' : g.get('confirmPassword').value.trim();
+
+    return password === confirmPassword ? null : {mismatch: true};
   }
 
   register() {
     if (this.registerForm.valid) {
       const user = Object.assign({}, this.registerForm.value);
       delete user.confirmPassword;
+      user.fullName = user.fullName.trim();
+      user.password = user.password.trim();
       user.userName = user.userName.toLowerCase().trim();
       user.email = user.email.toLowerCase().trim();
 
@@ -51,5 +80,9 @@ export class RegisterComponent implements OnInit {
         });
       });
     }
+  }
+
+  trim(event) {
+    event.target.value = event.target.value.trim();
   }
 }

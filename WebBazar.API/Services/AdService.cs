@@ -2,8 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using WebApp.API.Data;
 using WebApp.API.DTOs.Ad;
 using WebApp.API.Extensions;
@@ -16,11 +19,16 @@ namespace WebApp.API.Services
     public class AdService : BaseService, IAdService
     {
         private readonly IHttpContextAccessor _contextAccessor;
+        private IOptions<CloudinarySettings> _cloudinaryConfig;
 
-        public AdService(DataContext context, IMapper mapper, IHttpContextAccessor contextAccessor)
-            : base(context, mapper)
+        public AdService(
+            DataContext context,
+            IMapper mapper,
+            IHttpContextAccessor contextAccessor,
+            IOptions<CloudinarySettings> cloudinaryConfig) : base(context, mapper)
         {
             _contextAccessor = contextAccessor;
+            _cloudinaryConfig = cloudinaryConfig;
         }
 
         public async Task<IEnumerable<AdForListDTO>> AllAsync(UserParams userParams)
@@ -109,13 +117,23 @@ namespace WebApp.API.Services
 
         public async Task<Result> DeleteAsync(int id)
         {
-            var ad = await this.GetAdAsync(id);
+            var ad = await _context
+                .Ads
+                .IgnoreQueryFilters()
+                .Include(a => a.Photos)
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
 
             if (ad == null)
             {
                 return "Обявата не е намерена";
             }
-
+			
+            if (ad.Photos.Any())
+            {
+                RemoveAdPhotos(ad);
+            }
+			
             _context.Ads.Remove(ad);
 
             await _context.SaveChangesAsync();
@@ -123,9 +141,35 @@ namespace WebApp.API.Services
             return true;
         }
 
+        private void RemoveAdPhotos(Ad ad) 
+        {
+            var acc = new Account(
+                _cloudinaryConfig.Value.CloudName,
+                _cloudinaryConfig.Value.ApiKey,
+                _cloudinaryConfig.Value.ApiSecret);
+
+            var cloudinary = new Cloudinary(acc);
+
+            foreach (var photo in ad.Photos) 
+            {
+                if (photo.PublicId != null) 
+                {
+                    var deleteParams = new DeletionParams(photo.PublicId);
+					cloudinary.Destroy(deleteParams);
+                }
+
+                _context.Photos.Remove(photo);
+            }
+        }
+
         public async Task<Result> UpdateAsync(int id, AdForUpdateDTO model)
         {
-            var ad = await GetAdAsync(id);
+            var ad = await _context
+                .Ads
+                .IgnoreQueryFilters()
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
+
             if (ad == null)
             {
                 return "Обявата не е намерена";
@@ -134,16 +178,6 @@ namespace WebApp.API.Services
              _mapper.Map(model, ad);
 
              return true;
-        }
-
-        private async Task<Ad> GetAdAsync(int id)
-        {
-            var ad = await _context
-                .Ads
-                .Where(a => a.Id == id)
-                .FirstOrDefaultAsync();
-
-            return ad;
         }
 
         public async Task<IEnumerable<AdForListDTO>> UserAdsAsync(int userId)

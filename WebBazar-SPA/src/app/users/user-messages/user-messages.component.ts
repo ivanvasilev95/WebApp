@@ -68,6 +68,14 @@ export class UserMessagesComponent implements OnInit {
     });
   }
 
+  getMessageType(type) {
+    switch (type) {
+      case 'Unread': return 'непрочетени';
+      case 'Inbox': return 'получени';
+      case 'Outbox': return 'изпратени';
+    }
+  }
+
   isNotRead(message: Message) {
     return !message.isRead && message.senderId !== +this.authService.decodedToken.nameid;
   }
