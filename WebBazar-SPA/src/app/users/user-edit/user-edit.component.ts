@@ -46,7 +46,7 @@ export class UserEditComponent implements OnInit {
         this.alertify.error('Полето \'Твоето име\' не може да бъде празно');
         return;
       }
-      if (fullName.length < 2 || fullName.length > 15) {
+      if (fullName.trim().length < 2 || fullName.trim().length > 15) {
         this.alertify.error('Полето \'Твоето име\' не трябва да бъде по-късо от 2 или по-дълго от 15 символа');
         return;
       }

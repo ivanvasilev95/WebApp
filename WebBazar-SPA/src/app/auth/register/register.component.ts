@@ -20,25 +20,25 @@ export class RegisterComponent implements OnInit {
 
   createRegisterForm() {
     this.registerForm = this.fb.group({
-      userName: [''],
-      fullName: [''],
+      userName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
+      fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: [''],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]],
       confirmPassword: ['', Validators.required]
     }, {validator: [this.userNameValidator, this.fullNameValidator, this.passwordValidator, this.passwordMatchValidator]});
   }
 
   userNameValidator(g: FormGroup) {
-    const userName = g.get('userName').value === null ? '' : g.get('userName').value.trim();
+    const userName = g.get('userName').value === null ? '' : g.get('userName').value;
     const regex = /\s/g; // checks if string contains whitespaces
-    if (regex.test(userName) || userName.length < 4 || userName.length > 10) {
+    if (regex.test(userName)) {
       return {userNameMismatch: true};
     }
     return null;
   }
 
   fullNameValidator(g: FormGroup) {
-    const fullName = g.get('fullName').value === null ? '' : g.get('fullName').value.trim();
+    const fullName = g.get('fullName').value === null ? '' : g.get('fullName').value.trimEnd();
     if (fullName.length < 2 || fullName.length > 15) {
       return {fullNameMismatch: true};
     }
@@ -46,29 +46,26 @@ export class RegisterComponent implements OnInit {
   }
 
   passwordValidator(g: FormGroup) {
-    const password = g.get('password').value === null ? '' : g.get('password').value.trim();
+    const password = g.get('password').value === null ? '' : g.get('password').value;
     const regex = /\s/g; // checks if string contains whitespaces
-    if (regex.test(password) || password.length < 6 || password.length > 12) {
+    if (regex.test(password)) {
       return {passwordMismatch: true};
     }
     return null;
   }
 
   passwordMatchValidator(g: FormGroup) {
-    const password = g.get('password').value === null ? '' : g.get('password').value.trim();
-    const confirmPassword = g.get('confirmPassword').value === null ? '' : g.get('confirmPassword').value.trim();
+    const password = g.get('password').value === null ? '' : g.get('password').value;
+    const confirmPassword = g.get('confirmPassword').value === null ? '' : g.get('confirmPassword').value;
 
-    return password === confirmPassword ? null : {mismatch: true};
+    return password === confirmPassword ? null : {confirmPasswordMismatch: true};
   }
 
   register() {
     if (this.registerForm.valid) {
       const user = Object.assign({}, this.registerForm.value);
+      user.fullName = user.fullName.trimEnd();
       delete user.confirmPassword;
-      user.fullName = user.fullName.trim();
-      user.password = user.password.trim();
-      user.userName = user.userName.toLowerCase().trim();
-      user.email = user.email.toLowerCase().trim();
 
       this.authService.register(user).subscribe(() => {
         this.alertify.success('Регистрацията е направена успешно');
@@ -82,7 +79,28 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  trim(event) {
-    event.target.value = event.target.value.trim();
+  trimUserName(event) {
+    // converts to lower case and removes whitespaces at the beginning and at the end
+    this.registerForm.controls.userName.setValue(event.target.value.toLowerCase().trim());
+  }
+
+  trimFullName(event) {
+    // removes whitespaces at the beginning and replaces middle whitespaces with a single whitespace;
+    this.registerForm.controls.fullName.setValue(event.target.value.trimStart().replace(/\s+/g, ' '));
+  }
+
+  trimEmail(event) {
+    // converts to lower case and removes whitespaces at the beginning and at the end
+    this.registerForm.controls.email.setValue(event.target.value.toLowerCase().trim());
+  }
+
+  trimPassword(event) {
+    // removes whitespaces at the beginning and at the end
+    this.registerForm.controls.password.setValue(event.target.value.trim());
+  }
+
+  trimConfirmPassword(event) {
+    // removes whitespaces at the beginning and at the end
+    this.registerForm.controls.confirmPassword.setValue(event.target.value.trim());
   }
 }

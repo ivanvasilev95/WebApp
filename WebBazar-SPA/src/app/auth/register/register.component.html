@@ -1,46 +1,81 @@
 <form [formGroup]="registerForm" (ngSubmit)="register()">
   <div class="form-group">
     <input type="text" 
-      [ngClass]="{'is-invalid': registerForm.get('userName').touched && registerForm.hasError('userNameMismatch')}"
+      [ngClass]="{'is-invalid': registerForm.get('userName').errors
+        && registerForm.get('userName').touched
+        || registerForm.get('userName').touched
+        && registerForm.hasError('userNameMismatch')}"
       class="form-control" 
       formControlName="userName" 
       placeholder="Потребителско име"
-      (keyup)="trim($event)">
-    <div class="invalid-feedback" *ngIf="registerForm.hasError('userNameMismatch')" style="text-align: left;">
-      Въведете валидно потребителско име
+      (keyup)="trimUserName($event)">
+    <div class="invalid-feedback" *ngIf="registerForm.get('userName').hasError('required') && registerForm.get('userName').touched" style="text-align: left;">
+        Потребителското име е задължително
+    </div>
+    <div class="invalid-feedback" *ngIf="registerForm.get('userName').hasError('minlength') && !registerForm.hasError('userNameMismatch') && registerForm.get('userName').touched" style="text-align: left;">
+        Потребителското име трябва да бъде поне 4 символа
+    </div>
+    <div class="invalid-feedback" *ngIf="registerForm.get('userName').hasError('maxlength') && !registerForm.hasError('userNameMismatch') && registerForm.get('userName').touched" style="text-align: left;">
+        Потребителското име не трябва да надвишава 10 символа
+    </div>
+    <div class="invalid-feedback"
+      *ngIf="registerForm.hasError('userNameMismatch') && registerForm.get('userName').touched" style="text-align: left;">
+        Потребителско име не трябва да съдържа празни пространства
     </div>
   </div>
 
   <div class="form-group">
     <input type="text"
-      [ngClass]="{'is-invalid': registerForm.get('fullName').touched && registerForm.hasError('fullNameMismatch')}"
+      [ngClass]="{'is-invalid': registerForm.get('fullName').errors
+        && registerForm.get('fullName').touched
+        || registerForm.get('fullName').touched
+        && registerForm.hasError('fullNameMismatch')}"
       class="form-control"
       placeholder="Твоето име"
-      formControlName="fullName">
-    <div class="invalid-feedback" *ngIf="registerForm.hasError('fullNameMismatch')" style="text-align: left;">
-      Твоето име трябва да бъде между 2 и 15 символа
+      formControlName="fullName"
+      (keyup)="trimFullName($event)">
+    <div class="invalid-feedback" *ngIf="registerForm.get('fullName').hasError('required') && registerForm.get('fullName').touched" style="text-align: left;">
+        Твоето име е задължително
+    </div>
+    <div class="invalid-feedback" *ngIf="registerForm.hasError('fullNameMismatch') && !registerForm.get('fullName').hasError('required') && registerForm.get('fullName').touched" style="text-align: left;">
+      Твоето име не трябва да съдържа по-малко от 2 и повече от 15 символа
     </div>
   </div>
 
   <div class="form-group">
-    <input type="email"
+    <!-- <input type="email" -->
+    <input
       [ngClass]="{'is-invalid': registerForm.get('email').errors && registerForm.get('email').touched}"
       class="form-control"
       placeholder="Имейл адрес" 
-      formControlName="email">
-    <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('required')" style="text-align: left;">Полето "Имейл" е задължително</div>
-    <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('email')" style="text-align: left;">Полето "Имейл" трябва да съдържа валиден имейл адрес</div>
+      formControlName="email"
+      (keyup)="trimEmail($event)">
+    <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('required')" style="text-align: left;">Полето "Имейл адрес" е задължително</div>
+    <div class="invalid-feedback" *ngIf="registerForm.get('email').touched && registerForm.get('email').hasError('email')" style="text-align: left;">Полето трябва да съдържа валиден имейл адрес</div>
   </div>
       
   <div class="form-group">
     <input type="password" 
-      [ngClass]="{'is-invalid': registerForm.get('password').touched && registerForm.hasError('passwordMismatch')}"
+      [ngClass]="{'is-invalid': registerForm.get('password').errors
+        && registerForm.get('password').touched
+        || registerForm.get('password').touched
+        && registerForm.hasError('passwordMismatch')}"
       class="form-control" 
       formControlName="password" 
       placeholder="Парола"
-      (keyup)="trim($event)">
-    <div class="invalid-feedback" *ngIf="registerForm.hasError('passwordMismatch')" style="text-align: left;">
-      Въведете валидна парола
+      (keyup)="trimPassword($event)">
+    <div class="invalid-feedback" 
+      *ngIf="registerForm.get('password').hasError('required') && registerForm.get('password').touched" style="text-align: left;">
+        Паролата е задължителна
+    </div>
+    <div class="invalid-feedback" *ngIf="registerForm.get('password').hasError('minlength') && !registerForm.hasError('passwordMismatch') && registerForm.get('password').touched" style="text-align: left;">
+        Паролата трябва да бъде поне 6 символа
+    </div>
+    <div class="invalid-feedback" *ngIf="registerForm.get('password').hasError('maxlength') && !registerForm.hasError('passwordMismatch') && registerForm.get('password').touched" style="text-align: left;">
+        Паролата не трябва да надвишава 12 символа
+    </div>
+    <div class="invalid-feedback" *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('password').touched" style="text-align: left;">
+      Паролата не трябва да съдържа празни пространства
     </div>
   </div>
 
@@ -49,20 +84,20 @@
       [ngClass]="{'is-invalid': registerForm.get('confirmPassword').errors 
         && registerForm.get('confirmPassword').touched
         || registerForm.get('confirmPassword').touched
-        && registerForm.hasError('mismatch')}"
+        && registerForm.hasError('confirmPasswordMismatch')}"
       class="form-control" 
       formControlName="confirmPassword" 
       placeholder="Потвърди парола"
-      (keyup)="trim($event)">
+      (keyup)="trimConfirmPassword($event)">
     <div class="invalid-feedback" 
       *ngIf="registerForm.get('confirmPassword').hasError('required') 
         && registerForm.get('confirmPassword').touched" style="text-align: left;">
         Полето "Потвърди парола" е задължително
     </div>
     <div class="invalid-feedback" 
-      *ngIf="registerForm.hasError('mismatch') 
+      *ngIf="registerForm.hasError('confirmPasswordMismatch') 
         && registerForm.get('confirmPassword').touched
-        && registerForm.get('confirmPassword').value != ''" style="text-align: left;">
+        && registerForm.get('confirmPassword').value !== ''" style="text-align: left;">
         Двете пароли трябва да съвпадат
     </div>
   </div>
