@@ -161,7 +161,7 @@ namespace WebApp.API.Services
                     break;
                 default: // unread
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false /* && m.SenderDeleted == false */ && m.RecipientDeleted == false)
+                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false /* && m.SenderDeleted == false  && m.RecipientDeleted == false */)
                         .OrderByDescending(m => m.MessageSent);
                     break;
             }
