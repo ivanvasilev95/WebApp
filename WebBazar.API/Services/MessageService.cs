@@ -81,9 +81,6 @@ namespace WebApp.API.Services
 
             if (message.RecipientId == currentUserId)
                 message.RecipientDeleted = true;
-
-            // if (message.SenderDeleted && message.RecipientDeleted)
-            //     _context.Messages.Remove(message);
             
             if (await _context.SaveChangesAsync() > 0)
             {
@@ -119,8 +116,8 @@ namespace WebApp.API.Services
                 .Include(u => u.Sender)
                 .Include(a => a.Ad)
                 .Include(u => u.Recipient)
-                .Where(m => (m.RecipientId == otherUserId && m.SenderId == currentUserId /*&& m.SenderDeleted == false*/
-                          || m.RecipientId == currentUserId && m.SenderId == otherUserId /*&& m.RecipientDeleted == false*/)
+                .Where(m => (m.RecipientId == otherUserId && m.SenderId == currentUserId
+                          || m.RecipientId == currentUserId && m.SenderId == otherUserId)
                           && m.AdId == adId)
                 .OrderBy(m => m.MessageSent)
                 .ToListAsync();
@@ -132,7 +129,7 @@ namespace WebApp.API.Services
         {
             var unreadMsgsCount = await _context
                 .Messages
-                .Where(m => m.RecipientId == userId && m.IsRead == false && m.RecipientDeleted == false /* && m.SenderDeleted == false */)
+                .Where(m => m.RecipientId == userId && m.IsRead == false && m.RecipientDeleted == false)
                 .CountAsync();
             
             return unreadMsgsCount;
@@ -150,7 +147,7 @@ namespace WebApp.API.Services
             {
                 case "Inbox":
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId /* && m.SenderDeleted == false  && m.RecipientDeleted == false */)
+                        .Where(m => m.RecipientId == messageParams.UserId)
                         .OrderBy(m => m.IsRead)
                         .ThenByDescending(m => m.MessageSent);
                     break;
@@ -161,7 +158,7 @@ namespace WebApp.API.Services
                     break;
                 default: // unread
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false /* && m.SenderDeleted == false  && m.RecipientDeleted == false */)
+                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false)
                         .OrderByDescending(m => m.MessageSent);
                     break;
             }
