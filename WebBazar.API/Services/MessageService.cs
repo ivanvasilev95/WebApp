@@ -150,7 +150,7 @@ namespace WebApp.API.Services
             {
                 case "Inbox":
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId /* && m.SenderDeleted == false */ && m.RecipientDeleted == false)
+                        .Where(m => m.RecipientId == messageParams.UserId /* && m.SenderDeleted == false  && m.RecipientDeleted == false */)
                         .OrderBy(m => m.IsRead)
                         .ThenByDescending(m => m.MessageSent);
                     break;
