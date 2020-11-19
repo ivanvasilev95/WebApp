@@ -120,7 +120,7 @@ export class NewAdComponent implements OnInit {
         this.alertify.success('Обявата е създадена успешно');
         this.router.navigate(['/ads/' + newAdId + '/edit']);
       }, error => {
-        this.alertify.error(error); // 'Грешка при създаването на обявата.'
+        this.alertify.error(error);
       });
     }
   }

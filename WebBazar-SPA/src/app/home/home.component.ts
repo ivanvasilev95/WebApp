@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
       this.shuffle(this.ads);
       this.showSpinner = false;
     }, error => {
-      this.alertify.error(error); // 'Грешка при зареждане на обявите'
+      this.alertify.error(error);
       this.showSpinner = false;
     });
   }

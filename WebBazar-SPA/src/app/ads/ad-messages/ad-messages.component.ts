@@ -31,7 +31,7 @@ export class AdMessagesComponent implements OnInit {
         tap(messages => {
           const currentUserId = +this.authService.decodedToken.nameid;
           for (const message of messages) {
-            if (message.isRead === false && message.recipientId === currentUserId /* && message.senderDeleted === false */) {
+            if (message.isRead === false && message.recipientId === currentUserId) {
               this.messageService.markMessageAsRead(message.id).subscribe();
               MessageService.unreadMessagesCount--;
             }

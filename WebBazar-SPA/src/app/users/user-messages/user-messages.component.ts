@@ -55,11 +55,6 @@ export class UserMessagesComponent implements OnInit {
   deleteMessage(id: number) {
     this.alertify.confirm('Сигурни ли сте, че искате да изтриете това съобщение', () => {
       this.messageService.deleteMessage(id).subscribe(() => {
-        const messageIndex = this.messages.findIndex(m => m.id === id);
-        if (this.messages[messageIndex].recipientId === +this.authService.decodedToken.nameid
-         && this.messages[messageIndex].isRead === false) {
-          MessageService.unreadMessagesCount--;
-        }
         this.loadMessages();
         this.alertify.success('Съобщението беше изтрито успешно');
       }, error => {

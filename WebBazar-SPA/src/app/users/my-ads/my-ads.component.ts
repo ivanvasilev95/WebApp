@@ -21,7 +21,7 @@ export class MyAdsComponent implements OnInit {
     this.adService.getUserAds().subscribe((userAds: Ad[]) => {
       this.userAds = userAds;
     }, error => {
-      this.alertify.error(error); // 'Неуспешно зареждане на обявите'
+      this.alertify.error(error);
     });
   }
 

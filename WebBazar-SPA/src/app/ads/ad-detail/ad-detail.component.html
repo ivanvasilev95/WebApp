@@ -31,17 +31,16 @@
           <div *ngIf="ad.isUsed !== null">
             <strong>Състояние: </strong> {{ ad?.isUsed ? 'използвано' : 'ново'}}
           </div>
-          <div class="mt-1" *ngIf="adLikesCount !== null && adLikesCount > 0"> <!-- && ad.isApproved -->
+          <div class="mt-1" *ngIf="adLikesCount !== null && adLikesCount > 0">
             <i>Наблюдаващи обявата: {{adLikesCount}}</i>
           </div>
-          <div class="mt-1"> <!-- *ngIf="!userIsLoggedIn() || userIsLoggedInAndItsNotHisAd() || (userIsLoggedIn() && authService.roleMatch(['Admin', 'Moderator']))" -->
+          <div class="mt-1">
             <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
           </div>
         </div>
         <div class="card-footer" *ngIf="userIsLoggedInAndItsNotHisAd() && !userIsAdminOnly() && ad.isApproved">
           <div class="btn-group d-flex" >
               <button class="btn btn-primary w-100" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
-              <!-- <button class="btn btn-success w-100" [disabled]="!ad.isApproved" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button> -->
           </div>
         </div>
       </div>
@@ -50,7 +49,7 @@
     <div class="col-sm-8"> 
       <div class="tab-panel">
         <tabset class="ad-tabset" #adTabs>
-            <tab heading="Описание"> <!-- *ngIf="ad?.description !== null && ad?.description?.trim() !== '' -->
+            <tab heading="Описание">
               <textarea *ngIf="ad?.description !== null && ad?.description?.trim() !== ''"
                 class="form-control"
                 name="description"

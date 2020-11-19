@@ -16,7 +16,7 @@ export class AdListResolver implements Resolve<Ad[]> {
     resolve(route: ActivatedRouteSnapshot): Observable<Ad[]> {
         return this.adService.getAds(this.pageNumber, this.pageSize).pipe(
             catchError(error => {
-                this.alertify.error(error); // 'Проблем с получаването на данните'
+                this.alertify.error(error);
                 this.router.navigate(['']);
                 return of(null);
             })

@@ -29,7 +29,6 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       const model = Object.assign({}, this.loginForm.value);
       this.authService.login(model).subscribe(() => {
-        // this.alertify.success('Успешен вход');
         if (this.authService.roleMatch(['Admin', 'Moderator'])) {
           this.router.navigate(['/admin']);
         } else {

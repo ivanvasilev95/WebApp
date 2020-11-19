@@ -17,7 +17,7 @@ export class UserMessagesResolver implements Resolve<Message[]> {
     resolve(route: ActivatedRouteSnapshot): Observable<Message[]> {
         return this.messageService.getMessages(this.pageNumber, this.pageSize, this.messageContainer).pipe(
             catchError(error => {
-                this.alertify.error(error); // 'Проблем с получаването на данните'
+                this.alertify.error(error);
                 this.router.navigate(['']);
                 return of(null);
             })

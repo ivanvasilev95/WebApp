@@ -129,7 +129,7 @@ namespace WebApp.API.Services
         {
             var unreadMsgsCount = await _context
                 .Messages
-                .Where(m => m.RecipientId == userId && m.IsRead == false && m.RecipientDeleted == false)
+                .Where(m => m.RecipientId == userId && m.IsRead == false)
                 .CountAsync();
             
             return unreadMsgsCount;
