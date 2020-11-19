@@ -36,6 +36,8 @@ namespace WebApp.API.Services
                 .ThenInclude(a => a.Photos)
                 .Include(u => u.Ads)
                 .ThenInclude(a => a.Category)
+                .Include(u => u.Ads)
+                .ThenInclude(a => a.User)
                 .AsQueryable();
 
             if (includeNotApprovedAds)

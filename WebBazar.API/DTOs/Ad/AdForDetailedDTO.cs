@@ -14,6 +14,7 @@ namespace WebApp.API.DTOs.Ad
         public bool? IsUsed { get; set; }
         public DateTime DateAdded { get; set; }
         public int UserId { get; set; }
+        public string UserName { get; set; }
         public string PhotoUrl { get; set; }
         public ICollection<PhotoForDetailedDTO> Photos { get; set; }
         public int CategoryId { get; set; }

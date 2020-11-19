@@ -18,6 +18,9 @@ namespace WebApp.API.Helpers
                 })
                 .ForMember(dest => dest.CategoryName, opt => {
                     opt.MapFrom(src => src.Category.Name);
+                })
+                .ForMember(dest => dest.UserName, opt => {
+                    opt.MapFrom(src => src.User.UserName);
                 });
 
             CreateMap<Ad, AdForListDTO>()

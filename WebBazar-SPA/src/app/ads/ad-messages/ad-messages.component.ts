@@ -31,7 +31,7 @@ export class AdMessagesComponent implements OnInit {
         tap(messages => {
           const currentUserId = +this.authService.decodedToken.nameid;
           for (const message of messages) {
-            if (message.isRead === false && message.recipientId === currentUserId) {
+            if (message.recipientId === currentUserId && message.isRead === false) {
               this.messageService.markMessageAsRead(message.id).subscribe();
               MessageService.unreadMessagesCount--;
             }
@@ -53,8 +53,8 @@ export class AdMessagesComponent implements OnInit {
     }
 
     const messageLength = this.newMessage.content.length;
-    if (isNaN(messageLength) || messageLength < 4) {
-      this.alertify.error('Съобщението трябва да бъде поне 4 символа');
+    if (isNaN(messageLength) || messageLength < 2) {
+      this.alertify.error('Съобщението трябва да бъде поне 2 символа');
       return;
     }
 

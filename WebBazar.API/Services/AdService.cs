@@ -93,6 +93,7 @@ namespace WebApp.API.Services
             var ad = await _context.Ads
                 .Include(a => a.Category)
                 .Include(a => a.Photos)
+                .Include(a => a.User)
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(a => a.Id == id);
 

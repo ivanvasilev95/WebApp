@@ -12,6 +12,7 @@ export interface Ad {
     description?: string;
     isUsed?: boolean;
     userId?: number;
+    userName?: string;
     photos?: Photo[];
     isApproved: boolean;
 }
