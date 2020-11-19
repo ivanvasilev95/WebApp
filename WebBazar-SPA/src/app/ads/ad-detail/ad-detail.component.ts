@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Ad } from 'src/app/_models/ad';
-import { AdService } from 'src/app/_services/ad.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
@@ -98,7 +97,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  userHasRights(): boolean {
+  userIsLoggedInAndItsNotHisAd(): boolean {
     return this.userIsLoggedIn() && this.isNotLoggedInUserAd();
   }
 
@@ -108,6 +107,14 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
 
   userIsLoggedIn(): boolean {
     return this.authService.loggedIn();
+  }
+
+  userIsAdminOnly() {
+    const userRoles = this.userIsLoggedIn() ? this.authService.decodedToken.role as Array<string> : null;
+    if (userRoles && !(userRoles instanceof Array) && userRoles === 'Admin') {
+      return true;
+    }
+    return false;
   }
 
   selectTab(tabId: number) {

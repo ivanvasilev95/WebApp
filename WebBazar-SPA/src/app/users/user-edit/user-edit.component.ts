@@ -40,8 +40,8 @@ export class UserEditComponent implements OnInit {
     const email = this.user.email;
     const address = this.user.address;
 
-    // user is not main admin and full name field is invalid
-    if (userId !== 1) {
+    // user is not main admin (with id = 25) and full name field is invalid
+    if (userId !== 25) {
       if (fullName === null || fullName === undefined) {
         this.alertify.error('Полето \'Твоето име\' не може да бъде празно');
         return;
@@ -53,8 +53,8 @@ export class UserEditComponent implements OnInit {
       this.user.fullName = this.user.fullName.trim();
     }
 
-    // is not main admin and email field is empty
-    if ((email === null || email === undefined) &&  userId !== 1) {
+    // is not main admin (with id = 25) and email field is empty
+    if ((email === null || email === undefined) &&  userId !== 25) {
       this.alertify.error('Полето \'Имейл адрес\' не може да бъде празно');
       return;
     }

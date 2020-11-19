@@ -25,7 +25,7 @@
               <strong class="primary-font">{{message.senderUsername}}</strong>
               <small class="text-muted float-right">
                 <span class="fa fa-clock-o"> {{message.messageSent | timeAgo}}</span>
-                <span *ngIf="message.isRead && !message.recipientDeleted" class="text-success"> (видяно)</span>
+                <span *ngIf="message.isRead" class="text-success"> (видяно)</span> <!--  && !message.recipientDeleted -->
                 <!-- <span *ngIf="message.recipientDeleted" class="text-danger"> (изтрито)</span> -->
               </small>
             </div>

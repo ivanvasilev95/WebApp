@@ -31,16 +31,16 @@
           <div *ngIf="ad.isUsed !== null">
             <strong>Състояние: </strong> {{ ad?.isUsed ? 'използвано' : 'ново'}}
           </div>
-          <div class="mt-1" *ngIf="adLikesCount !== null && ad.isApproved">
+          <div class="mt-1" *ngIf="adLikesCount !== null && adLikesCount > 0"> <!-- && ad.isApproved -->
             <i>Наблюдаващи обявата: {{adLikesCount}}</i>
           </div>
-          <div class="mt-1"> <!-- *ngIf="!userIsLoggedIn() || userHasRights() || (userIsLoggedIn() && authService.roleMatch(['Admin', 'Moderator']))" -->
+          <div class="mt-1"> <!-- *ngIf="!userIsLoggedIn() || userIsLoggedInAndItsNotHisAd() || (userIsLoggedIn() && authService.roleMatch(['Admin', 'Moderator']))" -->
             <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
           </div>
         </div>
-        <div class="card-footer" *ngIf="userHasRights() && ad.isApproved">
+        <div class="card-footer" *ngIf="userIsLoggedInAndItsNotHisAd() && !userIsAdminOnly() && ad.isApproved">
           <div class="btn-group d-flex" >
-              <button class="btn btn-primary w-100" [disabled]="!ad.isApproved" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
+              <button class="btn btn-primary w-100" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
               <!-- <button class="btn btn-success w-100" [disabled]="!ad.isApproved" (click)="selectTab(2)" *ngIf="!this.adTabs.tabs[2].active" style="height:36.5px;">Съобщение</button> -->
           </div>
         </div>
@@ -50,21 +50,28 @@
     <div class="col-sm-8"> 
       <div class="tab-panel">
         <tabset class="ad-tabset" #adTabs>
-            <tab heading="Описание">
-              <textarea class="form-control" name="description" rows="15" 
-                      [(ngModel)]="ad.description" disabled style="background-color:#FFF !important;color:black;text-align: justify;"></textarea>
+            <tab heading="Описание"> <!-- *ngIf="ad?.description !== null && ad?.description?.trim() !== '' -->
+              <textarea *ngIf="ad?.description !== null && ad?.description?.trim() !== ''"
+                class="form-control"
+                name="description"
+                rows="15" 
+                [(ngModel)]="ad.description"
+                style="background-color:#FFF !important;color:black;text-align: justify;"
+                disabled>
+              </textarea>
+              <p *ngIf="ad?.description === null || ad?.description?.trim() === ''" class="text-center pt-3">Няма налично описание</p>
             </tab>
             <tab heading="Снимки">
-              <p *ngIf="galleryImages.length == 0" class="text-center pt-3">Няма налични снимки</p>
-              <ngx-gallery *ngIf="galleryImages.length != 0" style="margin-left:120px;margin-top:13px;" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+              <p *ngIf="galleryImages.length === 0" class="text-center pt-3">Няма налични снимки</p>
+              <ngx-gallery *ngIf="galleryImages.length !== 0" style="margin-left:120px;margin-top:13px;" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
-            <ng-container *ngIf="ad.isApproved">
+            <ng-container *ngIf="ad.isApproved && !userIsAdminOnly()">
               <!-- the recipient must be other user -->
               <tab heading="Съобщения" *ngIf="recipientId !== null" (selectTab)="adMsgs.loadMessages()">
                 <app-ad-messages #adMsgs [ad]="ad" [recipientId]="recipientId"></app-ad-messages>
               </tab>
               <!-- not my ad so the recipient is the owner of the ad -->
-              <tab heading="Съобщение" *ngIf="recipientId === null && userHasRights()" (selectTab)="adMsgs2.loadMessages()">
+              <tab heading="Съобщение" *ngIf="recipientId === null && userIsLoggedInAndItsNotHisAd()" (selectTab)="adMsgs2.loadMessages()">
                 <app-ad-messages #adMsgs2 [ad]="ad" [recipientId]="ad.userId"></app-ad-messages>
               </tab>
             </ng-container>

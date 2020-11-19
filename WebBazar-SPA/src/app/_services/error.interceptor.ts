@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
+    constructor(private router: Router) {}
+
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             catchError(error => {
@@ -16,6 +19,9 @@ export class ErrorInterceptor implements HttpInterceptor {
                     // unauthorized, not found, bad request or internal server error (global exception)
                     if (error.status === 401 || error.status === 404
                     || (error.status === 400 && !error.error.errors) || error.status === 500) {
+                        if (this.router.url !== '/auth' && error.status === 401) {
+                            this.router.navigate(['']);
+                        }
                         if (typeof error.error === 'object') { // if not then it's string
                             if (error.error !== null && error.error.constructor === Array) { // if it's an array object
                                 let errorData = '';

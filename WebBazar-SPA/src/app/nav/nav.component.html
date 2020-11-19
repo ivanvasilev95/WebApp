@@ -3,8 +3,11 @@
     <a class="navbar-brand" [routerLink]="['/home']">Web Bazar</a>
     
     <ul *ngIf="loggedIn()" class="navbar-nav mr-auto">
-      <li *appHasRole="['Admin', 'Moderator']" class="nav-item" routerLinkActive="active">
+      <li *appHasRole="['Admin']" class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/admin']">Администратор</a>
+      </li>
+      <li *appHasRole="['Moderator']" class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/admin']">Модератор</a>
       </li>
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/ads']">Обяви</a>
@@ -13,7 +16,7 @@
         <a class="nav-link" [routerLink]="['/favorites']">Наблюдавани</a>
       </li>
       <li *appHasRole="['Member', 'Moderator']" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="unreadMessagesCount != 0"> ({{unreadMessagesCount}})</span></a>
+        <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="unreadMessagesCount !== 0"> ({{unreadMessagesCount}})</span></a>
       </li>
     </ul>
 

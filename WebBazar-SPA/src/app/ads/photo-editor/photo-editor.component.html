@@ -6,7 +6,7 @@
         (click)="setMainPhoto(photo)"
         [ngClass]="photo.isMain ? 'btn-success active' : 'btn-secondary'"
         [disabled]="photo.isMain">Главна</button>
-      <button type="button" [disabled]="photo.isMain" (click)="deletePhoto(photo.id)" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
+      <button type="button" [disabled]="photo.isMain" (click)="deletePhoto(photo.id)" class="btn btn-sm btn-danger mt-1"><i class="fa fa-trash-o"></i></button>
     </div>
   </div>
 </div>
@@ -63,7 +63,7 @@
             <span class="fa fa-ban"></span> Отказ
         </button> -->
         <button type="button" class="btn btn-danger btn-s"
-                (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length || uploader.isUploading">
             <span class="fa fa-trash"></span> Премахни
         </button>
     </div>

@@ -53,8 +53,8 @@ export class AdMessagesComponent implements OnInit {
     }
 
     const messageLength = this.newMessage.content.length;
-    if (isNaN(messageLength) || messageLength < 5) {
-      this.alertify.error('Съобщението трябва да бъде поне 5 символа');
+    if (isNaN(messageLength) || messageLength < 4) {
+      this.alertify.error('Съобщението трябва да бъде поне 4 символа');
       return;
     }
 

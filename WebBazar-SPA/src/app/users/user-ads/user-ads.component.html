@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form pt-4">
         <div *ngIf="user?.fullName != '' && user?.fullName != null"><h4>{{user?.fullName}}</h4></div>
         <div *ngIf="user?.fullName == '' || user?.fullName == null"><h4>{{user?.userName}}</h4></div>
         <div *ngIf="user?.address != null && user?.address != ''"><p>{{user?.address}}</p></div>

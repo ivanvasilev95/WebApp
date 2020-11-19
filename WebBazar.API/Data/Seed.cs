@@ -35,7 +35,7 @@ namespace WebApp.API.Data
             if (result.Succeeded)
             {
                 var admin = _userManager.FindByNameAsync("admin").Result;
-                _userManager.AddToRolesAsync(admin, new[] {"Admin", "Moderator"}).Wait();
+                _userManager.AddToRoleAsync(admin, "Admin").Wait();
             }
         }
     }

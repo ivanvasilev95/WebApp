@@ -1,5 +1,6 @@
 <div class="container mt-3 mb-4">
-  <h4>Администраторски панел</h4>
+  <h4 *appHasRole="['Admin']">Администраторски панел</h4>
+  <h4 *appHasRole="['Moderator']">Модераторски панел</h4>
   <div class="tab-panel">
     <tabset class="member-tabset">
       <tab heading="Управление на потребители" *appHasRole="['Admin']">

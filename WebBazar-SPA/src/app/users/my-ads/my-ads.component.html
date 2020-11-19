@@ -1,7 +1,7 @@
 <div class="container mt-4 mb-4">
   <h4>Моите обяви</h4>
   <hr>
-  <p *ngIf="userAds?.length == 0" style="text-align: center;">Все още нямате добавени обяви.</p>
+  <p *ngIf="userAds?.length == 0" style="text-align: center;">Нямате добавени обяви.</p>
   <div *ngIf="userAds?.length !== 0">
     <ul class="list-group">
       <li *ngFor="let ad of userAds" class="list-group-item mt-2">

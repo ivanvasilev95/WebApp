@@ -50,15 +50,27 @@ namespace WebApp.API.Services
 
             if (await _context.SaveChangesAsync() > 0)
             {
-                return _mapper.Map<Message, MessageToReturnDTO>(await this.GetMessageAsync(message.Id));
+                return _mapper.Map<Message, MessageToReturnDTO>(await this.GetMessageByIdAsync(message.Id));
             }
             
             return "Грешка при запазване на съобщението";
         }
+
+        private async Task<Message> GetMessageByIdAsync(int id)
+        {
+            return await _context
+                .Messages
+                .Include(m => m.Sender)
+                .Include(m => m.Recipient)
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
         
         public async Task<Result> DeleteAsync(int messageId, int currentUserId)
         {
-            var message = await GetMessageAsync(messageId);
+            var message = await _context
+                .Messages
+                .FirstOrDefaultAsync(m => m.Id == messageId);
+
             if (message == null)
             {
                 return "Съобщението не е намерено";
@@ -83,7 +95,9 @@ namespace WebApp.API.Services
 
         public async Task<Result> MarkAsReadAsync(int messageId, int currentUserId)
         {
-            var message = await GetMessageAsync(messageId);
+            var message = await _context
+                .Messages
+                .FirstOrDefaultAsync(m => m.Id == messageId);
 
             if (message.RecipientId != currentUserId)
             {
@@ -98,15 +112,6 @@ namespace WebApp.API.Services
             return true;
         }
 
-        private async Task<Message> GetMessageAsync(int id)
-        {
-            return await _context
-                .Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Recipient)
-                .FirstOrDefaultAsync(m => m.Id == id);
-        }
-
         public async Task<IEnumerable<MessageToReturnDTO>> MessageThreadAsync(int adId, int currentUserId, int otherUserId)
         {
             var messages = await _context
@@ -115,8 +120,9 @@ namespace WebApp.API.Services
                 .Include(a => a.Ad)
                 .Include(u => u.Recipient)
                 .Where(m => (m.RecipientId == otherUserId && m.SenderId == currentUserId /*&& m.SenderDeleted == false*/
-                          || m.RecipientId == currentUserId && m.SenderId == otherUserId && m.RecipientDeleted == false) 
+                          || m.RecipientId == currentUserId && m.SenderId == otherUserId /*&& m.RecipientDeleted == false*/)
                           && m.AdId == adId)
+                .OrderBy(m => m.MessageSent)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<MessageToReturnDTO>>(messages);

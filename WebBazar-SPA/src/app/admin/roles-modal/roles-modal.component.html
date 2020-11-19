@@ -19,5 +19,5 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Отказ</button>
-  <button type="button" class="btn btn-success" (click)="updateRoles()" form="rolesForm" [disabled]="noCheckedRoles() || areMyRoles() || areAdminRoles()">Промяна</button>
+  <button type="button" class="btn btn-success" (click)="updateRoles()" form="rolesForm" [disabled]="noCheckedRoles() || areMyRoles() || areAdminRoles() || noChangesHasBeenMade">Промяна</button>
 </div>

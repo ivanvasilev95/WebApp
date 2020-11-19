@@ -61,7 +61,8 @@ namespace WebApp.API.Services
         {
             var email = model.Email;
 
-            if (string.IsNullOrWhiteSpace(email) && id != 1)
+            // is not main admin (with id = 25) and email field is empty
+            if (string.IsNullOrWhiteSpace(email) && id != 25)
             {
                 return "Полето имейл не може да бъде празно";
             }

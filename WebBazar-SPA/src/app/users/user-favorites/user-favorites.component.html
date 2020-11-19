@@ -2,7 +2,7 @@
   <div class="text-center">
     <h4>Наблюдавани обяви</h4>
     <hr>
-    <p *ngIf="ads?.length == 0">Нямате наблюдавани обяви</p>
+    <p *ngIf="ads?.length == 0">Нямате наблюдавани обяви.</p>
   </div>
   <div *ngIf="ads?.length !== 0" class="row">
     <div *ngFor="let ad of ads" class="col-sm-6 col-md-4 col-lg-4 col-xl-2" style="text-align:center">

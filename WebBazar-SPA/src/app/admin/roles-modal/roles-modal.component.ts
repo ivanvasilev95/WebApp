@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/_models/user';
 import { AuthService } from 'src/app/_services/auth.service';
@@ -8,12 +8,18 @@ import { AuthService } from 'src/app/_services/auth.service';
   templateUrl: './roles-modal.component.html',
   styleUrls: ['./roles-modal.component.css']
 })
-export class RolesModalComponent {
+export class RolesModalComponent implements OnInit {
   @Output() updateSelectedRoles = new EventEmitter();
   user: User;
   roles: any[];
+  initialRoles: string;
+  noChangesHasBeenMade = true;
 
   constructor(public bsModalRef: BsModalRef, private authService: AuthService) {}
+
+  ngOnInit() {
+    this.initialRoles = JSON.stringify(this.roles);
+  }
 
   updateRoles() {
     this.updateSelectedRoles.emit(this.roles);
@@ -23,6 +29,7 @@ export class RolesModalComponent {
   changeRole(role) {
     role.checked = !role.checked;
     this.uncheckUnnecessaryRoles(role);
+    this.checkForChanges();
   }
 
   private uncheckUnnecessaryRoles(role) {
@@ -35,6 +42,14 @@ export class RolesModalComponent {
     }
     if (role.value === 'Member' && role.checked === true) {
       this.roles.filter(r => r.value === 'Moderator')[0].checked = false;
+    }
+  }
+
+  checkForChanges() {
+    if (this.initialRoles === JSON.stringify(this.roles)) {
+      this.noChangesHasBeenMade = true;
+    } else {
+      this.noChangesHasBeenMade = false;
     }
   }
 
