@@ -38,7 +38,7 @@
             <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>
           </div>
         </div>
-        <div class="card-footer" *ngIf="userIsLoggedInAndItsNotHisAd() && !userIsAdminOnly() && ad.isApproved">
+        <div class="card-footer" *ngIf="ad.isApproved && userIsLoggedIn() && isNotLoggedInUserAd() && userIsNotAdminOnly()">
           <div class="btn-group d-flex" >
               <button class="btn btn-primary w-100" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
           </div>
@@ -48,7 +48,7 @@
     <!-- right part -->
     <div class="col-sm-8"> 
       <div class="tab-panel">
-        <tabset class="ad-tabset" #adTabs>
+        <tabset #adTabs class="ad-tabset">
             <tab heading="Описание">
               <textarea *ngIf="ad?.description !== null && ad?.description?.trim() !== ''"
                 class="form-control"
@@ -64,14 +64,9 @@
               <p *ngIf="galleryImages.length === 0" class="text-center pt-3">Няма налични снимки</p>
               <ngx-gallery *ngIf="galleryImages.length !== 0" style="margin-left:120px;margin-top:13px;" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
-            <ng-container *ngIf="ad.isApproved && !userIsAdminOnly()">
-              <!-- the recipient must be other user -->
-              <tab heading="Съобщения" *ngIf="recipientId !== null" (selectTab)="adMsgs.loadMessages()">
-                <app-ad-messages #adMsgs [ad]="ad" [recipientId]="recipientId"></app-ad-messages>
-              </tab>
-              <!-- not my ad so the recipient is the owner of the ad -->
-              <tab heading="Съобщение" *ngIf="recipientId === null && userIsLoggedInAndItsNotHisAd()" (selectTab)="adMsgs2.loadMessages()">
-                <app-ad-messages #adMsgs2 [ad]="ad" [recipientId]="ad.userId"></app-ad-messages>
+            <ng-container *ngIf="ad.isApproved && userIsLoggedIn() && userIsNotAdminOnly()">
+              <tab heading="Съобщения" *ngIf="recipientId !== getLoggedInUserId()" (selectTab)="adMessagesComponent.loadMessages()">
+                <app-ad-messages #adMessagesComponent [ad]="ad" [recipientId]="recipientId"></app-ad-messages>
               </tab>
             </ng-container>
         </tabset>

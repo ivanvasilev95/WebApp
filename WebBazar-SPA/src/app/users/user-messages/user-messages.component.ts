@@ -55,6 +55,9 @@ export class UserMessagesComponent implements OnInit {
   deleteMessage(id: number) {
     this.alertify.confirm('Сигурни ли сте, че искате да изтриете това съобщение', () => {
       this.messageService.deleteMessage(id).subscribe(() => {
+        if (this.messages.length - 1 === 0 && this.pagination.currentPage > 1) {
+          this.pagination.currentPage = this.pagination.currentPage - 1;
+        }
         this.loadMessages();
         this.alertify.success('Съобщението беше изтрито успешно');
       }, error => {
@@ -72,22 +75,26 @@ export class UserMessagesComponent implements OnInit {
   }
 
   isNotRead(message: Message) {
-    return !message.isRead && message.senderId !== +this.authService.decodedToken.nameid;
+    return !message.isRead && message.senderId !== this.getLoggedInUserId();
   }
 
   senderDeletedIt(message: Message) {
-    return message.senderDeleted && message.recipientId === +this.authService.decodedToken.nameid;
+    return message.senderDeleted && message.recipientId === this.getLoggedInUserId();
   }
 
   senderIsLoggedInUser(message: Message) {
-    return message.senderId === +this.authService.decodedToken.nameid;
+    return message.senderId === this.getLoggedInUserId();
   }
 
   recipientOfTheMessage(message: Message): number {
-    if (message.senderId === +this.authService.decodedToken.nameid) {
+    if (message.senderId === this.getLoggedInUserId()) {
       return message.recipientId;
     } else {
       return message.senderId;
     }
+  }
+
+  getLoggedInUserId() {
+    return +this.authService.decodedToken.nameid;
   }
 }

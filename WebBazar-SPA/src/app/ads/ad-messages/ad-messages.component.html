@@ -38,7 +38,7 @@
   <div class="card-footer">
     <form #messageForm="ngForm" (ngSubmit)="messageForm.valid && sendMessage()">
       <div class="input-group">
-        <textarea name="content" class="form-control" rows="2" placeholder="Въведете вашето съобщение до {{ad.userName}}" [(ngModel)]="newMessage.content"></textarea>
+        <textarea name="content" class="form-control" rows="2" [placeholder]="textareaPlaceholderText" [(ngModel)]="newMessage.content"></textarea>
         <div class="input-group-append">
           <button [disabled]="!messageForm.valid || !ad.isApproved" class="btn btn-primary">Изпрати</button>
         </div>

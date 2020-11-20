@@ -15,7 +15,7 @@ export class AdDetailResolver implements Resolve<Ad> {
     resolve(route: ActivatedRouteSnapshot): Observable<Ad> {
         return this.adService.getAd(route.params.id).pipe(
             tap ((ad: Ad) => {
-                if (this.adIsNotApprovedAndUserIsNotLoggedIn(ad) || this.adIsNotApprovedAndUserIsLoggedIn(ad)) {
+                if (!ad.isApproved && (!this.userIsLoggedIn() || (this.userIsLoggedIn() && this.userDoesntHaveRights(ad.userId)))) {
                     this.returnUserToAds('Обявата не е намерена');
                 }
             }),
@@ -31,14 +31,16 @@ export class AdDetailResolver implements Resolve<Ad> {
         this.router.navigate(['/ads']);
     }
 
-    adIsNotApprovedAndUserIsNotLoggedIn(ad: Ad) {
-        return !ad.isApproved && !this.authService.loggedIn();
+    userDoesntHaveRights(adOwnerId: number) {
+        // not the ad owner and not admin or moderator
+        return adOwnerId !== this.getLoggedInUserId() && !this.authService.roleMatch(['Admin', 'Moderator']);
     }
 
-    adIsNotApprovedAndUserIsLoggedIn(ad: Ad) {
-        return !ad.isApproved
-            && this.authService.loggedIn()
-            && ad.userId !== +this.authService.decodedToken.nameid
-            && !this.authService.roleMatch(['Admin', 'Moderator']);
+    userIsLoggedIn() {
+        return this.authService.loggedIn();
+    }
+
+    getLoggedInUserId() {
+        return +this.authService.decodedToken.nameid;
     }
 }

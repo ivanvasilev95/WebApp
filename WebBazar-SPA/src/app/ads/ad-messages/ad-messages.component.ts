@@ -16,6 +16,7 @@ export class AdMessagesComponent implements OnInit {
   @Input() ad: Ad;
   messages: Message[];
   newMessage: any = {};
+  textareaPlaceholderText = 'Въведете вашето съобщение';
 
   constructor(private messageService: MessageService,
               private authService: AuthService,
@@ -29,9 +30,8 @@ export class AdMessagesComponent implements OnInit {
     this.messageService.getMessageThread(this.ad.id, this.recipientId)
       .pipe(
         tap(messages => {
-          const currentUserId = +this.authService.decodedToken.nameid;
           for (const message of messages) {
-            if (message.recipientId === currentUserId && message.isRead === false) {
+            if (message.recipientId === this.getLoggedInUserId() && message.isRead === false) {
               this.messageService.markMessageAsRead(message.id).subscribe();
               MessageService.unreadMessagesCount--;
             }
@@ -40,6 +40,7 @@ export class AdMessagesComponent implements OnInit {
       )
       .subscribe(result => {
         this.messages = result;
+        this.setTextareaPlaceholder();
       }, error => {
         this.alertify.error(error);
       });
@@ -58,10 +59,8 @@ export class AdMessagesComponent implements OnInit {
       return;
     }
 
-    const senderId = +this.authService.decodedToken.nameid;
-
     this.newMessage.adId = this.ad.id;
-    this.newMessage.senderId = senderId;
+    this.newMessage.senderId = this.getLoggedInUserId();
 
     this.newMessage.recipientId = this.recipientId;
 
@@ -71,5 +70,25 @@ export class AdMessagesComponent implements OnInit {
     }, error => {
       this.alertify.error(error);
     });
+  }
+
+  setTextareaPlaceholder() {
+    if (this.recipientId === this.ad.userId) { // recipient is the ad owner
+      this.textareaPlaceholderText += ' до ' + this.ad.userName;
+    } else { // recipient is other user with id = this.recipientId
+      this.messages.some(m => {
+        if (m.senderId === this.recipientId && m.recipientId === this.getLoggedInUserId()) {
+          this.textareaPlaceholderText += ' до ' + m.senderUsername;
+          return true;
+        } else {
+          this.textareaPlaceholderText += ' до ' + m.recipientUsername;
+          return true;
+        }
+      });
+    }
+  }
+
+  getLoggedInUserId() {
+    return +this.authService.decodedToken.nameid;
   }
 }

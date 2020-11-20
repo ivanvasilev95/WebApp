@@ -117,8 +117,9 @@ namespace WebApp.API.Services
                 .Include(a => a.Ad)
                 .Include(u => u.Recipient)
                 .Where(m => (m.RecipientId == otherUserId && m.SenderId == currentUserId
-                          || m.RecipientId == currentUserId && m.SenderId == otherUserId)
-                          && m.AdId == adId)
+                          || m.RecipientId == currentUserId && m.SenderId == otherUserId /* && !(m.IsRead == false && m.SenderDeleted == true) */)
+                          && m.AdId == adId
+                          /* && !(m.IsRead == false && m.SenderDeleted == true) */)
                 .OrderBy(m => m.MessageSent)
                 .ToListAsync();
 
@@ -129,7 +130,7 @@ namespace WebApp.API.Services
         {
             var unreadMsgsCount = await _context
                 .Messages
-                .Where(m => m.RecipientId == userId && m.IsRead == false)
+                .Where(m => m.RecipientId == userId && m.IsRead == false /* && m.SenderDeleted == false */)
                 .CountAsync();
             
             return unreadMsgsCount;
@@ -147,7 +148,7 @@ namespace WebApp.API.Services
             {
                 case "Inbox":
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId)
+                        .Where(m => m.RecipientId == messageParams.UserId /* && !(m.RecipientId == messageParams.UserId && m.IsRead == false && m.SenderDeleted == true) */)
                         .OrderBy(m => m.IsRead)
                         .ThenByDescending(m => m.MessageSent);
                     break;
@@ -158,7 +159,7 @@ namespace WebApp.API.Services
                     break;
                 default: // unread
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false)
+                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false /* && m.SenderDeleted == false */)
                         .OrderByDescending(m => m.MessageSent);
                     break;
             }

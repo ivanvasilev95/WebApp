@@ -47,6 +47,12 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     }
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.setActiveTab();
+    });
+  }
+
   getImages() {
     const imageUrls = [];
     for (const photo of this.ad.photos) {
@@ -65,7 +71,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
       if (recipientId !== undefined) {
         this.recipientId = +recipientId;
       } else {
-        this.recipientId = null;
+        this.recipientId = this.ad.userId;
       }
     });
   }
@@ -73,12 +79,6 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   getAdLikesCount() {
     this.likeService.getAdLikesCount(this.ad.id).subscribe(count => {
       this.adLikesCount = count;
-    });
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.setActiveTab();
     });
   }
 
@@ -97,24 +97,24 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  userIsLoggedInAndItsNotHisAd(): boolean {
-    return this.userIsLoggedIn() && this.isNotLoggedInUserAd();
+  isNotLoggedInUserAd() {
+    return this.ad.userId !== this.getLoggedInUserId();
   }
 
-  isNotLoggedInUserAd(): boolean {
-    return +this.authService.decodedToken.nameid !== this.ad.userId;
+  userIsNotAdminOnly() {
+    const userRoles = this.userIsLoggedIn() ? this.authService.decodedToken.role as Array<string> : null;
+    if (userRoles && !(userRoles instanceof Array) && userRoles === 'Admin') {
+      return false;
+    }
+    return true;
   }
 
-  userIsLoggedIn(): boolean {
+  userIsLoggedIn() {
     return this.authService.loggedIn();
   }
 
-  userIsAdminOnly() {
-    const userRoles = this.userIsLoggedIn() ? this.authService.decodedToken.role as Array<string> : null;
-    if (userRoles && !(userRoles instanceof Array) && userRoles === 'Admin') {
-      return true;
-    }
-    return false;
+  getLoggedInUserId() {
+    return +this.authService.decodedToken.nameid;
   }
 
   selectTab(tabId: number) {
