@@ -116,7 +116,7 @@ namespace WebApp.API.Services
                 .Include(u => u.Sender)
                 .Include(a => a.Ad)
                 .Include(u => u.Recipient)
-                .Where(m => (m.RecipientId == otherUserId && m.SenderId == currentUserId
+                .Where(m => (m.RecipientId == otherUserId && m.SenderId == currentUserId && m.SenderDeleted == false
                           || m.RecipientId == currentUserId && m.SenderId == otherUserId /* && !(m.IsRead == false && m.SenderDeleted == true) */)
                           && m.AdId == adId
                           /* && !(m.IsRead == false && m.SenderDeleted == true) */)

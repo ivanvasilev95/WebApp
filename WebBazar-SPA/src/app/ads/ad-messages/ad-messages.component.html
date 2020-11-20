@@ -6,7 +6,7 @@
     <ul class="chat">
       <li *ngFor="let message of messages">
         <!-- from them -->
-        <div *ngIf="message.senderId == recipientId">
+        <div *ngIf="message.senderId === recipientId">
           <div class="chat-body">
             <div class="header">
               <strong class="primary-font">{{message.senderUsername}}</strong>
@@ -19,7 +19,7 @@
           </div>
         </div>
         <!-- from me -->
-        <div *ngIf="message.senderId != recipientId">
+        <div *ngIf="message.senderId !== recipientId">
           <div class="chat-body">
             <div class="header">
               <strong class="primary-font">{{message.senderUsername}}</strong>
