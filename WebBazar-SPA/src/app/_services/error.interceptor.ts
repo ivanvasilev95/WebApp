@@ -13,7 +13,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             catchError(error => {
                 if (error instanceof HttpErrorResponse) {
                     // unknown error
-                    if (error.status === 0) {
+                    if (error.status === 0 || error.status === 403) {
                         return throwError(error.statusText);
                     }
                     // unauthorized, not found, bad request or internal server error (global exception)
