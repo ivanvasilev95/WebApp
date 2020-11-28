@@ -68,7 +68,7 @@ namespace WebBazar.API.Extensions
             => services
                 .AddAuthorization(options => {
                     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
-                    options.AddPolicy("ModerateAdRole", policy => policy.RequireRole("Admin", "Moderator"));
+                    options.AddPolicy("RequireAdminOrModeratorRole", policy => policy.RequireRole("Admin", "Moderator"));
                 });
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)

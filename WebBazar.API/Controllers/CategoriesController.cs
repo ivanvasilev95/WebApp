@@ -6,7 +6,7 @@ using WebBazar.API.DTOs.Category;
 
 namespace WebBazar.API.Controllers
 {
-    [Authorize(Policy = "RequireAdminRole")]
+    [Authorize(Policy = "RequireAdminOrModeratorRole")]
     public class CategoriesController : ApiController
     {
         private readonly ICategoryService _categoryService;

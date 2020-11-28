@@ -44,7 +44,7 @@ namespace WebBazar.API.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = "ModerateAdRole")]
+        [Authorize(Policy = "RequireAdminOrModeratorRole")]
         [HttpGet("adsForModeration")]
         public async Task<IActionResult> GetAdsForModeration()
         {
@@ -52,7 +52,7 @@ namespace WebBazar.API.Controllers
             return Ok(ads);
         }
 
-        [Authorize(Policy = "ModerateAdRole")]
+        [Authorize(Policy = "RequireAdminOrModeratorRole")]
         [HttpPost("approveAd/{id}")]
         public async Task<IActionResult> ApproveAd(int id) 
         {
@@ -60,7 +60,7 @@ namespace WebBazar.API.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = "ModerateAdRole")]
+        [Authorize(Policy = "RequireAdminOrModeratorRole")]
         [HttpDelete("rejectAd/{id}")]
         public async Task<IActionResult> RejectAd(int id) 
         {

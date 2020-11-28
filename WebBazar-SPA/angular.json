@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "WebApp-SPA": {
+    "WebBazar-SPA": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/WebApp-SPA",
+            "outputPath": "dist/WebBazar-SPA",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -66,18 +66,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "WebApp-SPA:build"
+            "browserTarget": "WebBazar-SPA:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "WebApp-SPA:build:production"
+              "browserTarget": "WebBazar-SPA:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "WebApp-SPA:build"
+            "browserTarget": "WebBazar-SPA:build"
           }
         },
         "test": {
@@ -115,16 +115,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "WebApp-SPA:serve"
+            "devServerTarget": "WebBazar-SPA:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "WebApp-SPA:serve:production"
+              "devServerTarget": "WebBazar-SPA:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "WebApp-SPA"
+  "defaultProject": "WebBazar-SPA"
 }

@@ -9,16 +9,16 @@
             "request": "launch",
             "type": "pwa-chrome",
             "url": "http://localhost:4200",
-            "webRoot": "${workspaceFolder}/WebApp-SPA"
+            "webRoot": "${workspaceFolder}/WebBazar-SPA"
         },
         {
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/WebApp.API/bin/Debug/netcoreapp3.0/WebApp.API.dll",
+            "program": "${workspaceFolder}/WebBazar.API/bin/Debug/netcoreapp3.0/WebBazar.API.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/WebApp.API",
+            "cwd": "${workspaceFolder}/WebBazar.API",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
