@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Helpers;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Extensions
+namespace WebBazar.API.Extensions
 {
     public static class ResultExtensions
     {

@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using WebApp.API.Data;
-using WebApp.API.Helpers;
-using WebApp.API.Data.Models;
-using WebApp.API.Services;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.Data;
+using WebBazar.API.Helpers;
+using WebBazar.API.Data.Models;
+using WebBazar.API.Services;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Extensions
+namespace WebBazar.API.Extensions
 {
     public static class ServiceCollectionExtensions
     {

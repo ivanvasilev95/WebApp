@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.Data;
-using WebApp.API.DTOs.Message;
-using WebApp.API.Extensions;
-using WebApp.API.Helpers;
-using WebApp.API.Data.Models;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.Data;
+using WebBazar.API.DTOs.Message;
+using WebBazar.API.Extensions;
+using WebBazar.API.Helpers;
+using WebBazar.API.Data.Models;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Services
+namespace WebBazar.API.Services
 {
     public class MessageService : BaseService, IMessageService
     {

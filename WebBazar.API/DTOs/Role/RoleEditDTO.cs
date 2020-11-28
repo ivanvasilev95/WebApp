@@ -1,4 +1,4 @@
-namespace WebApp.API.DTOs.Role
+namespace WebBazar.API.DTOs.Role
 {
     public class RoleEditDTO
     {

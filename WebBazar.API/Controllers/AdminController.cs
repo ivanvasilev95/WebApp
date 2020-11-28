@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.DTOs.Role;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.DTOs.Role;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Controllers
+namespace WebBazar.API.Controllers
 {
     public class AdminController : ApiController
     {

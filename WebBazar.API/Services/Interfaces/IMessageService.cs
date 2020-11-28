@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using WebApp.API.DTOs.Message;
-using WebApp.API.Helpers;
+using WebBazar.API.DTOs.Message;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Services.Interfaces
+namespace WebBazar.API.Services.Interfaces
 {
     public interface IMessageService
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
-namespace WebApp.API.Data.Models
+namespace WebBazar.API.Data.Models
 {
     public class User : IdentityUser<int>
     {

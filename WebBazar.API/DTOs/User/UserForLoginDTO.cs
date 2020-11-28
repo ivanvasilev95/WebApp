@@ -1,4 +1,4 @@
-namespace WebApp.API.DTOs.User
+namespace WebBazar.API.DTOs.User
 {
     public class UserForLoginDTO
     {

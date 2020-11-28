@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.DTOs.Ad;
-using WebApp.API.Extensions;
-using WebApp.API.Helpers;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.DTOs.Ad;
+using WebBazar.API.Extensions;
+using WebBazar.API.Helpers;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Controllers
+namespace WebBazar.API.Controllers
 {
     public class AdsController : ApiController
     {

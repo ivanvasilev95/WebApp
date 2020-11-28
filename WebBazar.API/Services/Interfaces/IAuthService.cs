@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using WebApp.API.Data.Models;
+using WebBazar.API.Data.Models;
 
-namespace WebApp.API.Services.Interfaces
+namespace WebBazar.API.Services.Interfaces
 {
     public interface IAuthService
     {

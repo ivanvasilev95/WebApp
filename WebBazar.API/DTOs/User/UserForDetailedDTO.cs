@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using WebApp.API.DTOs.Ad;
+using WebBazar.API.DTOs.Ad;
 
-namespace WebApp.API.DTOs.User
+namespace WebBazar.API.DTOs.User
 {
     public class UserForDetailedDTO
     {

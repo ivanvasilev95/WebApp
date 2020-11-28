@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.API.DTOs.Ad
+namespace WebBazar.API.DTOs.Ad
 {
     public class AdForCreateDTO
     {

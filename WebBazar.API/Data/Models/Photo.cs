@@ -1,4 +1,4 @@
-namespace WebApp.API.Data.Models
+namespace WebBazar.API.Data.Models
 {
     public class Photo
     {

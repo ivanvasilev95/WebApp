@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Services.Interfaces;
-using WebApp.API.DTOs.User;
+using WebBazar.API.Services.Interfaces;
+using WebBazar.API.DTOs.User;
 
-namespace WebApp.API.Controllers
+namespace WebBazar.API.Controllers
 {
     public class UsersController : ApiController
     {

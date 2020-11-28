@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using WebApp.API.DTOs.Photo;
-using WebApp.API.Helpers;
+using WebBazar.API.DTOs.Photo;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Services.Interfaces
+namespace WebBazar.API.Services.Interfaces
 {
     public interface IPhotoService
     {

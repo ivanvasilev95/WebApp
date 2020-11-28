@@ -1,7 +1,7 @@
 using AutoMapper;
-using WebApp.API.Data;
+using WebBazar.API.Data;
 
-namespace WebApp.API.Services
+namespace WebBazar.API.Services
 {
     public abstract class BaseService
     {

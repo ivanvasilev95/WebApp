@@ -1,13 +1,13 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Data.Models;
+using WebBazar.API.Data.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using WebApp.API.DTOs.User;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.DTOs.User;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Controllers
+namespace WebBazar.API.Controllers
 {
     [ApiController]
     [AllowAnonymous]

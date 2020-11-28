@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Services.Interfaces;
-using WebApp.API.Extensions;
-using WebApp.API.Data.Models;
+using WebBazar.API.Services.Interfaces;
+using WebBazar.API.Extensions;
+using WebBazar.API.Data.Models;
 
-namespace WebApp.API.Controllers
+namespace WebBazar.API.Controllers
 {
     public class LikesController : ApiController
     {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
-using WebApp.API.Data.Models;
+using WebBazar.API.Data.Models;
 
-namespace WebApp.API.Data
+namespace WebBazar.API.Data
 {
     public class Seed
     {

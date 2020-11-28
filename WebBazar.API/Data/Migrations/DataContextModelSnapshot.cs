@@ -3,9 +3,9 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebApp.API.Data;
+using WebBazar.API.Data;
 
-namespace WebApp.API.Migrations
+namespace WebBazar.API.Migrations
 {
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
@@ -101,7 +101,7 @@ namespace WebApp.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Ad", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Ad", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,7 +143,7 @@ namespace WebApp.API.Migrations
                     b.ToTable("Ads");
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Category", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -157,7 +157,7 @@ namespace WebApp.API.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Like", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Like", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -172,7 +172,7 @@ namespace WebApp.API.Migrations
                     b.ToTable("Likes");
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Message", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,7 +216,7 @@ namespace WebApp.API.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Photo", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Photo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -241,7 +241,7 @@ namespace WebApp.API.Migrations
                     b.ToTable("Photos");
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Role", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -268,7 +268,7 @@ namespace WebApp.API.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.User", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -345,7 +345,7 @@ namespace WebApp.API.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.UserRole", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.UserRole", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -362,7 +362,7 @@ namespace WebApp.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("WebApp.API.Models.Role", null)
+                    b.HasOne("WebBazar.API.Data.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -371,7 +371,7 @@ namespace WebApp.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("WebApp.API.Models.User", null)
+                    b.HasOne("WebBazar.API.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -380,7 +380,7 @@ namespace WebApp.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("WebApp.API.Models.User", null)
+                    b.HasOne("WebBazar.API.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -389,82 +389,82 @@ namespace WebApp.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("WebApp.API.Models.User", null)
+                    b.HasOne("WebBazar.API.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Ad", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Ad", b =>
                 {
-                    b.HasOne("WebApp.API.Models.Category", "Category")
+                    b.HasOne("WebBazar.API.Data.Models.Category", "Category")
                         .WithMany("Ads")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApp.API.Models.User", "User")
+                    b.HasOne("WebBazar.API.Data.Models.User", "User")
                         .WithMany("Ads")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Like", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Like", b =>
                 {
-                    b.HasOne("WebApp.API.Models.Ad", "Ad")
+                    b.HasOne("WebBazar.API.Data.Models.Ad", "Ad")
                         .WithMany("Likes")
                         .HasForeignKey("AdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApp.API.Models.User", "User")
+                    b.HasOne("WebBazar.API.Data.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Message", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Message", b =>
                 {
-                    b.HasOne("WebApp.API.Models.Ad", "Ad")
+                    b.HasOne("WebBazar.API.Data.Models.Ad", "Ad")
                         .WithMany("Messages")
                         .HasForeignKey("AdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApp.API.Models.User", "Recipient")
+                    b.HasOne("WebBazar.API.Data.Models.User", "Recipient")
                         .WithMany("MessagesReceived")
                         .HasForeignKey("RecipientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApp.API.Models.User", "Sender")
+                    b.HasOne("WebBazar.API.Data.Models.User", "Sender")
                         .WithMany("MessagesSent")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.Photo", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.Photo", b =>
                 {
-                    b.HasOne("WebApp.API.Models.Ad", "Ad")
+                    b.HasOne("WebBazar.API.Data.Models.Ad", "Ad")
                         .WithMany("Photos")
                         .HasForeignKey("AdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebApp.API.Models.UserRole", b =>
+            modelBuilder.Entity("WebBazar.API.Data.Models.UserRole", b =>
                 {
-                    b.HasOne("WebApp.API.Models.Role", "Role")
+                    b.HasOne("WebBazar.API.Data.Models.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApp.API.Models.User", "User")
+                    b.HasOne("WebBazar.API.Data.Models.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

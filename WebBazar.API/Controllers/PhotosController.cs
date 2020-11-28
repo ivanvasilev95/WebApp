@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Services.Interfaces;
-using WebApp.API.DTOs.Photo;
+using WebBazar.API.Services.Interfaces;
+using WebBazar.API.DTOs.Photo;
 
-namespace WebApp.API.Controllers
+namespace WebBazar.API.Controllers
 {
     public class PhotosController : ApiController
     {

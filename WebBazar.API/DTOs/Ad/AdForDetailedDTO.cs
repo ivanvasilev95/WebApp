@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using WebApp.API.DTOs.Photo;
+using WebBazar.API.DTOs.Photo;
 
-namespace WebApp.API.DTOs.Ad
+namespace WebBazar.API.DTOs.Ad
 {
     public class AdForDetailedDTO
     {

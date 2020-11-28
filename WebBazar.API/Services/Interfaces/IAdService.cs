@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebApp.API.DTOs.Ad;
-using WebApp.API.Helpers;
+using WebBazar.API.DTOs.Ad;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Services.Interfaces
+namespace WebBazar.API.Services.Interfaces
 {
     public interface IAdService
     {

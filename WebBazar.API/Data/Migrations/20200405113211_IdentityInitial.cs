@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebApp.API.Migrations
+namespace WebBazar.API.Migrations
 {
     public partial class IdentityInitial : Migration
     {

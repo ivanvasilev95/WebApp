@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.API.DTOs.Category
+namespace WebBazar.API.DTOs.Category
 {
     public class CategoryForCreationDTO
     {

@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Services.Interfaces;
-using WebApp.API.DTOs.Message;
-using WebApp.API.Extensions;
-using WebApp.API.Helpers;
+using WebBazar.API.Services.Interfaces;
+using WebBazar.API.DTOs.Message;
+using WebBazar.API.Extensions;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Controllers
+namespace WebBazar.API.Controllers
 {
     public class MessagesController : ApiController
     {

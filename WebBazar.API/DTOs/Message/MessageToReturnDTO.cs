@@ -1,6 +1,6 @@
 using System;
 
-namespace WebApp.API.DTOs.Message
+namespace WebBazar.API.DTOs.Message
 {
     public class MessageToReturnDTO
     {

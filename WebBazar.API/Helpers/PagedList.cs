@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApp.API.Helpers
+namespace WebBazar.API.Helpers
 {
     public class PagedList<T> : List<T>
     {

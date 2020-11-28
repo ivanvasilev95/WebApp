@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.Data;
-using WebApp.API.Extensions;
+using WebBazar.API.Data;
+using WebBazar.API.Extensions;
 
-namespace WebApp.API.Helpers
+namespace WebBazar.API.Helpers
 {
     public class LogUserActivity : IAsyncActionFilter
     {

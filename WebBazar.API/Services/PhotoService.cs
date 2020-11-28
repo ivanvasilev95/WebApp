@@ -6,13 +6,13 @@ using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using WebApp.API.Data;
-using WebApp.API.DTOs.Photo;
-using WebApp.API.Helpers;
-using WebApp.API.Data.Models;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.Data;
+using WebBazar.API.DTOs.Photo;
+using WebBazar.API.Helpers;
+using WebBazar.API.Data.Models;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Services
+namespace WebBazar.API.Services
 {
     public class PhotoService : BaseService, IPhotoService
     {

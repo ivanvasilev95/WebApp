@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.API.DTOs.User
+namespace WebBazar.API.DTOs.User
 {
     public class UserForRegisterDTO
     {

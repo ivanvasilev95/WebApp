@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebApp.API.DTOs.Category;
-using WebApp.API.Helpers;
+using WebBazar.API.DTOs.Category;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Services.Interfaces
+namespace WebBazar.API.Services.Interfaces
 {
     public interface ICategoryService
     {

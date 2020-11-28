@@ -1,4 +1,4 @@
-namespace WebApp.API.Helpers
+namespace WebBazar.API.Helpers
 {
     public class PaginationHeader
     {

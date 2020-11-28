@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using WebApp.API.DTOs.User;
-using WebApp.API.Helpers;
+using WebBazar.API.DTOs.User;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Services.Interfaces
+namespace WebBazar.API.Services.Interfaces
 {
     public interface IUserService
     {

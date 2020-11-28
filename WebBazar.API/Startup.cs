@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApp.API.Data;
+using WebBazar.API.Data;
 using AutoMapper;
-using WebApp.API.Extensions;
+using WebBazar.API.Extensions;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace WebApp.API
+namespace WebBazar.API
 {
     public class Startup
     {

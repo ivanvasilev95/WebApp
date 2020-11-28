@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.Data;
-using WebApp.API.DTOs.User;
-using WebApp.API.Helpers;
-using WebApp.API.Data.Models;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.Data;
+using WebBazar.API.DTOs.User;
+using WebBazar.API.Helpers;
+using WebBazar.API.Data.Models;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Services
+namespace WebBazar.API.Services
 {
     public class UserService : BaseService, IUserService
     {

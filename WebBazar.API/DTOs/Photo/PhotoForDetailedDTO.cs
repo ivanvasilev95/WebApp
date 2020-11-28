@@ -1,4 +1,4 @@
-namespace WebApp.API.DTOs.Photo
+namespace WebBazar.API.DTOs.Photo
 {
     public class PhotoForDetailedDTO
     {

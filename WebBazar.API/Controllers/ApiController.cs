@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApp.API.Helpers;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Controllers
+namespace WebBazar.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

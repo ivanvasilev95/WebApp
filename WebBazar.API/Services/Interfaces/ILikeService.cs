@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using WebApp.API.Helpers;
+using WebBazar.API.Helpers;
 
-namespace WebApp.API.Services.Interfaces
+namespace WebBazar.API.Services.Interfaces
 {
     public interface ILikeService
     {

@@ -2,19 +2,19 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using WebApp.API.Data.Models;
+using WebBazar.API.Data.Models;
 using AutoMapper;
-using WebApp.API.DTOs.Ad;
+using WebBazar.API.DTOs.Ad;
 using AutoMapper.QueryableExtensions;
 using System.Collections.Generic;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.Services.Interfaces;
 using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
-using WebApp.API.Helpers;
-using WebApp.API.Data;
+using WebBazar.API.Helpers;
+using WebBazar.API.Data;
 
-namespace WebApp.API.Services
+namespace WebBazar.API.Services
 {
     public class AdminService : IAdminService
     {

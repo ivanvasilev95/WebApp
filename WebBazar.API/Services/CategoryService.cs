@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.Data;
-using WebApp.API.DTOs.Category;
-using WebApp.API.Helpers;
-using WebApp.API.Data.Models;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.Data;
+using WebBazar.API.DTOs.Category;
+using WebBazar.API.Helpers;
+using WebBazar.API.Data.Models;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Services
+namespace WebBazar.API.Services
 {
     public class CategoryService : BaseService, ICategoryService
     {

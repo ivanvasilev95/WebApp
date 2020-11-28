@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using WebApp.API.Data.Models;
-using WebApp.API.Services.Interfaces;
+using WebBazar.API.Data.Models;
+using WebBazar.API.Services.Interfaces;
 
-namespace WebApp.API.Services
+namespace WebBazar.API.Services
 {
     public class AuthService : IAuthService
     {
