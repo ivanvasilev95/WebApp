@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using WebApp.API.Models;
+using WebApp.API.Data.Models;
 
 namespace WebApp.API.Services.Interfaces
 {

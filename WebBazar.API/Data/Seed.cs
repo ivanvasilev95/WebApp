@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
-using WebApp.API.Models;
+using WebApp.API.Data.Models;
 
 namespace WebApp.API.Data
 {

@@ -4,7 +4,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WebApp.API.Data;
 using WebApp.API.Helpers;
-using WebApp.API.Models;
+using WebApp.API.Data.Models;
 using WebApp.API.Services.Interfaces;
 
 namespace WebApp.API.Services

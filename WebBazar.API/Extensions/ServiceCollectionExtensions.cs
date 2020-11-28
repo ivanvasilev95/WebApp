@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using WebApp.API.Data;
 using WebApp.API.Helpers;
-using WebApp.API.Models;
+using WebApp.API.Data.Models;
 using WebApp.API.Services;
 using WebApp.API.Services.Interfaces;
 

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Services.Interfaces;
 using WebApp.API.DTOs.Category;
-using WebApp.API.Models;
 
 namespace WebApp.API.Controllers
 {

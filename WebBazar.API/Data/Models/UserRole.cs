@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace WebApp.API.Models
+namespace WebApp.API.Data.Models
 {
     public class UserRole : IdentityUserRole<int>
     {

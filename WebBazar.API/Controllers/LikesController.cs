@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.API.Services.Interfaces;
 using WebApp.API.Extensions;
-using WebApp.API.Models;
+using WebApp.API.Data.Models;
 
 namespace WebApp.API.Controllers
 {

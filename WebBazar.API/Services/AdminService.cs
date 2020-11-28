@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using WebApp.API.Models;
+using WebApp.API.Data.Models;
 using AutoMapper;
 using WebApp.API.DTOs.Ad;
 using AutoMapper.QueryableExtensions;

@@ -1,11 +1,11 @@
 using System.Linq;
 using AutoMapper;
-using WebApp.API.Models;
 using WebApp.API.DTOs.Ad;
 using WebApp.API.DTOs.Message;
 using WebApp.API.DTOs.Photo;
 using WebApp.API.DTOs.User;
 using WebApp.API.DTOs.Category;
+using WebApp.API.Data.Models;
 
 namespace WebApp.API.Helpers
 {

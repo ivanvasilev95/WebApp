@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using WebApp.API.Models;
+using WebApp.API.Data.Models;
 
 namespace WebApp.API.Data
 {

@@ -22,7 +22,7 @@ namespace WebApp.API.Extensions
         {
             var result = await resultTask;
 
-            if (!result.Succeeded)
+            if (result.Failure)
             {
                 return new BadRequestObjectResult(result.Error);
             }
@@ -34,7 +34,7 @@ namespace WebApp.API.Extensions
         {
             var result = await resultTask;
 
-            if (!result.Succeeded)
+            if (result.Failure)
             {
                 return new BadRequestObjectResult(result.Error);
             }

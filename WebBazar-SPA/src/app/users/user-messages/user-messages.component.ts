@@ -75,7 +75,7 @@ export class UserMessagesComponent implements OnInit {
   }
 
   isNotRead(message: Message) {
-    return !message.isRead && message.senderId !== this.getLoggedInUserId();
+    return !message.isRead && message.recipientId === this.getLoggedInUserId();
   }
 
   senderDeletedIt(message: Message) {
