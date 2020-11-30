@@ -94,6 +94,7 @@ namespace WebBazar.API.Services
                 .Include(a => a.Category)
                 .Include(a => a.Photos)
                 .Include(a => a.User)
+                .Include(a => a.Likes)
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(a => a.Id == id);
 

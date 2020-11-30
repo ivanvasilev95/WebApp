@@ -15,4 +15,5 @@ export interface Ad {
     userName?: string;
     photos?: Photo[];
     isApproved: boolean;
+    likesCount?: number;
 }

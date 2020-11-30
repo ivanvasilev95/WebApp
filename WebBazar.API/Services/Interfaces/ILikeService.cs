@@ -7,6 +7,5 @@ namespace WebBazar.API.Services.Interfaces
     {
          Task<Result> Like(int userId, int adId);
          Task<Result> Unlike(int userId, int adId);
-         Task<int> AdLikesCount(int adId);
     }
 }

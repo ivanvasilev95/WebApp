@@ -31,8 +31,8 @@
           <div *ngIf="ad.isUsed !== null">
             <strong>Състояние: </strong> {{ ad?.isUsed ? 'използвано' : 'ново'}}
           </div>
-          <div class="mt-1" *ngIf="adLikesCount !== null && adLikesCount > 0">
-            <i>Наблюдаващи обявата: {{adLikesCount}}</i>
+          <div class="mt-1" *ngIf="this.ad.isApproved && ad.likesCount !== null && ad.likesCount > 0  && this.userIsLoggedIn() && !this.isNotLoggedInUserAd()">
+            <i>Наблюдаващи обявата: {{ad.likesCount}}</i>
           </div>
           <div class="mt-1">
             <a [routerLink]="['/user', ad.userId, 'ads']">Вижте всички обяви от този потребител</a>

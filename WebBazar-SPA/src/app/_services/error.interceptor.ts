@@ -13,11 +13,11 @@ export class ErrorInterceptor implements HttpInterceptor {
             catchError(error => {
                 if (error instanceof HttpErrorResponse) {
                     // unknown error
-                    if (error.status === 0 || error.status === 403) {
+                    if (error.status === 0) {
                         return throwError(error.statusText);
                     }
                     // unauthorized, not found, bad request or internal server error (global exception)
-                    if (error.status === 401 || error.status === 404
+                    if (error.status === 401 || error.status === 403 || error.status === 404
                     || (error.status === 400 && !error.error.errors) || error.status === 500) {
                         if (this.router.url !== '/auth' && error.status === 401) {
                             this.router.navigate(['']);

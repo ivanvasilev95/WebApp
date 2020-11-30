@@ -18,7 +18,6 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   galleryImages: NgxGalleryImage[];
   ad: Ad;
   recipientId: number;
-  adLikesCount: number = null;
 
   constructor(private likeService: LikeService, public authService: AuthService,
               private alertify: AlertifyService, private route: ActivatedRoute) { }
@@ -42,9 +41,6 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     this.galleryImages = this.getImages();
 
     this.setRecipientId();
-    if (this.ad.isApproved && this.userIsLoggedIn() && !this.isNotLoggedInUserAd()) {
-      this.getAdLikesCount();
-    }
   }
 
   ngAfterViewInit() {
@@ -73,12 +69,6 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
       } else {
         this.recipientId = this.ad.userId;
       }
-    });
-  }
-
-  getAdLikesCount() {
-    this.likeService.getAdLikesCount(this.ad.id).subscribe(count => {
-      this.adLikesCount = count;
     });
   }
 

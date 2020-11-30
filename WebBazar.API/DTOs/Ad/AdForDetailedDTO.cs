@@ -20,5 +20,6 @@ namespace WebBazar.API.DTOs.Ad
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public bool IsApproved { get; set; }
+        public int LikesCount { get; set; }
     }
 }

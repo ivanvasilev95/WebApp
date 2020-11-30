@@ -13,26 +13,9 @@ namespace WebBazar.API.Services
     {
         public LikeService(DataContext context, IMapper mapper)
             : base(context, mapper) {}
-        
-        public async Task<int> AdLikesCount(int adId)
-        {
-            return await _context
-                .Likes
-                .Where(l => l.AdId == adId)
-                .CountAsync();
-        }
 
         public async Task<Result> Like(int userId, int adId)
         {
-            var adAlreadyLiked = await _context
-                .Likes
-                .AnyAsync(l => l.UserId == userId && l.AdId == adId);
-
-            if (adAlreadyLiked)
-            {
-                return "Обявата вече е добавена в Наблюдавани";
-            }
-
             var ad = await _context
                 .Ads
                 .Where(a => a.Id == adId)
@@ -46,6 +29,15 @@ namespace WebBazar.API.Services
             if (ad.UserId == userId)
             {
                 return "Не може да добавяте собствени обяви в Наблюдавани";
+            }
+
+            var adAlreadyLiked = await _context
+                .Likes
+                .AnyAsync(l => l.UserId == userId && l.AdId == adId);
+
+            if (adAlreadyLiked)
+            {
+                return "Обявата вече е добавена в Наблюдавани";
             }
 
             _context.Likes.Add(new Like
@@ -68,8 +60,10 @@ namespace WebBazar.API.Services
                 .Likes
                 .FirstOrDefaultAsync(l => l.UserId == userId && l.AdId == adId);
 
-            if(like == null)
+            if (like == null)
+            {
                 return "Лайкът не е намерен";
+            }
 
             _context.Likes.Remove(like);
             await _context.SaveChangesAsync();

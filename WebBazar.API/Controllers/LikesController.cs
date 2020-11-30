@@ -42,13 +42,5 @@ namespace WebBazar.API.Controllers
 
             return Ok();
         }
-
-        [HttpGet("count")]
-        public async Task<IActionResult> GetAdLikesCount([FromQuery]int adId)
-        {
-            var count = await _likeService.AdLikesCount(adId);
-
-            return Ok(count);
-        }
     }
 }

@@ -32,8 +32,10 @@ namespace WebBazar.API.Controllers
         {
             var result = await _adService.ByIdAsync(id);
             if (result.Failure)
+            {
                 return NotFound(result.Error);
-     
+            }
+
             return Ok(result.Data);
         }
 

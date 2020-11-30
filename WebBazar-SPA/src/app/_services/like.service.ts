@@ -20,10 +20,6 @@ export class LikeService {
     return this.http.delete(this.baseUrl + 'remove', {params: this.createQueryString(adId)});
   }
 
-  getAdLikesCount(adId: number): Observable<number> {
-    return this.http.get<number>(this.baseUrl + 'count', {params: this.createQueryString(adId)});
-  }
-
   private createQueryString(adId: number) {
     return new HttpParams().append('adId', adId.toString());
   }

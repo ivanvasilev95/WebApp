@@ -73,7 +73,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
 }
 
 @NgModule({
-   declarations: [	
+   declarations: [
       AppComponent,
       NavComponent,
       HomeComponent,

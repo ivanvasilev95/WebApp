@@ -21,6 +21,9 @@ namespace WebBazar.API.Helpers
                 })
                 .ForMember(dest => dest.UserName, opt => {
                     opt.MapFrom(src => src.User.UserName);
+                })
+                .ForMember(dest => dest.LikesCount, opt => {
+                    opt.MapFrom(src => src.Likes.Count());
                 });
 
             CreateMap<Ad, AdForListDTO>()
