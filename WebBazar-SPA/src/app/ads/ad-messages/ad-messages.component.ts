@@ -32,8 +32,11 @@ export class AdMessagesComponent implements OnInit {
         tap(messages => {
           for (const message of messages) {
             if (message.recipientId === this.getLoggedInUserId() && message.isRead === false) {
-              this.messageService.markMessageAsRead(message.id).subscribe();
-              MessageService.unreadMessagesCount--;
+              this.messageService.markMessageAsRead(message.id).subscribe(() => {
+                MessageService.unreadMessagesCount--;
+              }, error => {
+                this.alertify.error(error);
+              });
             }
           }
         })
