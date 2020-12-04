@@ -26,7 +26,7 @@
         <th style="width: 40%">Дата</th>
         <th style="width: 10%"></th>
       </tr>
-      <tr [style.background-color]="isNotRead(message) ? '#eee' : 'null'" *ngFor="let message of messages" [routerLink]="['/ads', message.adId]" [queryParams]="{recipient: this.recipientOfTheMessage(message), tab: 2}">
+      <tr [style.background-color]="isNotRead(message) ? '#eee' : 'null'" *ngFor="let message of messages" (click)="passDataTroughLocalStorage(message)" [routerLink]="['/ads', message.adId]">
         <td>
           <div *ngIf="messageContainer !== 'Outbox'">
             {{message.senderUsername}}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { Ad } from 'src/app/_models/ad';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { ActivatedRoute } from '@angular/router';
@@ -12,7 +12,7 @@ import { LikeService } from 'src/app/_services/like.service';
   templateUrl: './ad-detail.component.html',
   styleUrls: ['./ad-detail.component.css']
 })
-export class AdDetailComponent implements OnInit, AfterViewInit {
+export class AdDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('adTabs', {static: false}) adTabs: TabsetComponent;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
@@ -49,6 +49,15 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
+  ngOnDestroy() {
+    if (localStorage.getItem('recipientId') !== null) {
+      localStorage.removeItem('recipientId');
+    }
+    if (localStorage.getItem('tabNumber') !== null) {
+      localStorage.removeItem('tabNumber');
+    }
+  }
+
   getImages() {
     const imageUrls = [];
     for (const photo of this.ad.photos) {
@@ -62,21 +71,19 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
   }
 
   private setRecipientId() {
-    this.route.queryParams.subscribe(params => {
-      const recipientId = params.recipient;
-      if (recipientId !== undefined) {
-        this.recipientId = +recipientId;
-      } else {
-        this.recipientId = this.ad.userId;
-      }
-    });
+    if (localStorage.getItem('recipientId') !== null) {
+      this.recipientId = +localStorage.getItem('recipientId');
+    } else {
+      this.recipientId = this.ad.userId;
+    }
   }
 
   private setActiveTab() {
-    this.route.queryParams.subscribe(params => {
-      const selectedTab = params.tab;
-      this.adTabs.tabs[selectedTab > 0 && selectedTab !== undefined ? selectedTab : 0].active = true;
-    });
+    if (localStorage.getItem('tabNumber') !== null) {
+      this.adTabs.tabs[+localStorage.getItem('tabNumber')].active = true;
+    } else {
+      this.adTabs.tabs[0].active = true;
+    }
   }
 
   addToLikedAds(adId: number) {
@@ -107,7 +114,7 @@ export class AdDetailComponent implements OnInit, AfterViewInit {
     return +this.authService.decodedToken.nameid;
   }
 
-  selectTab(tabId: number) {
-    this.adTabs.tabs[tabId].active = true;
+  saveTabNumberInLocalStorage(tabNumber: number) {
+      localStorage.setItem('tabNumber', tabNumber.toString());
   }
 }

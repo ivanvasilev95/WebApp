@@ -49,7 +49,7 @@
     <div class="col-sm-8"> 
       <div class="tab-panel">
         <tabset #adTabs class="ad-tabset">
-            <tab heading="Описание">
+            <tab heading="Описание" (selectTab)="saveTabNumberInLocalStorage(0)">
               <textarea *ngIf="ad?.description !== null && ad?.description?.trim() !== ''"
                 class="form-control"
                 name="description"
@@ -60,12 +60,12 @@
               </textarea>
               <p *ngIf="ad?.description === null || ad?.description?.trim() === ''" class="text-center pt-3">Няма налично описание</p>
             </tab>
-            <tab heading="Снимки">
+            <tab heading="Снимки" (selectTab)="saveTabNumberInLocalStorage(1)">
               <p *ngIf="galleryImages.length === 0" class="text-center pt-3">Няма налични снимки</p>
               <ngx-gallery *ngIf="galleryImages.length !== 0" style="margin-left:120px;margin-top:13px;" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
             <ng-container *ngIf="ad.isApproved && userIsLoggedIn() && userIsNotAdminOnly()">
-              <tab heading="Съобщения" *ngIf="recipientId !== getLoggedInUserId()" (selectTab)="adMessagesComponent.loadMessages()">
+              <tab heading="Съобщения" *ngIf="recipientId !== getLoggedInUserId()" (selectTab)="saveTabNumberInLocalStorage(2)" (selectTab)="adMessagesComponent.loadMessages()">
                 <app-ad-messages #adMessagesComponent [ad]="ad" [recipientId]="recipientId"></app-ad-messages>
               </tab>
             </ng-container>

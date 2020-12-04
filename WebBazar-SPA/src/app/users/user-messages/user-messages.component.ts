@@ -86,15 +86,16 @@ export class UserMessagesComponent implements OnInit {
     return message.senderId === this.getLoggedInUserId();
   }
 
-  recipientOfTheMessage(message: Message): number {
-    if (message.senderId === this.getLoggedInUserId()) {
-      return message.recipientId;
-    } else {
-      return message.senderId;
-    }
-  }
-
   getLoggedInUserId() {
     return +this.authService.decodedToken.nameid;
+  }
+
+  passDataTroughLocalStorage(message: Message) {
+    if (message.senderId === this.getLoggedInUserId()) {
+      localStorage.setItem('recipientId', message.recipientId.toString());
+    } else {
+      localStorage.setItem('recipientId', message.senderId.toString());
+    }
+    localStorage.setItem('tabNumber', '2');
   }
 }
