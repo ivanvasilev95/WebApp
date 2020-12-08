@@ -31,27 +31,27 @@ namespace WebBazar.API.Services
             _cloudinaryConfig = cloudinaryConfig;
         }
 
-        public async Task<IEnumerable<AdForListDTO>> AllAsync(UserParams userParams)
+        public async Task<IEnumerable<AdForListDTO>> AllAsync(AdParams adParams)
         {
             var ads = _context
                 .Ads
                 .Include(a => a.Photos)
                 .AsQueryable();
             
-            if (!string.IsNullOrEmpty(userParams.SearchText))
+            if (!string.IsNullOrEmpty(adParams.SearchText))
             {
                 ads = ads
                     .Where(ad => ad.Title.ToLower()
-                    .Contains(userParams.SearchText) || ad.Location.ToLower().Contains(userParams.SearchText));
+                    .Contains(adParams.SearchText) || ad.Location.ToLower().Contains(adParams.SearchText));
             }
             
-            if (userParams.CategoryId != 0)
+            if (adParams.CategoryId != 0)
             {
                 ads = ads
-                    .Where(ad => ad.CategoryId == userParams.CategoryId);
+                    .Where(ad => ad.CategoryId == adParams.CategoryId);
             }
             
-            switch (userParams.SortCriteria)
+            switch (adParams.SortCriteria)
             {
                 case "negotiation": // po dogovarqne
                 { 
@@ -81,7 +81,7 @@ namespace WebBazar.API.Services
                 }
             }
 
-            var paginatedAds = await PagedList<Ad>.CreateAsync(ads, userParams.PageNumber, userParams.PageSize);
+            var paginatedAds = await PagedList<Ad>.CreateAsync(ads, adParams.PageNumber, adParams.PageSize);
 
             _contextAccessor.HttpContext.Response.AddPagination(paginatedAds.CurrentPage, paginatedAds.PageSize, paginatedAds.TotalCount);
 

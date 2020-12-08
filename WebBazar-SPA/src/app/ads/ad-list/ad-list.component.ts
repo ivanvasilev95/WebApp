@@ -16,7 +16,7 @@ export class AdListComponent implements OnInit {
   ads: Ad[];
   categories: Category[];
   pagination: Pagination;
-  userParams: any = {};
+  adParams: any = {};
 
   constructor(private categoryService: CategoryService, private adService: AdService,
               private alertify: AlertifyService, private route: ActivatedRoute) { }
@@ -28,7 +28,7 @@ export class AdListComponent implements OnInit {
     });
 
     this.getCategories();
-    this.initUserParams();
+    this.initAdParams();
   }
 
   getCategories() {
@@ -36,10 +36,10 @@ export class AdListComponent implements OnInit {
     error => this.alertify.error(error));
   }
 
-  initUserParams() {
-    this.userParams.searchText = '';
-    this.userParams.categoryId = 0;
-    this.userParams.sortCriteria = 'newest';
+  initAdParams() {
+    this.adParams.searchText = '';
+    this.adParams.categoryId = 0;
+    this.adParams.sortCriteria = 'newest';
   }
 
   pageChanged(event: any) {
@@ -52,7 +52,7 @@ export class AdListComponent implements OnInit {
       this.pagination.currentPage = 1;
     }
 
-    this.adService.getAds(this.pagination.currentPage, this.pagination.itemsPerPage, this.userParams)
+    this.adService.getAds(this.pagination.currentPage, this.pagination.itemsPerPage, this.adParams)
       .subscribe((res: PaginatedResult<Ad[]>) => {
       this.ads = res.result;
       this.pagination = res.pagination;
@@ -62,8 +62,8 @@ export class AdListComponent implements OnInit {
   }
 
   filterByNameOrAddress() {
-    if (this.userParams.searchText.replace(/\s/g, '').length) {
-      this.userParams.searchText = this.userParams.searchText.trim().toLowerCase();
+    if (this.adParams.searchText.replace(/\s/g, '').length) {
+      this.adParams.searchText = this.adParams.searchText.trim().toLowerCase();
     }
     this.loadAds(true);
   }

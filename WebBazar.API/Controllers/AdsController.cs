@@ -19,9 +19,9 @@ namespace WebBazar.API.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> All([FromQuery]UserParams userParams)
+        public async Task<IActionResult> All([FromQuery]AdParams adParams)
         {
-            var ads = await _adService.AllAsync(userParams);
+            var ads = await _adService.AllAsync(adParams);
 
             return Ok(ads);
         }

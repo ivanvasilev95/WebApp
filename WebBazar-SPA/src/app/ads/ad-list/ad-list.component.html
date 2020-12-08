@@ -1,12 +1,12 @@
 <div class="container mt-3">
   <h4 style="text-align: center;">Всички обяви</h4>
   <div class="input-group mt-3">
-    <input type="text" [(ngModel)]="userParams.searchText" style="margin-right:4px;" class="form-control" placeholder="Филтрирай по име или адрес на обява" (input)="filterByNameOrAddress()">
-    <select class="form-control" style="margin-right:4px;" [(ngModel)]="userParams.categoryId" (change)="loadAds(true)">
+    <input type="text" [(ngModel)]="adParams.searchText" style="margin-right:4px;" class="form-control" placeholder="Филтрирай по име или адрес на обява" (input)="filterByNameOrAddress()">
+    <select class="form-control" style="margin-right:4px;" [(ngModel)]="adParams.categoryId" (change)="loadAds(true)">
       <option [value]="0">Всички категории</option>
       <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
     </select>
-    <select class="form-control" [(ngModel)]="userParams.sortCriteria" (change)="loadAds(true)">
+    <select class="form-control" [(ngModel)]="adParams.sortCriteria" (change)="loadAds(true)">
       <option value="newest">Най-нови</option>
       <option value="cheapest">Най-евтини</option>
       <option value="expensive">Най-скъпи</option>

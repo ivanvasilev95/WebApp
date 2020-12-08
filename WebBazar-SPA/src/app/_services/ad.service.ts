@@ -14,8 +14,8 @@ export class AdService {
 
   constructor(private http: HttpClient) { }
 
-  getAds(currentPage: number, itemsPerPage: number, userParams: any = null): Observable<PaginatedResult<Ad[]>> {
-    const params = this.addHttpParamsForAds(currentPage, itemsPerPage, userParams);
+  getAds(currentPage: number, itemsPerPage: number, adParams: any = null): Observable<PaginatedResult<Ad[]>> {
+    const params = this.addHttpParamsForAds(currentPage, itemsPerPage, adParams);
 
     return this.http.get<Ad[]>(this.baseUrl, { observe: 'response', params})
     .pipe(
@@ -33,16 +33,16 @@ export class AdService {
     );
   }
 
-  private addHttpParamsForAds(currentPage: number, itemsPerPage: number, userParams: any): HttpParams {
+  private addHttpParamsForAds(currentPage: number, itemsPerPage: number, adParams: any): HttpParams {
     let params = new HttpParams();
 
     params = params.append('pageNumber', currentPage.toString());
     params = params.append('pageSize', itemsPerPage.toString());
 
-    if (userParams !== null) {
-      params = params.append('searchText', userParams.searchText);
-      params = params.append('categoryId', userParams.categoryId);
-      params = params.append('sortCriteria', userParams.sortCriteria);
+    if (adParams !== null) {
+      params = params.append('searchText', adParams.searchText);
+      params = params.append('categoryId', adParams.categoryId);
+      params = params.append('sortCriteria', adParams.sortCriteria);
     }
 
     return params;

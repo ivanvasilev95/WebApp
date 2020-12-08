@@ -1,6 +1,6 @@
 namespace WebBazar.API.Helpers
 {
-    public class UserParams // rename AdParams
+    public class AdParams
     {
         private const int MaxPageSize = 10;
         private int pageSize = 5;
