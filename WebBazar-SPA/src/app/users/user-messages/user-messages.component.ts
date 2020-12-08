@@ -25,23 +25,28 @@ export class UserMessagesComponent implements OnInit {
     this.route.data.subscribe(data => {
       this.messages = data.messages.result;
       this.pagination = data.messages.pagination;
+      // console.log(this.getPaginator());
     });
   }
 
   loadMessages(messageFilter: string = null, returnToFirstPage: boolean = false) {
-    if (returnToFirstPage) {
-      this.pagination.currentPage = 1;
-    }
-
     if (messageFilter !== null && messageFilter !== undefined) {
+      if (this.messageContainer === messageFilter) {
+        return;
+      }
       this.messageContainer = messageFilter;
     }
 
-    this.messageService.getMessages(this.pagination.currentPage,
-      this.pagination.itemsPerPage, this.messageContainer)
+    if (returnToFirstPage && this.pagination.currentPage > 1) {
+      this.pagination.currentPage = 1;
+      return;
+    }
+
+    this.messageService.getMessages(this.pagination.currentPage, this.pagination.itemsPerPage, this.messageContainer)
       .subscribe((res: PaginatedResult<Message[]>) => {
         this.messages = res.result;
         this.pagination = res.pagination;
+        // console.log(this.getPaginator());
       }, error => {
         this.alertify.error(error);
       });
@@ -57,13 +62,28 @@ export class UserMessagesComponent implements OnInit {
       this.messageService.deleteMessage(id).subscribe(() => {
         if (this.messages.length - 1 === 0 && this.pagination.currentPage > 1) {
           this.pagination.currentPage = this.pagination.currentPage - 1;
+        } else {
+          // this.loadMessages();
+          this.messages.splice(this.messages.findIndex(m => m.id === id), 1);
+          this.pagination.totalItems = this.pagination.totalItems - 1;
+          // console.log(this.getPaginator());
         }
-        this.loadMessages();
         this.alertify.success('Съобщението беше изтрито успешно');
       }, error => {
         this.alertify.error(error);
       });
     });
+  }
+
+  getPaginator() {
+    const pageItems = this.pagination.currentPage * this.pagination.itemsPerPage;
+
+    return 'Показване на съобщения ' +
+    (1 + (this.pagination.itemsPerPage * (this.pagination.currentPage - 1))) +
+    ' - ' +
+    (pageItems > this.pagination.totalItems ? this.pagination.totalItems : pageItems) +
+    ' от ' +
+    this.pagination.totalItems;
   }
 
   getMessageType(type) {
@@ -82,8 +102,8 @@ export class UserMessagesComponent implements OnInit {
     return message.senderDeleted && message.recipientId === this.getLoggedInUserId();
   }
 
-  senderIsLoggedInUser(message: Message) {
-    return message.senderId === this.getLoggedInUserId();
+  senderIsLoggedInUser(senderId: number) {
+    return senderId === this.getLoggedInUserId();
   }
 
   getLoggedInUserId() {

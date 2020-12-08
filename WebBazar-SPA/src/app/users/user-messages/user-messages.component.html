@@ -1,5 +1,4 @@
 <div class="container mt-3 mb-1">
-
   <div class="row">
     <div class="btn-group">
       <button class="btn btn-primary" [class.active]="messageContainer === 'Unread'" name="unread" ngDefaultControl btnRadio="Unread" (click)="loadMessages('Unread', true)">
@@ -17,6 +16,7 @@
   <p *ngIf="messages?.length === 0" class="text-center" style="margin-top: 50px;">Нямате {{getMessageType(messageContainer)}} съобщения.</p>
   
   <div class="row" *ngIf="messages?.length > 0">
+    <!-- messages -->
     <table class="table table-hover" style="cursor: pointer;border: 1px solid gainsboro;">
       <tr>
         <th *ngIf="messageContainer !== 'Outbox'" style="width: 10%">Подател</th>
@@ -40,19 +40,26 @@
         <td *ngIf="senderDeletedIt(message)" style="text-align: justify;"><i>[съобщението е премахнато]</i></td>
         <td>{{message.messageSent | date}}</td> <!-- message.messageSent | timeAgo -->
         <td>
-          <button *ngIf="senderIsLoggedInUser(message)" class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(message.id)">Изтрий</button>
+          <button *ngIf="senderIsLoggedInUser(message.senderId)" class="btn btn-danger" (click)="$event.stopPropagation()" (click)="deleteMessage(message.id)">Изтрий</button>
         </td>
       </tr>
     </table>
+    <!-- pagination -->
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6" style="padding-left: 0 !important;">
+          <pagination [boundaryLinks]="true" 
+                [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage"
+                [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+          </pagination>
+        </div>
+        <div class="col-md-6 text-right" style="padding-right: 0 !important;">
+          {{getPaginator()}}
+        </div>
+      </div>
+    </div>
   </div>
-
-</div>
-<div *ngIf="messages?.length !== 0" class="d-flex justify-content-center">
-  <pagination [boundaryLinks]="true" 
-              [totalItems]="pagination.totalItems"
-              [itemsPerPage]="pagination.itemsPerPage"
-              [(ngModel)]="pagination.currentPage"
-              (pageChanged)="pageChanged($event)"
-              previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
-  </pagination>
 </div>

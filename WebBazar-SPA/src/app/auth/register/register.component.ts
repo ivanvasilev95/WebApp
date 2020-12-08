@@ -31,26 +31,32 @@ export class RegisterComponent implements OnInit {
   userNameValidator(g: FormGroup) {
     const userName = g.get('userName').value === null ? '' : g.get('userName').value;
     const regex = /\s/g; // checks if string contains whitespaces
+
     if (regex.test(userName)) {
       return {userNameMismatch: true};
     }
+
     return null;
   }
 
   fullNameValidator(g: FormGroup) {
     const fullName = g.get('fullName').value === null ? '' : g.get('fullName').value.trimEnd();
+
     if (fullName.length < 2 || fullName.length > 15) {
       return {fullNameMismatch: true};
     }
+
     return null;
   }
 
   passwordValidator(g: FormGroup) {
     const password = g.get('password').value === null ? '' : g.get('password').value;
     const regex = /\s/g; // checks if string contains whitespaces
+
     if (regex.test(password)) {
       return {passwordMismatch: true};
     }
+
     return null;
   }
 
@@ -80,7 +86,6 @@ export class RegisterComponent implements OnInit {
   }
 
   trimUserName(event) {
-    // converts to lower case and removes whitespaces at the beginning and at the end
     this.registerForm.controls.userName.setValue(event.target.value.toLowerCase().trim());
   }
 
@@ -90,17 +95,14 @@ export class RegisterComponent implements OnInit {
   }
 
   trimEmail(event) {
-    // converts to lower case and removes whitespaces at the beginning and at the end
     this.registerForm.controls.email.setValue(event.target.value.toLowerCase().trim());
   }
 
   trimPassword(event) {
-    // removes whitespaces at the beginning and at the end
     this.registerForm.controls.password.setValue(event.target.value.trim());
   }
 
   trimConfirmPassword(event) {
-    // removes whitespaces at the beginning and at the end
     this.registerForm.controls.confirmPassword.setValue(event.target.value.trim());
   }
 }
