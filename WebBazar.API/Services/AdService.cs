@@ -83,7 +83,7 @@ namespace WebBazar.API.Services
 
             var paginatedAds = await PagedList<Ad>.CreateAsync(ads, userParams.PageNumber, userParams.PageSize);
 
-            _contextAccessor.HttpContext.Response.AddPagination(paginatedAds.CurrentPage, paginatedAds.PageSize, paginatedAds.TotalCount, paginatedAds.TotalPages);
+            _contextAccessor.HttpContext.Response.AddPagination(paginatedAds.CurrentPage, paginatedAds.PageSize, paginatedAds.TotalCount);
 
             return _mapper.Map<IEnumerable<AdForListDTO>>(paginatedAds);
         }

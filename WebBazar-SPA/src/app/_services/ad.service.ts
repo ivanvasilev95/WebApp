@@ -14,8 +14,8 @@ export class AdService {
 
   constructor(private http: HttpClient) { }
 
-  getAds(page?: number, itemsPerPage?: number, userParams?: any): Observable<PaginatedResult<Ad[]>> {
-    const params = this.addHttpParamsForAds(page, itemsPerPage, userParams);
+  getAds(currentPage: number, itemsPerPage: number, userParams: any = null): Observable<PaginatedResult<Ad[]>> {
+    const params = this.addHttpParamsForAds(currentPage, itemsPerPage, userParams);
 
     return this.http.get<Ad[]>(this.baseUrl, { observe: 'response', params})
     .pipe(
@@ -23,23 +23,23 @@ export class AdService {
         const paginatedResult: PaginatedResult<Ad[]> = new PaginatedResult<Ad[]>();
 
         paginatedResult.result = response.body;
-        if (response.headers.get('Pagination') != null) {
+
+        if (response.headers.get('Pagination') !== null) {
           paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
         }
+
         return paginatedResult;
       })
     );
   }
 
-  private addHttpParamsForAds(page?: number, itemsPerPage?: number, userParams?: any): HttpParams {
+  private addHttpParamsForAds(currentPage: number, itemsPerPage: number, userParams: any): HttpParams {
     let params = new HttpParams();
 
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page.toString());
-      params = params.append('pageSize', itemsPerPage.toString());
-    }
+    params = params.append('pageNumber', currentPage.toString());
+    params = params.append('pageSize', itemsPerPage.toString());
 
-    if (userParams != null) {
+    if (userParams !== null) {
       params = params.append('searchText', userParams.searchText);
       params = params.append('categoryId', userParams.categoryId);
       params = params.append('sortCriteria', userParams.sortCriteria);

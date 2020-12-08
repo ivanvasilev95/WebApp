@@ -47,10 +47,11 @@ export class AdListComponent implements OnInit {
     this.loadAds(false);
   }
 
-  loadAds(flag: boolean) {
-    if (flag === true) { // return to first page
+  loadAds(returnToFirstPage: boolean) {
+    if (returnToFirstPage) {
       this.pagination.currentPage = 1;
     }
+
     this.adService.getAds(this.pagination.currentPage, this.pagination.itemsPerPage, this.userParams)
       .subscribe((res: PaginatedResult<Ad[]>) => {
       this.ads = res.result;

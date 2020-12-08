@@ -65,7 +65,7 @@ namespace WebBazar.API.Services
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
         
-        public async Task<Result> DeleteAsync(int messageId, int currentUserId)
+        public async Task<Result> DeleteAsync(int messageId, int userId)
         {
             var message = await _context
                 .Messages
@@ -76,10 +76,10 @@ namespace WebBazar.API.Services
                 return "Съобщението не е намерено";
             }
 
-            if (message.SenderId == currentUserId)
+            if (message.SenderId == userId)
                 message.SenderDeleted = true;
 
-            if (message.RecipientId == currentUserId)
+            if (message.RecipientId == userId)
                 message.RecipientDeleted = true;
             
             if (await _context.SaveChangesAsync() > 0)
@@ -90,13 +90,13 @@ namespace WebBazar.API.Services
             return "Грешка при изтриване на съобщението";
         }
 
-        public async Task<Result> MarkAsReadAsync(int messageId, int currentUserId)
+        public async Task<Result> MarkAsReadAsync(int messageId, int userId)
         {
             var message = await _context
                 .Messages
                 .FirstOrDefaultAsync(m => m.Id == messageId);
 
-            if (message.RecipientId != currentUserId)
+            if (message.RecipientId != userId)
             {
                 return "Нямате право на тази операция";
             }
@@ -109,15 +109,15 @@ namespace WebBazar.API.Services
             return true;
         }
 
-        public async Task<IEnumerable<MessageToReturnDTO>> MessageThreadAsync(int adId, int currentUserId, int otherUserId)
+        public async Task<IEnumerable<MessageToReturnDTO>> MessageThreadAsync(int adId, int senderId, int recipientId)
         {
             var messages = await _context
                 .Messages
                 .Include(u => u.Sender)
                 .Include(a => a.Ad)
                 .Include(u => u.Recipient)
-                .Where(m => (m.RecipientId == otherUserId && m.SenderId == currentUserId && m.SenderDeleted == false
-                          || m.RecipientId == currentUserId && m.SenderId == otherUserId /* && !(m.IsRead == false && m.SenderDeleted == true) */)
+                .Where(m => (m.RecipientId == recipientId && m.SenderId == senderId && m.SenderDeleted == false
+                          || m.RecipientId == senderId && m.SenderId == recipientId /* && !(m.IsRead == false && m.SenderDeleted == true) */)
                           && m.AdId == adId
                           /* && !(m.IsRead == false && m.SenderDeleted == true) */)
                 .OrderBy(m => m.MessageSent)
@@ -136,7 +136,7 @@ namespace WebBazar.API.Services
             return unreadMsgsCount;
         }
 
-        public async Task<IEnumerable<MessageToReturnDTO>> UserMessagesAsync(MessageParams messageParams)
+        public async Task<IEnumerable<MessageToReturnDTO>> UserMessagesAsync(MessageParams messageParams, int userId)
         {
             var messages = _context.Messages
                 .Include(u => u.Sender)
@@ -144,30 +144,29 @@ namespace WebBazar.API.Services
                 .Include(u => u.Recipient)
                 .AsQueryable();
 
-            switch(messageParams.MessageContainer) 
+            switch (messageParams.MessageFilter) 
             {
                 case "Inbox":
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId /* && !(m.RecipientId == messageParams.UserId && m.IsRead == false && m.SenderDeleted == true) */)
+                        .Where(m => m.RecipientId == userId /* && !(m.RecipientId == userId && m.IsRead == false && m.SenderDeleted == true) */)
                         .OrderBy(m => m.IsRead)
                         .ThenByDescending(m => m.MessageSent);
                     break;
                 case "Outbox":
                     messages = messages
-                        .Where(m => m.SenderId == messageParams.UserId && m.SenderDeleted == false)
+                        .Where(m => m.SenderId == userId && m.SenderDeleted == false)
                         .OrderByDescending(m => m.MessageSent);
                     break;
                 default: // unread
                     messages = messages
-                        .Where(m => m.RecipientId == messageParams.UserId && m.IsRead == false /* && m.SenderDeleted == false */)
+                        .Where(m => m.RecipientId == userId && m.IsRead == false /* && m.SenderDeleted == false */)
                         .OrderByDescending(m => m.MessageSent);
                     break;
             }
 
             var paginatedMessages = await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
             
-            _contextAccessor.HttpContext.Response.AddPagination(paginatedMessages.CurrentPage, paginatedMessages.PageSize,
-                paginatedMessages.TotalCount, paginatedMessages.TotalPages);
+            _contextAccessor.HttpContext.Response.AddPagination(paginatedMessages.CurrentPage, paginatedMessages.PageSize, paginatedMessages.TotalCount);
 
             return _mapper.Map<IEnumerable<MessageToReturnDTO>>(paginatedMessages);
         }

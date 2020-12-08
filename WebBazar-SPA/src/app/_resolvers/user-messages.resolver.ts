@@ -10,12 +10,12 @@ import { MessageService } from '../_services/message.service';
 export class UserMessagesResolver implements Resolve<Message[]> {
     pageNumber = 1;
     pageSize = 5;
-    messageContainer = 'Unread';
+    messageFilter = 'Unread';
 
     constructor(private messageService: MessageService, private router: Router, private alertify: AlertifyService) {}
 
     resolve(route: ActivatedRouteSnapshot): Observable<Message[]> {
-        return this.messageService.getMessages(this.pageNumber, this.pageSize, this.messageContainer).pipe(
+        return this.messageService.getMessages(this.pageNumber, this.pageSize, this.messageFilter).pipe(
             catchError(error => {
                 this.alertify.error(error);
                 this.router.navigate(['']);

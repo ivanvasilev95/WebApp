@@ -15,36 +15,38 @@ export class MessageService {
 
   constructor(private http: HttpClient) {}
 
-  getMessages(page?: number, itemsPerPage?: number, messageContainer?: string) {
-    const params = this.addHttpParamsForMessages(page, itemsPerPage, messageContainer);
+  getMessages(currentPage: number, itemsPerPage: number, messageFilter: string) {
+    const params = this.addHttpParamsForMessages(currentPage, itemsPerPage, messageFilter);
 
     return this.http.get<Message[]>(this.baseUrl, {observe: 'response', params})
       .pipe(
         map(response => {
           const paginatedResult: PaginatedResult<Message[]> = new PaginatedResult<Message[]>();
+
           paginatedResult.result = response.body;
-          if (response.headers.get('Pagination') != null) {
+
+          if (response.headers.get('Pagination') !== null) {
             paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
           }
+
           return paginatedResult;
         })
       );
   }
 
-  private addHttpParamsForMessages(page?: number, itemsPerPage?: number, messageContainer?: string): HttpParams {
+  private addHttpParamsForMessages(currentPage: number, itemsPerPage: number, messageFilter: string): HttpParams {
     let params = new HttpParams();
-    params = params.append('MessageContainer', messageContainer);
 
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page.toString());
-      params = params.append('pageSize', itemsPerPage.toString());
-    }
+    params = params.append('pageNumber', currentPage.toString());
+    params = params.append('pageSize', itemsPerPage.toString());
+    params = params.append('MessageFilter', messageFilter);
 
     return params;
   }
 
   getMessageThread(adId: number, recipientId: number) {
     let params = new HttpParams();
+
     params = params.append('adId', adId.toString());
     params = params.append('recipientId', recipientId.toString());
 

@@ -14,7 +14,7 @@ import { MessageService } from 'src/app/_services/message.service';
 export class UserMessagesComponent implements OnInit {
   messages: Message[];
   pagination: Pagination;
-  messageContainer = 'Unread';
+  messageFilter = 'Unread';
 
   constructor(private messageService: MessageService,
               private route: ActivatedRoute,
@@ -31,10 +31,10 @@ export class UserMessagesComponent implements OnInit {
 
   loadMessages(messageFilter: string = null, returnToFirstPage: boolean = false) {
     if (messageFilter !== null && messageFilter !== undefined) {
-      if (this.messageContainer === messageFilter) {
+      if (this.messageFilter === messageFilter) {
         return;
       }
-      this.messageContainer = messageFilter;
+      this.messageFilter = messageFilter;
     }
 
     if (returnToFirstPage && this.pagination.currentPage > 1) {
@@ -42,7 +42,7 @@ export class UserMessagesComponent implements OnInit {
       return;
     }
 
-    this.messageService.getMessages(this.pagination.currentPage, this.pagination.itemsPerPage, this.messageContainer)
+    this.messageService.getMessages(this.pagination.currentPage, this.pagination.itemsPerPage, this.messageFilter)
       .subscribe((res: PaginatedResult<Message[]>) => {
         this.messages = res.result;
         this.pagination = res.pagination;
@@ -86,7 +86,7 @@ export class UserMessagesComponent implements OnInit {
     this.pagination.totalItems;
   }
 
-  getMessageType(type) {
+  getMessagesType(type) {
     switch (type) {
       case 'Unread': return 'непрочетени';
       case 'Inbox': return 'получени';

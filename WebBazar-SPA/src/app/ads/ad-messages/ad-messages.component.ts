@@ -82,11 +82,10 @@ export class AdMessagesComponent implements OnInit {
       this.messages.some(m => {
         if (m.senderId === this.recipientId && m.recipientId === this.getLoggedInUserId()) {
           this.textareaPlaceholderText += ' до ' + m.senderUsername;
-          return true;
         } else {
           this.textareaPlaceholderText += ' до ' + m.recipientUsername;
-          return true;
         }
+        return true;
       });
     }
   }
