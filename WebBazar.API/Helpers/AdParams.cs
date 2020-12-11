@@ -2,8 +2,8 @@ namespace WebBazar.API.Helpers
 {
     public class AdParams
     {
-        private const int MaxPageSize = 15;
-        private int pageSize = 5;
+        private const int MaxPageSize = 18;
+        private int pageSize = 6;
         
         public int PageNumber { get; set; } = 1;
 

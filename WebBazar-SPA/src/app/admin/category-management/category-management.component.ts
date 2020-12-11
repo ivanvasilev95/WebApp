@@ -58,10 +58,6 @@ export class CategoryManagementComponent implements OnInit {
     });
   }
 
-  onClick() {
-    this.allowEdit = true;
-  }
-
   updateCategory(event, category) {
     const changedCategoryName = event.target.innerText.trim();
 
@@ -106,4 +102,7 @@ export class CategoryManagementComponent implements OnInit {
     return true;
   }
 
+  enableEdit() {
+    this.allowEdit = true;
+  }
 }

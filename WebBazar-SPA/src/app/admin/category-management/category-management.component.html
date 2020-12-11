@@ -16,7 +16,7 @@
       </tr>
       <tr *ngFor="let category of categories">
         <td>{{category.id}}</td>
-        <td [attr.contenteditable]="allowEdit" (click)="onClick()" (blur)="updateCategory($event, category)">{{category.name}}</td>
+        <td [attr.contenteditable]="allowEdit" (click)="enableEdit()" (blur)="updateCategory($event, category)">{{category.name}}</td>
         <td><button class="btn btn-danger" (click)="removeCategory(category.id)">Премахни</button></td>
       </tr>
     </table>

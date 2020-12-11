@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 @Injectable()
 export class AdListResolver implements Resolve<Ad[]> {
     pageNumber = 1;
-    pageSize = 5;
+    pageSize = 6;
 
     constructor(private adService: AdService, private router: Router, private alertify: AlertifyService) {}
 

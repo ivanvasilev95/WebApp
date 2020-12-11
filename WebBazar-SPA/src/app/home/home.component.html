@@ -9,7 +9,7 @@
       <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
           <app-ad [ad]="ad"></app-ad>
       </div>
-      <div class="col-sm-12 text-left mt-1 mb-10">
+      <div *ngIf="!authService.loggedIn()" class="col-sm-12 text-left mt-1 mb-10">
         <a [routerLink]="['/ads']">Виж повече <i class="fa fa-angle-right"></i></a>
       </div>
     </div>

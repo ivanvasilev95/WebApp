@@ -78,6 +78,23 @@ export class UserMessagesComponent implements OnInit {
     });
   }
 
+  passDataTroughLocalStorage(message: Message) {
+    if (message.senderId === this.getLoggedInUserId()) {
+      localStorage.setItem('recipientId', message.recipientId.toString());
+    } else {
+      localStorage.setItem('recipientId', message.senderId.toString());
+    }
+    localStorage.setItem('tabNumber', '2');
+  }
+
+  getMessagesType(type) {
+    switch (type) {
+      case 'Unread': return 'непрочетени';
+      case 'Inbox': return 'получени';
+      case 'Outbox': return 'изпратени';
+    }
+  }
+
   getPaginator() {
     const pageItems = this.pagination.currentPage * this.pagination.itemsPerPage;
 
@@ -89,12 +106,8 @@ export class UserMessagesComponent implements OnInit {
            this.pagination.totalItems;
   }
 
-  getMessagesType(type) {
-    switch (type) {
-      case 'Unread': return 'непрочетени';
-      case 'Inbox': return 'получени';
-      case 'Outbox': return 'изпратени';
-    }
+  getLoggedInUserId() {
+    return +this.authService.decodedToken.nameid;
   }
 
   isNotRead(message: Message) {
@@ -107,18 +120,5 @@ export class UserMessagesComponent implements OnInit {
 
   senderIsLoggedInUser(senderId: number) {
     return senderId === this.getLoggedInUserId();
-  }
-
-  getLoggedInUserId() {
-    return +this.authService.decodedToken.nameid;
-  }
-
-  passDataTroughLocalStorage(message: Message) {
-    if (message.senderId === this.getLoggedInUserId()) {
-      localStorage.setItem('recipientId', message.recipientId.toString());
-    } else {
-      localStorage.setItem('recipientId', message.senderId.toString());
-    }
-    localStorage.setItem('tabNumber', '2');
   }
 }

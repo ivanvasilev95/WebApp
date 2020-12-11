@@ -5,7 +5,6 @@ import { Ad } from '../../_models/ad';
 import { ActivatedRoute } from '@angular/router';
 import { Category } from 'src/app/_models/category';
 import { Pagination, PaginatedResult } from 'src/app/_models/pagination';
-import { CategoryService } from 'src/app/_services/category.service';
 
 @Component({
   selector: 'app-ad-list',
@@ -16,30 +15,23 @@ export class AdListComponent implements OnInit {
   ads: Ad[];
   categories: Category[];
   pagination: Pagination;
-  adParams: any = {};
+  adParams: any = { searchText: '', categoryId: 0, sortCriteria: 'newest'};
 
-  constructor(private categoryService: CategoryService, private adService: AdService,
-              private alertify: AlertifyService, private route: ActivatedRoute) { }
+  constructor(private adService: AdService,
+              private alertify: AlertifyService,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.ads = data.ads.result;
       this.pagination = data.ads.pagination;
+      this.categories = data.categories;
     });
-
-    this.getCategories();
-    this.initAdParams();
   }
 
-  getCategories() {
-    this.categoryService.getAll().subscribe((categories: Category[]) => this.categories = categories,
-    error => this.alertify.error(error));
-  }
-
-  initAdParams() {
-    this.adParams.searchText = '';
-    this.adParams.categoryId = 0;
-    this.adParams.sortCriteria = 'newest';
+  filterByNameOrAddress() {
+    this.adParams.searchText = this.adParams.searchText.trim().toLowerCase();
+    this.loadAds(true);
   }
 
   pageChanged(event: any) {
@@ -48,23 +40,27 @@ export class AdListComponent implements OnInit {
   }
 
   loadAds(returnToFirstPage: boolean) {
-    if (returnToFirstPage) {
-      this.pagination.currentPage = 1;
+    if (returnToFirstPage && this.pagination.currentPage > 1) {
+      this.pageChanged({page: 1}); // this.pagination.currentPage = 1;
+    } else {
+      this.adService.getAds(this.pagination.currentPage, this.pagination.itemsPerPage, this.adParams)
+        .subscribe((res: PaginatedResult<Ad[]>) => {
+        this.ads = res.result;
+        this.pagination = res.pagination;
+      }, error => {
+        this.alertify.error(error);
+      });
     }
-
-    this.adService.getAds(this.pagination.currentPage, this.pagination.itemsPerPage, this.adParams)
-      .subscribe((res: PaginatedResult<Ad[]>) => {
-      this.ads = res.result;
-      this.pagination = res.pagination;
-    }, error => {
-      this.alertify.error(error);
-    });
   }
 
-  filterByNameOrAddress() {
-    if (this.adParams.searchText.replace(/\s/g, '').length) {
-      this.adParams.searchText = this.adParams.searchText.trim().toLowerCase();
-    }
-    this.loadAds(true);
+  getPaginator() {
+    const pageItems = this.pagination.currentPage * this.pagination.itemsPerPage;
+
+    return 'Показване на съобщения ' +
+           (1 + (this.pagination.itemsPerPage * (this.pagination.currentPage - 1))) +
+           ' - ' +
+           (pageItems > this.pagination.totalItems ? this.pagination.totalItems : pageItems) +
+           ' от ' +
+           this.pagination.totalItems;
   }
 }

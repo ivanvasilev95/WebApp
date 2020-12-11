@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Ad } from 'src/app/_models/ad';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { AdService } from 'src/app/_services/ad.service';
 import { Category } from 'src/app/_models/category';
 import { AuthService } from 'src/app/_services/auth.service';
 import { Location } from '@angular/common';
-import { CategoryService } from 'src/app/_services/category.service';
 
 @Component({
   selector: 'app-ad-add',
@@ -20,7 +19,7 @@ export class NewAdComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private router: Router, private alertify: AlertifyService,
               private adService: AdService, private authService: AuthService,
-              private categoryService: CategoryService, private location: Location) { }
+              private route: ActivatedRoute, private location: Location) { }
 
   ngOnInit() {
     this.getCategories();
@@ -28,9 +27,9 @@ export class NewAdComponent implements OnInit {
   }
 
   getCategories() {
-    this.categoryService.getAll().subscribe(
-      (categories: Category[]) => this.categories = categories,
-      error => this.alertify.error(error));
+    this.route.data.subscribe(data => {
+      this.categories = data.categories;
+    });
   }
 
   createNewAdForm() {

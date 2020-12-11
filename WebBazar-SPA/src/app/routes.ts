@@ -21,6 +21,7 @@ import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { LoginGuard } from './_guards/login.guard';
 import { AdEditResolver } from './_resolvers/ad-edit.resolver';
 import { AuthPanelComponent } from './auth/auth-panel/auth-panel.component';
+import { CategoriesResolver } from './_resolvers/categories.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
@@ -28,10 +29,13 @@ export const appRoutes: Routes = [
     { path: 'auth', component: AuthPanelComponent, runGuardsAndResolvers: 'always', canActivate: [LoginGuard] },
     { path: 'user/:id/ads', component: UserAdsComponent },
     { path: 'ads', component: AdListComponent,
-        resolve: {ads: AdListResolver} },
+        resolve: {ads: AdListResolver, categories: CategoriesResolver} },
     { path: 'ads/:id', component: AdDetailComponent,
         resolve: {ad: AdDetailResolver} },
-    { path: 'ad/new', component: NewAdComponent, runGuardsAndResolvers: 'always', canActivate: [NewAdGuard] },
+    { path: 'ad/new', component: NewAdComponent,
+        runGuardsAndResolvers: 'always',
+        canActivate: [NewAdGuard],
+        resolve: {categories: CategoriesResolver} },
     {
         path: '',
         runGuardsAndResolvers: 'always',
@@ -44,7 +48,7 @@ export const appRoutes: Routes = [
                 resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },
             { path: 'ads/:id/edit', component: AdEditComponent,
-                resolve: {ad: AdEditResolver} },
+                resolve: {ad: AdEditResolver, categories: CategoriesResolver} },
             { path: 'admin', component: AdminPanelComponent, data: {roles: ['Admin', 'Moderator']} }
         ]
     },

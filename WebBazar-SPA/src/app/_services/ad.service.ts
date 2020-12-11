@@ -40,7 +40,9 @@ export class AdService {
     params = params.append('pageSize', itemsPerPage.toString());
 
     if (adParams !== null) {
-      params = params.append('searchText', adParams.searchText);
+      if (adParams.searchText !== '') {
+        params = params.append('searchText', adParams.searchText);
+      }
       params = params.append('categoryId', adParams.categoryId);
       params = params.append('sortCriteria', adParams.sortCriteria);
     }

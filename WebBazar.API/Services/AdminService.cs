@@ -61,7 +61,7 @@ namespace WebBazar.API.Services
             return roles;
         }
 
-        public async Task<List<AdForListDTO>> GetAdsForModeration()
+        public async Task<List<AdForListDTO>> GetAdsForApproval()
         {
             var configuration = new MapperConfiguration(cfg =>
                 cfg.CreateMap<Ad, AdForListDTO>().ForMember(
@@ -79,7 +79,7 @@ namespace WebBazar.API.Services
             return ads;
         }
 
-        public async Task<Result> EditRoles(string userName, string[] selectedRoles)
+        public async Task<Result> EditUserRoles(string userName, string[] selectedRoles)
         {
             var user = await _userManager.FindByNameAsync(userName);
             var userRoles = await _userManager.GetRolesAsync(user);

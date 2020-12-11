@@ -3,6 +3,7 @@ import { AdService } from '../_services/ad.service';
 import { Ad } from '../_models/ad';
 import { AlertifyService } from '../_services/alertify.service';
 import { PaginatedResult } from '../_models/pagination';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,9 @@ export class HomeComponent implements OnInit {
   ads: Ad[] = [];
   showSpinner = true;
 
-  constructor(private adService: AdService, private alertify: AlertifyService) { }
+  constructor(private adService: AdService,
+              private alertify: AlertifyService,
+              public authService: AuthService) { }
 
   ngOnInit() {
     this.loadAds();
@@ -21,7 +24,7 @@ export class HomeComponent implements OnInit {
 
   loadAds() {
     const pageNumber = 1;
-    const pageSize = 10;
+    const pageSize = 6;
 
     this.adService.getAds(pageNumber, pageSize).subscribe((ads: PaginatedResult<Ad[]>) => {
       this.ads = ads.result;

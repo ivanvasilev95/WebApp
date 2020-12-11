@@ -18,25 +18,15 @@ export class AdEditComponent implements OnInit {
   @ViewChild('editForm', {static: false}) editForm: NgForm;
   @ViewChild('descriptionForm', {static: false}) descriptionForm: NgForm;
 
-  constructor(private adService: AdService, private categoryService: CategoryService,
-              private route: ActivatedRoute, private alertify: AlertifyService) { }
+  constructor(private adService: AdService,
+              private route: ActivatedRoute,
+              private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.getAd();
-    this.getCategories();
-  }
-
-  getAd() {
     this.route.data.subscribe(data => {
       this.ad = data.ad;
+      this.categories = data.categories;
     });
-  }
-
-  getCategories() {
-    this.categoryService.getAll().subscribe(
-      (categories: Category[]) => this.categories = categories,
-      error => this.alertify.error(error)
-    );
   }
 
   updateAd() {

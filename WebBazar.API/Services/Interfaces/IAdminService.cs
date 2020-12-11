@@ -9,9 +9,9 @@ namespace WebBazar.API.Services.Interfaces
     {
          Task<dynamic> GetUsersWithRoles();
          Task<string[]> GetRoles();
-         Task<List<AdForListDTO>> GetAdsForModeration();
+         Task<List<AdForListDTO>> GetAdsForApproval();
          Task ApproveAd(int id);
          Task RejectAd(int id);
-         Task<Result> EditRoles(string userName, string[] selectedRoles);
+         Task<Result> EditUserRoles(string userName, string[] selectedRoles);
     }
 }

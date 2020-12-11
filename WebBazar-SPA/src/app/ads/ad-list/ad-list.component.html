@@ -1,5 +1,6 @@
 <div class="container mt-3">
   <h4 style="text-align: center;">Всички обяви</h4>
+
   <div class="input-group mt-3">
     <input type="text" [(ngModel)]="adParams.searchText" style="margin-right:4px;" class="form-control" placeholder="Филтрирай по име или адрес на обява" (input)="filterByNameOrAddress()">
     <select class="form-control" style="margin-right:4px;" [(ngModel)]="adParams.categoryId" (change)="loadAds(true)">
@@ -13,20 +14,38 @@
       <option value="negotiation">По договаряне</option>
     </select>
   </div>
+
   <hr>
-  <p *ngIf="ads?.length == 0" style="text-align: center;">Няма намерени обяви.</p>
-  <div *ngIf="ads?.length !== 0" class="row">
+  <p *ngIf="ads?.length === 0" style="text-align: center;">Няма намерени обяви.</p>
+
+  <div class="row" *ngIf="ads?.length > 0">
+    <!-- ads -->
     <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
       <app-ad [ad]="ad"></app-ad>
-    </div>  
+    </div>
+    <!-- pagination -->
+    <div class="container mt-3 ml-3">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <pagination [boundaryLinks]="true" 
+                      [totalItems]="pagination.totalItems"
+                      [itemsPerPage]="pagination.itemsPerPage"
+                      [(ngModel)]="pagination.currentPage"
+                      (pageChanged)="pageChanged($event)"
+                      previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+            </pagination>
+            <select class="custom-select w-auto ml-3" [(ngModel)]="pagination.itemsPerPage" (change)="loadAds(true)">
+              <option [ngValue]="6">6</option>
+              <option [ngValue]="12">12</option>
+              <option [ngValue]="18">18</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6 text-right">
+          {{getPaginator()}}
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div *ngIf="ads?.length !== 0" class="d-flex justify-content-center mt-2">
-  <pagination [boundaryLinks]="true" 
-              [totalItems]="pagination.totalItems"
-              [itemsPerPage]="pagination.itemsPerPage"
-              [(ngModel)]="pagination.currentPage"
-              (pageChanged)="pageChanged($event)"
-            previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
-  </pagination>
 </div>

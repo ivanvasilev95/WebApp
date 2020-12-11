@@ -33,9 +33,9 @@ namespace WebBazar.API.Controllers
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("editRoles/{userName}")]
-        public async Task<IActionResult> EditRoles(string userName, RoleEditDTO roleEditDTO)
+        public async Task<IActionResult> EditUserRoles(string userName, RoleEditDTO roleEditDTO)
         {
-            var result = await _adminService.EditRoles(userName, roleEditDTO.RoleNames);
+            var result = await _adminService.EditUserRoles(userName, roleEditDTO.RoleNames);
             if (result.Failure) 
             {
                 return BadRequest(result.Error);
@@ -45,10 +45,10 @@ namespace WebBazar.API.Controllers
         }
 
         [Authorize(Policy = "RequireAdminOrModeratorRole")]
-        [HttpGet("adsForModeration")]
-        public async Task<IActionResult> GetAdsForModeration()
+        [HttpGet("adsForApproval")]
+        public async Task<IActionResult> GetAdsForApproval()
         {
-            var ads = await _adminService.GetAdsForModeration();
+            var ads = await _adminService.GetAdsForApproval();
             return Ok(ads);
         }
 

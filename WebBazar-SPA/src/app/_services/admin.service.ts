@@ -24,7 +24,7 @@ export class AdminService {
   }
 
   getAdsForApproval() {
-    return this.http.get(this.baseUrl + 'adsForModeration');
+    return this.http.get(this.baseUrl + 'adsForApproval');
   }
 
   approveAd(id) {
