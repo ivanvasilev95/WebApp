@@ -32,7 +32,6 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> GetUserForEdit(int id)
         {
             var user = await _userService.GetUserForEditAsync(id);
-
             return Ok(user);
         }
 

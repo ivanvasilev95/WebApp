@@ -25,36 +25,41 @@ export class UserMessagesComponent implements OnInit {
     this.route.data.subscribe(data => {
       this.messages = data.messages.result;
       this.pagination = data.messages.pagination;
-      // console.log(this.getPaginator());
     });
   }
 
-  loadMessages(messageFilter: string = null, returnToFirstPage: boolean = false) {
-    if (messageFilter !== null && messageFilter !== undefined) {
-      if (this.messageFilter === messageFilter) {
-        return;
-      }
-      this.messageFilter = messageFilter;
-    }
+  pageChanged(event: any) {
+    this.pagination.currentPage = event.page;
+    this.loadMessages();
+  }
 
-    if (returnToFirstPage && this.pagination.currentPage > 1) {
-      this.pagination.currentPage = 1;
+  filterMessages(messageFilter: string) {
+    if (this.messageFilter === messageFilter) {
       return;
     }
 
+    this.messageFilter = messageFilter;
+    this.pagination.itemsPerPage = 5;
+
+    this.loadFromTheBeginning();
+  }
+
+  loadFromTheBeginning() {
+    if (this.pagination.currentPage > 1) {
+      this.pageChanged({page: 1}); // this.pagination.currentPage = 1;
+    } else {
+      this.loadMessages();
+    }
+  }
+
+  loadMessages() {
     this.messageService.getMessages(this.pagination.currentPage, this.pagination.itemsPerPage, this.messageFilter)
       .subscribe((res: PaginatedResult<Message[]>) => {
         this.messages = res.result;
         this.pagination = res.pagination;
-        // console.log(this.getPaginator());
       }, error => {
         this.alertify.error(error);
       });
-  }
-
-  pageChanged(event: any): void {
-    this.pagination.currentPage = event.page;
-    this.loadMessages();
   }
 
   deleteMessage(id: number) {
@@ -63,10 +68,8 @@ export class UserMessagesComponent implements OnInit {
         if (this.messages.length - 1 === 0 && this.pagination.currentPage > 1) {
           this.pagination.currentPage = this.pagination.currentPage - 1;
         } else {
-          // this.loadMessages();
           this.messages.splice(this.messages.findIndex(m => m.id === id), 1);
           this.pagination.totalItems = this.pagination.totalItems - 1;
-          // console.log(this.getPaginator());
         }
         this.alertify.success('Съобщението беше изтрито успешно');
       }, error => {
@@ -79,11 +82,11 @@ export class UserMessagesComponent implements OnInit {
     const pageItems = this.pagination.currentPage * this.pagination.itemsPerPage;
 
     return 'Показване на съобщения ' +
-    (1 + (this.pagination.itemsPerPage * (this.pagination.currentPage - 1))) +
-    ' - ' +
-    (pageItems > this.pagination.totalItems ? this.pagination.totalItems : pageItems) +
-    ' от ' +
-    this.pagination.totalItems;
+           (1 + (this.pagination.itemsPerPage * (this.pagination.currentPage - 1))) +
+           ' - ' +
+           (pageItems > this.pagination.totalItems ? this.pagination.totalItems : pageItems) +
+           ' от ' +
+           this.pagination.totalItems;
   }
 
   getMessagesType(type) {

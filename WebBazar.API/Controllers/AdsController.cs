@@ -22,7 +22,6 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> All([FromQuery]AdParams adParams)
         {
             var ads = await _adService.AllAsync(adParams);
-
             return Ok(ads);
         }
 
@@ -42,8 +41,7 @@ namespace WebBazar.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AdForCreateDTO adForCreateDTO)
         {
-           var id = await _adService.CreateAsync(adForCreateDTO);
-
+            var id = await _adService.CreateAsync(adForCreateDTO);
             return Created(nameof(this.Create), id);
         }
 

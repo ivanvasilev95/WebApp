@@ -39,7 +39,7 @@ export class MessageService {
 
     params = params.append('pageNumber', currentPage.toString());
     params = params.append('pageSize', itemsPerPage.toString());
-    params = params.append('MessageFilter', messageFilter);
+    params = params.append('messageFilter', messageFilter);
 
     return params;
   }

@@ -16,8 +16,10 @@ export class AppComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       const jwtHelper = new JwtHelperService();
-      this.authService.decodedToken = jwtHelper.decodeToken(token);
-      this.messageService.getUnreadMessagesCount().subscribe();
+      if (!jwtHelper.isTokenExpired(token)) {
+        this.authService.decodedToken = jwtHelper.decodeToken(token);
+        this.messageService.getUnreadMessagesCount().subscribe();
+      }
     }
   }
 }
