@@ -16,12 +16,12 @@ namespace WebBazar.API.Services
 {
     public class MessageService : BaseService, IMessageService
     {
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly HttpResponse _response;
 
         public MessageService(DataContext context, IMapper mapper, IHttpContextAccessor contextAccessor)
             : base(context, mapper)
         {
-            _contextAccessor = contextAccessor;
+            _response = contextAccessor.HttpContext.Response;
         }
 
         public async Task<Result<MessageToReturnDTO>> CreateAsync(MessageForCreationDTO model)
@@ -166,7 +166,7 @@ namespace WebBazar.API.Services
 
             var paginatedMessages = await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
             
-            _contextAccessor.HttpContext.Response.AddPagination(paginatedMessages.CurrentPage, paginatedMessages.PageSize, paginatedMessages.TotalCount);
+            _response.AddPagination(paginatedMessages.CurrentPage, paginatedMessages.PageSize, paginatedMessages.TotalCount);
 
             return _mapper.Map<IEnumerable<MessageToReturnDTO>>(paginatedMessages);
         }

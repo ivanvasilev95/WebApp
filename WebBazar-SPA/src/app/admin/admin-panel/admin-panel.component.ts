@@ -9,4 +9,7 @@ export class AdminPanelComponent {
 
   constructor() { }
 
+  scrollToTop() {
+    window.scrollTo(0, 0);
+  }
 }

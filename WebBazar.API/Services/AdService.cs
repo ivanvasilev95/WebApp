@@ -18,7 +18,7 @@ namespace WebBazar.API.Services
 {
     public class AdService : BaseService, IAdService
     {
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly HttpResponse _response;
         private IOptions<CloudinarySettings> _cloudinaryConfig;
 
         public AdService(
@@ -27,7 +27,7 @@ namespace WebBazar.API.Services
             IHttpContextAccessor contextAccessor,
             IOptions<CloudinarySettings> cloudinaryConfig) : base(context, mapper)
         {
-            _contextAccessor = contextAccessor;
+            _response = contextAccessor.HttpContext.Response;
             _cloudinaryConfig = cloudinaryConfig;
         }
 
@@ -83,7 +83,7 @@ namespace WebBazar.API.Services
 
             var paginatedAds = await PagedList<Ad>.CreateAsync(ads, adParams.PageNumber, adParams.PageSize);
 
-            _contextAccessor.HttpContext.Response.AddPagination(paginatedAds.CurrentPage, paginatedAds.PageSize, paginatedAds.TotalCount);
+            _response.AddPagination(paginatedAds.CurrentPage, paginatedAds.PageSize, paginatedAds.TotalCount);
 
             return _mapper.Map<IEnumerable<AdForListDTO>>(paginatedAds);
         }

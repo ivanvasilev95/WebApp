@@ -32,12 +32,14 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
         {
             var user = await _userManager.FindByNameAsync(userForLoginDTO.UserName);
+
             if (user == null)
             {
                 return Unauthorized("Невалидено потребителско име или парола");
             }
 
             var passwordValid = await _userManager.CheckPasswordAsync(user, userForLoginDTO.Password);
+
             if (passwordValid) 
             {
                 return Ok(new
@@ -65,6 +67,7 @@ namespace WebBazar.API.Controllers
             var userToCreate = _mapper.Map<User>(userForRegisterDTO);
 
             var result = await _userManager.CreateAsync(userToCreate, userForRegisterDTO.Password);
+            
             if (result.Succeeded) 
             {
                 await _userManager.AddToRoleAsync(userToCreate, "Member");

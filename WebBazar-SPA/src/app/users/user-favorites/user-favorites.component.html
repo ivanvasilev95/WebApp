@@ -7,7 +7,7 @@
   <div *ngIf="ads?.length !== 0" class="row">
     <div *ngFor="let ad of ads" class="col-sm-6 col-md-4 col-lg-4 col-xl-2" style="text-align:center">
       <app-ad [ad]="ad"></app-ad>
-      <a style="cursor:pointer;" (click)="removeAdFromLiked(ad.id)"><i class="fa fa-minus"></i> премахни</a>
+      <a style="cursor:pointer;" (click)="unlikeAd(ad.id)"><i class="fa fa-minus"></i> премахни</a>
     </div>
   </div>
 </div>

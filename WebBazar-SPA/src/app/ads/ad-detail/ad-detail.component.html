@@ -1,11 +1,11 @@
-<div class="container mt-4">
+<div class="container mt-3 pb-1">
   <div>
     <h4>{{ad.title}}</h4>
   </div>
   <div>
     <h6><i>Категория: {{ad.categoryName}}</i></h6>
   </div>
-  <div class="row mb-4">
+  <div class="row">
     <!-- left part -->
     <div class="col-sm-4">
       <div class="card pb-2">
@@ -40,7 +40,7 @@
         </div>
         <div class="card-footer" *ngIf="ad.isApproved && userIsLoggedIn() && isNotLoggedInUserAd() && userIsNotAdminOnly()">
           <div class="btn-group d-flex" >
-              <button class="btn btn-primary w-100" (click)="addToLikedAds(ad.id)" style="height:36.5px;">Наблюдавай</button>
+              <button class="btn btn-primary w-100" (click)="likeAd(ad.id)" style="height:36.5px;">Наблюдавай</button>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@
               <ngx-gallery *ngIf="galleryImages.length !== 0" style="margin-left:120px;margin-top:13px;" [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
             </tab>
             <ng-container *ngIf="ad.isApproved && userIsLoggedIn() && userIsNotAdminOnly()">
-              <tab heading="Съобщения" *ngIf="recipientId !== getLoggedInUserId()" (selectTab)="saveTabNumberInLocalStorage(2)" (selectTab)="adMessagesComponent.loadMessages()">
+              <tab heading="Съобщения" *ngIf="recipientId !== getLoggedInUserId()" (selectTab)="saveTabNumberInLocalStorage(2)" (selectTab)="adMessagesComponent.loadMessages()" (deselect)="adMessagesComponent.newMessage.content = ''">
                 <app-ad-messages #adMessagesComponent [ad]="ad" [recipientId]="recipientId"></app-ad-messages>
               </tab>
             </ng-container>

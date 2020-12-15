@@ -20,7 +20,8 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> GetUserWithAds([FromRoute]int id, [FromQuery]bool includeNotApprovedAds)
         {
             var result = await _userService.GetUserWithAdsAsync(id, includeNotApprovedAds);
-            if(result.Failure)
+
+            if (result.Failure)
             {
                 return NotFound(result.Error);
             }
@@ -32,6 +33,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> GetUserForEdit(int id)
         {
             var user = await _userService.GetUserForEditAsync(id);
+
             return Ok(user);
         }
 
@@ -39,6 +41,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)
         {
             var result = await _userService.UpdateUserAsync(id, userForUpdateDTO);
+            
             if (result.Failure)
             {
                 return BadRequest(result.Error);

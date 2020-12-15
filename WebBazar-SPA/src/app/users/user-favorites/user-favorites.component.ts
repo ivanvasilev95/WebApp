@@ -26,8 +26,8 @@ export class UserFavoritesComponent implements OnInit {
     });
   }
 
-  removeAdFromLiked(adId: number) {
-    this.likeService.removeAdFromLiked(adId).subscribe(() => {
+  unlikeAd(adId: number) {
+    this.likeService.unlikeAd(adId).subscribe(() => {
       this.ads.splice(this.ads.findIndex(a => a.id === adId), 1);
       this.alertify.success('Обявата беше премахната от Наблюдавани');
     }, error => {

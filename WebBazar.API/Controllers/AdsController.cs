@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.DTOs.Ad;
-using WebBazar.API.Extensions;
 using WebBazar.API.Helpers;
 using WebBazar.API.Services.Interfaces;
 
@@ -11,10 +10,12 @@ namespace WebBazar.API.Controllers
     public class AdsController : ApiController
     {
         private readonly IAdService _adService;
+        private readonly ICurrentUserService _currentUser;
         
-        public AdsController(IAdService adService)
+        public AdsController(IAdService adService, ICurrentUserService currentUser)
         {
             _adService = adService;
+            _currentUser = currentUser;
         }
 
         [HttpGet]
@@ -22,6 +23,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> All([FromQuery]AdParams adParams)
         {
             var ads = await _adService.AllAsync(adParams);
+
             return Ok(ads);
         }
 
@@ -30,6 +32,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var result = await _adService.ByIdAsync(id);
+
             if (result.Failure)
             {
                 return NotFound(result.Error);
@@ -42,6 +45,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Create(AdForCreateDTO adForCreateDTO)
         {
             var id = await _adService.CreateAsync(adForCreateDTO);
+
             return Created(nameof(this.Create), id);
         }
 
@@ -49,6 +53,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Delete(int id) 
         {
             var result = await _adService.DeleteAsync(id);
+
             if (result.Failure)
             {
                 return BadRequest();
@@ -60,7 +65,7 @@ namespace WebBazar.API.Controllers
         [HttpGet("personal")]
         public async Task<IActionResult> Mine()
         {
-            int userId = int.Parse(this.User.GetId());
+            var userId = _currentUser.GetId();
 
             var ads = await _adService.UserAdsAsync(userId);
 
@@ -70,7 +75,7 @@ namespace WebBazar.API.Controllers
         [HttpGet("liked")]
         public async Task<IActionResult> Liked()
         {
-            int userId = int.Parse(this.User.GetId());
+            var userId = _currentUser.GetId();
 
             var ads = await _adService.UserLikedAdsAsync(userId);
 
@@ -81,6 +86,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Update(int id, AdForUpdateDTO adForUpdateDTO)
         {
             var result = await _adService.UpdateAsync(id, adForUpdateDTO);
+            
             if (result.Failure)
             {
                 return BadRequest();

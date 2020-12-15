@@ -11,20 +11,16 @@ import { Ad } from 'src/app/_models/ad';
   templateUrl: './ad-messages.component.html',
   styleUrls: ['./ad-messages.component.css']
 })
-export class AdMessagesComponent implements OnInit {
+export class AdMessagesComponent {
   @Input() recipientId: number;
   @Input() ad: Ad;
   messages: Message[];
-  newMessage: any = {};
-  textareaPlaceholderText = 'Въведете вашето съобщение';
+  newMessage: any = { content: '' };
+  textareaPlaceholderText = '';
 
   constructor(private messageService: MessageService,
               private authService: AuthService,
               private alertify: AlertifyService) { }
-
-  ngOnInit() {
-    this.newMessage.content = '';
-  }
 
   loadMessages() {
     this.messageService.getMessageThread(this.ad.id, this.recipientId)
@@ -64,7 +60,6 @@ export class AdMessagesComponent implements OnInit {
 
     this.newMessage.adId = this.ad.id;
     this.newMessage.senderId = this.getLoggedInUserId();
-
     this.newMessage.recipientId = this.recipientId;
 
     this.messageService.sendMessage(this.newMessage).subscribe(message => {
@@ -76,6 +71,7 @@ export class AdMessagesComponent implements OnInit {
   }
 
   setTextareaPlaceholder() {
+    this.textareaPlaceholderText = 'Въведете вашето съобщение';
     if (this.recipientId === this.ad.userId) { // recipient is the ad owner
       this.textareaPlaceholderText += ' до ' + this.ad.userName;
     } else { // recipient is other user with id = this.recipientId

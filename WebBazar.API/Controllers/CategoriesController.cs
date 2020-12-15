@@ -21,6 +21,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> All()
         {
             var categories = await _categoryService.AllAsync();
+
             return Ok(categories);
         }
 
@@ -28,6 +29,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Create(CategoryForCreationDTO model)
         {
             var result = await _categoryService.CreateAsync(model);
+
             if (result.Failure)
             {
                 return BadRequest(result.Error);
@@ -40,6 +42,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Update(int id, CategoryForCreationDTO model)
         {
             var result = await _categoryService.UpdateAsync(id, model);
+
             if (result.Failure)
             {
                 return BadRequest(result.Error);
@@ -52,6 +55,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Delete(int id) 
         {
             var result = await _categoryService.DeleteAsync(id);
+            
             if (result.Failure)
             {
                 return BadRequest(result.Error);

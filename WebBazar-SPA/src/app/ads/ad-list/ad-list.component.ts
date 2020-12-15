@@ -15,7 +15,7 @@ export class AdListComponent implements OnInit {
   ads: Ad[];
   categories: Category[];
   pagination: Pagination;
-  adParams: any = { searchText: '', categoryId: 0, sortCriteria: 'newest'};
+  adParams: any = { searchText: '', categoryId: 0, sortCriteria: 'newest' };
 
   constructor(private adService: AdService,
               private alertify: AlertifyService,

@@ -20,6 +20,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> GetUsersWithRoles()
         {
             var userList = await _adminService.GetUsersWithRoles();
+            
             return Ok(userList);
         }
 
@@ -28,6 +29,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> GetRoles()
         {
             var roles = await _adminService.GetRoles();
+
             return Ok(roles);
         }
 
@@ -36,6 +38,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> EditUserRoles(string userName, RoleEditDTO roleEditDTO)
         {
             var result = await _adminService.EditUserRoles(userName, roleEditDTO.RoleNames);
+
             if (result.Failure) 
             {
                 return BadRequest(result.Error);
@@ -49,6 +52,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> GetAdsForApproval()
         {
             var ads = await _adminService.GetAdsForApproval();
+
             return Ok(ads);
         }
 
@@ -57,6 +61,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> ApproveAd(int id) 
         {
             await _adminService.ApproveAd(id);
+
             return Ok();
         }
 
@@ -65,6 +70,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> RejectAd(int id) 
         {
             await _adminService.RejectAd(id);
+
             return Ok();
         }
     }

@@ -19,10 +19,10 @@ namespace WebBazar.API.Extensions
     {
         public static IServiceCollection AddDatabase(
             this IServiceCollection services,
-            IConfiguration Configuration)
+            IConfiguration configuration)
                 => services
                     .AddDbContext<DataContext>(options => options
-                        .UseMySql(Configuration.GetConnectionString("DbConnection")));
+                        .UseMySql(configuration.GetDefaultConnectionString()));
         
         public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
@@ -46,9 +46,10 @@ namespace WebBazar.API.Extensions
         
         public static IServiceCollection AddJwtAuthentication(
             this IServiceCollection services,
-            IConfiguration Configuration)
+            IConfiguration configuration)
         {
-            var key = Encoding.UTF8.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
+            var key = Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:Token").Value);
+            
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
@@ -73,6 +74,7 @@ namespace WebBazar.API.Extensions
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
             => services
+                .AddScoped<ICurrentUserService, CurrentUserService>()
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IAdminService, AdminService>()
                 .AddTransient<ICategoryService, CategoryService>()
@@ -86,9 +88,9 @@ namespace WebBazar.API.Extensions
 
         public static IServiceCollection AddCloudinarySettingsConfiguration(
             this IServiceCollection services,
-            IConfiguration Configuration)
+            IConfiguration configuration)
                 => services
-                    .Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+                    .Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
 
         public static void AddApiControllers(this IServiceCollection services)
             => services

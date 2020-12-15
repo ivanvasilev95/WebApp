@@ -15,7 +15,7 @@ namespace WebBazar.API.Helpers
             
             var dataContext = (DataContext)resultContext.HttpContext.RequestServices.GetService(typeof(DataContext));
             
-            var userId = int.Parse(resultContext.HttpContext.User.GetId() ?? "0");
+            var userId = int.Parse(resultContext.HttpContext?.User?.GetId() ?? "0");
 
             var user = await dataContext
                 .Users

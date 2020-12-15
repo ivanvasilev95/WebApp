@@ -18,6 +18,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Add([FromQuery]int adId, [FromForm]PhotoForCreationDTO photoForCreationDTO)
         {
             var result = await _photoService.AddAsync(adId, photoForCreationDTO);
+
             if (result.Failure)
             {
                 return BadRequest(result.Error);
@@ -30,6 +31,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> SetMain(int id)
         {
             var result = await _photoService.SetMainAsync(id);
+
             if (result.Failure)
             {
                 return BadRequest(result.Error);
@@ -42,6 +44,7 @@ namespace WebBazar.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _photoService.DeleteAsync(id);
+            
             if (result.Failure)
             {
                 return BadRequest(result.Error);

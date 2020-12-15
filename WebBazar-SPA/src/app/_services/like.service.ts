@@ -1,7 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -12,12 +11,12 @@ export class LikeService {
 
   constructor(private http: HttpClient) { }
 
-  addAdToLiked(adId: number) {
-    return this.http.post(this.baseUrl, {}, {params: this.createQueryString(adId)});
+  likeAd(adId: number) {
+    return this.http.post(this.baseUrl + 'like', {}, {params: this.createQueryString(adId)});
   }
 
-  removeAdFromLiked(adId: number) {
-    return this.http.delete(this.baseUrl + 'remove', {params: this.createQueryString(adId)});
+  unlikeAd(adId: number) {
+    return this.http.delete(this.baseUrl + 'unlike', {params: this.createQueryString(adId)});
   }
 
   private createQueryString(adId: number) {

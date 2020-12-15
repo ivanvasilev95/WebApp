@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
@@ -11,16 +10,5 @@ namespace WebBazar.API.Extensions
                 .Claims
                 .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
                 ?.Value;
-        
-        public static IEnumerable<string> GetRoles(this ClaimsPrincipal user) 
-            => ((ClaimsIdentity)user.Identity)
-                    .Claims
-                    .Where(c => c.Type == ClaimTypes.Role)
-                    .Select(c => c.Value);
-
-        public static bool IsAuthenticated(this ClaimsPrincipal user)
-            => user
-                .Identity
-                .IsAuthenticated;
     }
 }

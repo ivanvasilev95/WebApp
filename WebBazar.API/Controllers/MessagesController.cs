@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.Services.Interfaces;
 using WebBazar.API.DTOs.Message;
-using WebBazar.API.Extensions;
 using WebBazar.API.Helpers;
 
 namespace WebBazar.API.Controllers
@@ -10,16 +9,18 @@ namespace WebBazar.API.Controllers
     public class MessagesController : ApiController
     {
         private readonly IMessageService _messageService;
+        private readonly ICurrentUserService _currentUser;
 
-        public MessagesController(IMessageService messageService)
+        public MessagesController(IMessageService messageService, ICurrentUserService currentUser)
         {
             _messageService = messageService;
+            _currentUser = currentUser;
         }
 
         [HttpGet("thread")]
         public async Task<IActionResult> GetMessageThread([FromQuery]int adId, [FromQuery]int recipientId)
         {
-            var senderId = int.Parse(this.User.GetId());
+            var senderId = _currentUser.GetId();
 
             var messageThread = await _messageService.MessageThreadAsync(adId, senderId, recipientId);
 
@@ -29,7 +30,7 @@ namespace WebBazar.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserMessages([FromQuery]MessageParams messageParams)
         {
-            var userId = int.Parse(this.User.GetId());
+            var userId = _currentUser.GetId();
             
             var messages = await _messageService.UserMessagesAsync(messageParams, userId);
 
@@ -39,7 +40,7 @@ namespace WebBazar.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMessage(MessageForCreationDTO messageForCreationDTO)
         {
-            var userId = int.Parse(this.User.GetId());
+            var userId = _currentUser.GetId();
             
             if (messageForCreationDTO.SenderId != userId)
             {
@@ -59,7 +60,7 @@ namespace WebBazar.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
-            var userId = int.Parse(this.User.GetId());
+            var userId = _currentUser.GetId();
 
             var result = await _messageService.DeleteAsync(id, userId);
 
@@ -74,7 +75,7 @@ namespace WebBazar.API.Controllers
         [HttpPost("{id}/read")]
         public async Task<IActionResult> MarkMessageAsRead(int id)
         {
-            var userId = int.Parse(this.User.GetId());
+            var userId = _currentUser.GetId();
 
             var result = await _messageService.MarkAsReadAsync(id, userId);
             
@@ -89,7 +90,7 @@ namespace WebBazar.API.Controllers
         [HttpGet("unread/count")]
         public async Task<IActionResult> GetUnreadMessagesCount()
         {
-            var userId = int.Parse(this.User.GetId());
+            var userId = _currentUser.GetId();
             
             var count = await _messageService.UnreadMessagesCountAsync(userId);
             

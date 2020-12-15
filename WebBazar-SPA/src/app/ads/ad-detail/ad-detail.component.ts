@@ -86,8 +86,8 @@ export class AdDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  addToLikedAds(adId: number) {
-    this.likeService.addAdToLiked(adId).subscribe(() => {
+  likeAd(adId: number) {
+    this.likeService.likeAd(adId).subscribe(() => {
       this.alertify.success('Вие добавихте ' + this.ad.title + ' в Наблюдавани');
     }, error => {
       this.alertify.error(error);
