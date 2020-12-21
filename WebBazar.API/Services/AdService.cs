@@ -4,12 +4,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebBazar.API.Data;
 using WebBazar.API.DTOs.Ad;
-using WebBazar.API.Extensions;
 using WebBazar.API.Helpers;
 using WebBazar.API.Data.Models;
 using WebBazar.API.Services.Interfaces;
@@ -18,23 +16,19 @@ namespace WebBazar.API.Services
 {
     public class AdService : BaseService, IAdService
     {
-        private readonly HttpResponse _response;
         private IOptions<CloudinarySettings> _cloudinaryConfig;
 
         public AdService(
             DataContext context,
             IMapper mapper,
-            IHttpContextAccessor contextAccessor,
             IOptions<CloudinarySettings> cloudinaryConfig) : base(context, mapper)
         {
-            _response = contextAccessor.HttpContext.Response;
             _cloudinaryConfig = cloudinaryConfig;
         }
 
-        public async Task<IEnumerable<AdForListDTO>> AllAsync(AdParams adParams)
+        public async Task<PaginatedAdsServiceModel> AllAsync(AdParams adParams)
         {
-            var ads = _context
-                .Ads
+            var ads = _context.Ads
                 .Include(a => a.Photos)
                 .AsQueryable();
             
@@ -54,38 +48,34 @@ namespace WebBazar.API.Services
             switch (adParams.SortCriteria)
             {
                 case "negotiation": // po dogovarqne
-                { 
                     ads = ads
                         .Where(a => a.Price == null);
                     break;
-                }
                 case "cheapest":
-                {
                     ads = ads
                         .Where(a => a.Price != null)
                         .OrderBy(a => a.Price);
                     break;
-                }
                 case "expensive":
-                {
                     ads = ads
                         .Where(a => a.Price != null)
                         .OrderByDescending(a => a.Price);
                     break;
-                }
                 default: // newest
-                { 
                     ads = ads
                         .OrderByDescending(a => a.DateAdded);
                     break;
-                }
             }
 
             var paginatedAds = await PagedList<Ad>.CreateAsync(ads, adParams.PageNumber, adParams.PageSize);
 
-            _response.AddPagination(paginatedAds.CurrentPage, paginatedAds.PageSize, paginatedAds.TotalCount);
-
-            return _mapper.Map<IEnumerable<AdForListDTO>>(paginatedAds);
+            return new PaginatedAdsServiceModel
+            {
+                Ads = _mapper.Map<IEnumerable<AdForListDTO>>(paginatedAds),
+                CurrentPage = paginatedAds.CurrentPage,
+                PageSize = paginatedAds.PageSize,
+                TotalCount = paginatedAds.TotalCount
+            };
         }
 
         public async Task<Result<AdForDetailedDTO>> ByIdAsync(int id)
@@ -96,13 +86,14 @@ namespace WebBazar.API.Services
                 .Include(a => a.User)
                 .Include(a => a.Likes)
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .Where(a => a.Id == id && a.IsDeleted == false)
+                .FirstOrDefaultAsync();
 
             if (ad == null)
             {
                 return "Обявата не е намерена";
             }
-     
+
             return _mapper.Map<Ad, AdForDetailedDTO>(ad);
         }
 
@@ -119,23 +110,30 @@ namespace WebBazar.API.Services
 
         public async Task<Result> DeleteAsync(int id)
         {
-            var ad = await _context
-                .Ads
+            var ad = await _context.Ads
+                // .Include(a => a.Photos)
+                // .Include(a => a.Likes)
                 .IgnoreQueryFilters()
-                .Include(a => a.Photos)
-                .Where(a => a.Id == id)
+                .Where(a => a.Id == id && a.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if (ad == null)
             {
                 return "Обявата не е намерена";
             }
-			
-            if (ad.Photos.Any())
+
+            /*
+            if (ad.Likes.Any())
+            {
+                RemoveAdLikes(ad);
+            }
+
+            if (ad.Photos.Any(p => !p.IsDeleted))
             {
                 RemoveAdPhotos(ad);
             }
-			
+            */
+
             _context.Ads.Remove(ad);
 
             await _context.SaveChangesAsync();
@@ -143,6 +141,7 @@ namespace WebBazar.API.Services
             return true;
         }
 
+        /*
         private void RemoveAdPhotos(Ad ad) 
         {
             var acc = new Account(
@@ -152,7 +151,7 @@ namespace WebBazar.API.Services
 
             var cloudinary = new Cloudinary(acc);
 
-            foreach (var photo in ad.Photos) 
+            foreach (var photo in ad.Photos.Where(p => !p.IsDeleted)) 
             {
                 if (photo.PublicId != null) 
                 {
@@ -164,12 +163,20 @@ namespace WebBazar.API.Services
             }
         }
 
+        private void RemoveAdLikes(Ad ad)
+        {
+            foreach (var like in ad.Likes)
+            {
+                _context.Likes.Remove(like);
+            }
+        }
+        */
+
         public async Task<Result> UpdateAsync(int id, AdForUpdateDTO model)
         {
-            var ad = await _context
-                .Ads
+            var ad = await _context.Ads
                 .IgnoreQueryFilters()
-                .Where(a => a.Id == id)
+                .Where(a => a.Id == id && a.IsDeleted == false)
                 .FirstOrDefaultAsync();
 
             if (ad == null)
@@ -182,32 +189,29 @@ namespace WebBazar.API.Services
              return true;
         }
 
-        public async Task<IEnumerable<AdForListDTO>> UserAdsAsync(int userId)
+        public async Task<IEnumerable<AdForListDTO>> MineAsync(int userId)
         {
             var ads =  await _context.Ads
                 .Include(a => a.Photos)
-                .Where(a => a.UserId == userId)
+                .IgnoreQueryFilters()
+                .Where(a => a.UserId == userId && a.IsDeleted == false)
                 .OrderBy(a => a.IsApproved)
                 .ThenByDescending(a => a.DateAdded)
-                .IgnoreQueryFilters()
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<AdForListDTO>>(ads);
         }
 
-        public async Task<IEnumerable<AdForListDTO>> UserLikedAdsAsync(int userId)
+        public async Task<IEnumerable<AdForListDTO>> LikedAsync(int userId)
         {
-            var user = await _context
-                .Users
+            var user = await _context.Users
                 .Include(u => u.Likes)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            var userLikedAdsIds = user
-                .Likes
+            var userLikedAdsIds = user.Likes
                 .Select(i => i.AdId);
 
-            var userLikedAds = _context
-                .Ads
+            var userLikedAds = _context.Ads
                 .Include(p => p.Photos)
                 .Where(a => userLikedAdsIds.Contains(a.Id));
             

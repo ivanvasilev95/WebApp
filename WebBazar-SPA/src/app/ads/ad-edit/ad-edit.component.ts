@@ -85,13 +85,13 @@ export class AdEditComponent implements OnInit {
 
     this.updateAd();
   }
-
-  onCategorySelect() {
-    this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name;
-  }
-
+	
   updateMainPhoto(photoUrl: string) {
     this.ad.photoUrl = photoUrl;
+  }
+  
+  onCategorySelect() {
+    this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name;
   }
 
   resetForm(tab: string) {

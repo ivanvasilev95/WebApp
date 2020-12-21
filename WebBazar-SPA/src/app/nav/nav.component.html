@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-primary">
   <div class="container">
-    <a class="navbar-brand" [routerLink]="['/home']">Web Bazar</a>
+    <a class="navbar-brand" [routerLink]="['']">Web Bazar</a>
     
     <ul *ngIf="loggedIn()" class="navbar-nav mr-auto">
       <li *appHasRole="['Admin']" class="nav-item" routerLinkActive="active">
@@ -16,7 +16,7 @@
         <a class="nav-link" [routerLink]="['/favorites']">Наблюдавани</a>
       </li>
       <li *appHasRole="['Member', 'Moderator']" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="unreadMessagesCount !== 0"> ({{unreadMessagesCount}})</span></a>
+        <a class="nav-link" [routerLink]="['/messages']">Съобщения<span *ngIf="unreadMessagesCount > 0"> ({{unreadMessagesCount}})</span></a>
       </li>
     </ul>
 

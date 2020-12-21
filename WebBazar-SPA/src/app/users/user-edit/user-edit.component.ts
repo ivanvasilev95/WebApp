@@ -79,6 +79,11 @@ export class UserEditComponent implements OnInit {
     });
   }
 
+  validateEmail(email) {
+    const re = /\S+@\S+/; // /\S+@\S+\.\S+/
+    return re.test(email);
+  }
+  
   checkUserProperties() {
     if (this.user.fullName !== null && this.user.fullName.trim() === '') { this.user.fullName = null; }
     if (this.user.address !== null && this.user.address.trim() === '') { this.user.address = null; }
@@ -89,10 +94,5 @@ export class UserEditComponent implements OnInit {
         this.user.email = this.user.email.toLowerCase().trim();
       }
     }
-  }
-
-  validateEmail(email) {
-    const re = /\S+@\S+/; // /\S+@\S+\.\S+/
-    return re.test(email);
   }
 }

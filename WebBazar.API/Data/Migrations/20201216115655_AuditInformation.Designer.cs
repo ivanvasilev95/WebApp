@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebBazar.API.Data;
 
 namespace WebBazar.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201216115655_AuditInformation")]
+    partial class AuditInformation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,19 +115,10 @@ namespace WebBazar.API.Migrations
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Description")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<bool>("IsApproved")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool?>("IsUsed")
@@ -158,12 +151,6 @@ namespace WebBazar.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("DeletedBy")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -172,12 +159,6 @@ namespace WebBazar.API.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -255,15 +236,6 @@ namespace WebBazar.API.Migrations
                     b.Property<int>("AdId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<bool>("IsMain")
                         .HasColumnType("tinyint(1)");
 
@@ -326,12 +298,6 @@ namespace WebBazar.API.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Email")
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
@@ -341,9 +307,6 @@ namespace WebBazar.API.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("LastActive")
                         .HasColumnType("datetime(6)");

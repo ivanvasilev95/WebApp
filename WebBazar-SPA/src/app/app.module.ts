@@ -36,6 +36,7 @@ import { UserAdsComponent } from './users/user-ads/user-ads.component';
 import { AdEditComponent } from './ads/ad-edit/ad-edit.component';
 import { AdEditResolver } from './_resolvers/ad-edit.resolver';
 import { CategoriesResolver } from './_resolvers/categories.resolver';
+import { UserFavoritesResolver } from './_resolvers/user-favorites.resolver';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { NewAdComponent } from './ads/ad-add/ad-add.component';
 import { AdMessagesComponent } from './ads/ad-messages/ad-messages.component';
@@ -139,6 +140,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       UserEditResolver,
       UserMessagesResolver,
       CategoriesResolver,
+      UserFavoritesResolver,
       PreventUnsavedChanges,
       UserService,
       MessageService,

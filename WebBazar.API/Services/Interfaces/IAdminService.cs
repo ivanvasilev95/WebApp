@@ -7,11 +7,11 @@ namespace WebBazar.API.Services.Interfaces
 {
     public interface IAdminService
     {
-         Task<dynamic> GetUsersWithRoles();
-         Task<string[]> GetRoles();
-         Task<List<AdForListDTO>> GetAdsForApproval();
-         Task ApproveAd(int id);
-         Task RejectAd(int id);
-         Task<Result> EditUserRoles(string userName, string[] selectedRoles);
+         Task<dynamic> GetUsersWithRolesAsync();
+         Task<string[]> GetRolesAsync();
+         Task<List<AdForListDTO>> GetAdsForApprovalAsync();
+         Task<Result> ApproveAdAsync(int id);
+         // Task RejectAd(int id);
+         Task<Result> EditUserRolesAsync(string userName, string[] selectedRoles);
     }
 }

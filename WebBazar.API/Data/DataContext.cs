@@ -1,7 +1,13 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebBazar.API.Data.Models;
+using WebBazar.API.Data.Models.Base;
+using WebBazar.API.Services.Interfaces;
 
 namespace WebBazar.API.Data
 {
@@ -9,7 +15,13 @@ namespace WebBazar.API.Data
         IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>,
         IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        private readonly ICurrentUserService _currentUser;
+
+        public DataContext(DbContextOptions<DataContext> options, ICurrentUserService currentUser)
+            : base(options)
+        {
+            _currentUser = currentUser;
+        }
         
         public DbSet<Ad> Ads { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -46,10 +58,71 @@ namespace WebBazar.API.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Like>()
-                .HasKey(k => new {k.UserId, k.AdId});
-                
+                .HasKey(l => new {l.UserId, l.AdId});
+            
+            builder.Entity<User>()
+                .HasQueryFilter(u => !u.IsDeleted);
+
+            builder.Entity<Category>()
+                .HasQueryFilter(c => !c.IsDeleted);
+
             builder.Entity<Ad>()
-                .HasQueryFilter(a => a.IsApproved);
+                .HasQueryFilter(a => a.IsApproved && !a.IsDeleted);
+
+            builder.Entity<Photo>()
+                .HasQueryFilter(p => !p.IsDeleted);
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            this.ApplyAuditInformation();
+
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        {
+            this.ApplyAuditInformation();
+
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void ApplyAuditInformation()
+        {
+            this.ChangeTracker
+                .Entries()
+                .ToList()
+                .ForEach(entry => {
+                    var userName = _currentUser.GetUserName();
+
+                    if (entry.Entity is IDeletableEntity deletableEntity)
+                    {
+                        if (entry.State == EntityState.Deleted)
+                        {
+                            deletableEntity.DeletedOn = DateTime.Now;
+                            deletableEntity.DeletedBy = userName;
+                            deletableEntity.IsDeleted = true;
+
+                            entry.State = EntityState.Modified;
+
+                            return;
+                        }
+                    }
+                    
+                    if (entry.Entity is IEntity entity)
+                    {
+                        if (entry.State == EntityState.Added)
+                        {
+                            entity.CreatedOn = DateTime.UtcNow;
+                            entity.CreatedBy = userName;
+                        }
+                        else if (entry.State == EntityState.Modified)
+                        {
+                            entity.ModifiedOn = DateTime.UtcNow;
+                            entity.ModifiedBy = userName;
+                        }
+                    }
+                });
         }
     }
 }

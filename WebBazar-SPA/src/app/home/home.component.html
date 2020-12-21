@@ -1,16 +1,16 @@
-<div class="container mt-3 text-center">
-    <h1>Web Bazar</h1>
-    <p class="lead">Безплатни обяви без лимити.</p>
-    <div class="text-center">
-      <img style="cursor:pointer;" src="assets/img/bazarbg.png" [routerLink]="['/about']" height="200" width="200" alt="Web Bazar logo"/>
+<div class="container mt-3 pb-2 text-center">
+  <h1>Web Bazar</h1>
+  <p class="lead">Безплатни обяви без лимити.</p>
+  <div class="text-center">
+    <img style="cursor:pointer;" src="assets/img/bazarbg.png" [routerLink]="['/about']" height="200" width="200" alt="Web Bazar logo"/>
+  </div>
+  <div *ngIf="showSpinner" class="lds-ring" style="margin-top:100px;"><div></div><div></div><div></div><div></div></div>
+  <div *ngIf="ads.length > 0" class="row mt-5">
+    <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
+      <app-ad [ad]="ad"></app-ad>
     </div>
-    <div *ngIf="showSpinner" class="lds-ring" style="margin-top:50px;"><div></div><div></div><div></div><div></div></div>
-    <div *ngIf="ads.length !== 0" class="row mt-4">
-      <div *ngFor="let ad of ads" class="col-lg-2 col-md-3 col-sm-6">
-          <app-ad [ad]="ad"></app-ad>
-      </div>
-      <div *ngIf="!authService.loggedIn()" class="col-sm-12 text-left mt-1 mb-10">
-        <a [routerLink]="['/ads']">Виж повече <i class="fa fa-angle-right"></i></a>
-      </div>
+    <div *ngIf="!authService.loggedIn()" class="col-sm-12 text-left mt-1">
+      <a [routerLink]="['/ads']">Виж повече <i class="fa fa-angle-right"></i></a>
     </div>
+  </div>
 </div>

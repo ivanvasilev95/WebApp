@@ -41,15 +41,16 @@ namespace WebBazar.API.Services
 
             var photo = _mapper.Map<Photo>(model);
 
-            var ad = await _context
-                .Ads
-                .IgnoreQueryFilters()
+            var ad = await _context.Ads
                 .Include(a => a.Photos)
-                .Where(a => a.Id == adId)
+                .IgnoreQueryFilters()
+                .Where(a => a.Id == adId && a.IsDeleted == false)
                 .FirstOrDefaultAsync();
-
-            if (!ad.Photos.Any(p => p.IsMain))
+            
+            if (!ad.Photos.Any(p => p.IsMain && !p.IsDeleted))
+            {
                 photo.IsMain = true;
+            }
             
             ad.Photos.Add(photo);
 
@@ -65,15 +66,15 @@ namespace WebBazar.API.Services
         {
             var uploadResult = new ImageUploadResult();
 
-            if(file.Length > 0) 
+            if (file.Length > 0) 
             {
                 using (var stream = file.OpenReadStream()) 
                 {
-                    var uploadParams = new ImageUploadParams() 
-                    {
+                    var uploadParams = new ImageUploadParams() {
                         File = new FileDescription(file.Name, stream),
                         Transformation = new Transformation().Width(500).Height(500)
                     };
+
                     uploadResult = _cloudinary.Upload(uploadParams);
                 }
             }
@@ -84,8 +85,11 @@ namespace WebBazar.API.Services
         public async Task<Result> DeleteAsync(int id)
         {
             var photoFromRepo = await GetPhotoAsync(id);
+
             if (photoFromRepo.IsMain)
-                return "Тази снимка е зададена като главна и не може да се изтрие";
+            {
+                return "Тази снимка е зададена като главна и не може да се изтрие";  
+            }
             
             DeletePhoto(photoFromRepo);
 
@@ -121,13 +125,16 @@ namespace WebBazar.API.Services
             var photo = await GetPhotoAsync(id);
 
             if (photo.IsMain)
+            {
                 return "Тази снимка вече е зададена като главна";
+            }
             
             var currentMainPhoto = await _context
                 .Photos
                 .FirstOrDefaultAsync(p => p.AdId == photo.AdId && p.IsMain);
                 
             currentMainPhoto.IsMain = false;
+
             photo.IsMain = true;
 
             if (await _context.SaveChangesAsync() > 0)

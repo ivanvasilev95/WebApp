@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebBazar.API.Data;
 
 namespace WebBazar.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201216152232_AuditInformation2")]
+    partial class AuditInformation2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,12 +160,6 @@ namespace WebBazar.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("DeletedBy")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -172,12 +168,6 @@ namespace WebBazar.API.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");

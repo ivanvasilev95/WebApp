@@ -24,11 +24,11 @@ export class HomeComponent implements OnInit {
 
   loadAds() {
     const pageNumber = 1;
-    const pageSize = 6;
+    const pageSize = 18;
 
     this.adService.getAds(pageNumber, pageSize).subscribe((ads: PaginatedResult<Ad[]>) => {
-      this.ads = ads.result;
-      this.shuffle(this.ads);
+      this.shuffle(ads.result);
+      this.ads = ads.result.slice(0, 6);
       this.showSpinner = false;
     }, error => {
       this.alertify.error(error);

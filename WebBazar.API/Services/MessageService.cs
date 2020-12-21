@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using WebBazar.API.Data;
 using WebBazar.API.DTOs.Message;
-using WebBazar.API.Extensions;
 using WebBazar.API.Helpers;
 using WebBazar.API.Data.Models;
 using WebBazar.API.Services.Interfaces;
@@ -16,18 +14,12 @@ namespace WebBazar.API.Services
 {
     public class MessageService : BaseService, IMessageService
     {
-        private readonly HttpResponse _response;
-
-        public MessageService(DataContext context, IMapper mapper, IHttpContextAccessor contextAccessor)
-            : base(context, mapper)
-        {
-            _response = contextAccessor.HttpContext.Response;
-        }
+        public MessageService(DataContext context, IMapper mapper)
+            : base(context, mapper) {}
 
         public async Task<Result<MessageToReturnDTO>> CreateAsync(MessageForCreationDTO model)
         {
-            var adExists = await _context
-                .Ads
+            var adExists = await _context.Ads
                 .AnyAsync(a => a.Id == model.AdId);
                 
             if (!adExists)
@@ -35,8 +27,7 @@ namespace WebBazar.API.Services
                 return "Обявата не е намерена";  
             }
 
-            var recipientExists = await _context
-                .Users
+            var recipientExists = await _context.Users
                 .AnyAsync(u => u.Id == model.RecipientId);
 
             if (!recipientExists)
@@ -58,8 +49,7 @@ namespace WebBazar.API.Services
 
         private async Task<Message> GetMessageByIdAsync(int id)
         {
-            return await _context
-                .Messages
+            return await _context.Messages
                 .Include(m => m.Sender)
                 .Include(m => m.Recipient)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -67,8 +57,7 @@ namespace WebBazar.API.Services
         
         public async Task<Result> DeleteAsync(int messageId, int userId)
         {
-            var message = await _context
-                .Messages
+            var message = await _context.Messages
                 .FirstOrDefaultAsync(m => m.Id == messageId);
 
             if (message == null)
@@ -77,10 +66,14 @@ namespace WebBazar.API.Services
             }
 
             if (message.SenderId == userId)
+            {
                 message.SenderDeleted = true;
+            }
 
             if (message.RecipientId == userId)
+            {
                 message.RecipientDeleted = true;
+            }
             
             if (await _context.SaveChangesAsync() > 0)
             {
@@ -92,8 +85,7 @@ namespace WebBazar.API.Services
 
         public async Task<Result> MarkAsReadAsync(int messageId, int userId)
         {
-            var message = await _context
-                .Messages
+            var message = await _context.Messages
                 .FirstOrDefaultAsync(m => m.Id == messageId);
 
             if (message.RecipientId != userId)
@@ -111,8 +103,7 @@ namespace WebBazar.API.Services
 
         public async Task<IEnumerable<MessageToReturnDTO>> MessageThreadAsync(int adId, int senderId, int recipientId)
         {
-            var messages = await _context
-                .Messages
+            var messages = await _context.Messages
                 .Include(u => u.Sender)
                 .Include(a => a.Ad)
                 .Include(u => u.Recipient)
@@ -128,15 +119,14 @@ namespace WebBazar.API.Services
 
         public async Task<int> UnreadMessagesCountAsync(int userId)
         {
-            var unreadMsgsCount = await _context
-                .Messages
+            var unreadMsgsCount = await _context.Messages
                 .Where(m => m.RecipientId == userId && m.IsRead == false /* && m.SenderDeleted == false */)
                 .CountAsync();
             
             return unreadMsgsCount;
         }
 
-        public async Task<IEnumerable<MessageToReturnDTO>> UserMessagesAsync(MessageParams messageParams, int userId)
+        public async Task<PaginatedMessagesServiceModel> UserMessagesAsync(MessageParams messageParams, int userId)
         {
             var messages = _context.Messages
                 .Include(u => u.Sender)
@@ -165,10 +155,14 @@ namespace WebBazar.API.Services
             }
 
             var paginatedMessages = await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
-            
-            _response.AddPagination(paginatedMessages.CurrentPage, paginatedMessages.PageSize, paginatedMessages.TotalCount);
 
-            return _mapper.Map<IEnumerable<MessageToReturnDTO>>(paginatedMessages);
+            return new PaginatedMessagesServiceModel
+            {
+                Messages = _mapper.Map<IEnumerable<MessageToReturnDTO>>(paginatedMessages),
+                CurrentPage = paginatedMessages.CurrentPage,
+                PageSize = paginatedMessages.PageSize,
+                TotalCount = paginatedMessages.TotalCount
+            };
         }
     }
 }

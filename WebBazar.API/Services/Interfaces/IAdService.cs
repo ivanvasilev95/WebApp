@@ -8,9 +8,9 @@ namespace WebBazar.API.Services.Interfaces
     public interface IAdService
     {
          Task<Result<AdForDetailedDTO>> ByIdAsync(int id);
-         Task<IEnumerable<AdForListDTO>> AllAsync(AdParams adParams);
-         Task<IEnumerable<AdForListDTO>> UserAdsAsync(int userId);
-         Task<IEnumerable<AdForListDTO>> UserLikedAdsAsync(int userId);
+         Task<PaginatedAdsServiceModel> AllAsync(AdParams adParams);
+         Task<IEnumerable<AdForListDTO>> MineAsync(int userId);
+         Task<IEnumerable<AdForListDTO>> LikedAsync(int userId);
          Task<int> CreateAsync(AdForCreateDTO model);
 
         Task<Result> UpdateAsync(int id, AdForUpdateDTO model);

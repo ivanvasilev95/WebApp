@@ -32,7 +32,7 @@ namespace WebBazar.API.Services
             _cloudinaryConfig = cloudinaryConfig;
         }
 
-        public async Task<dynamic> GetUsersWithRoles()
+        public async Task<dynamic> GetUsersWithRolesAsync()
         {
             var userList = await (from user in _context.Users
                                   orderby user.Id
@@ -51,7 +51,7 @@ namespace WebBazar.API.Services
             return userList;
         }
 
-        public async Task<string[]> GetRoles()
+        public async Task<string[]> GetRolesAsync()
         {
             var roles = await _context.Roles
                 .OrderBy(r => r.Name)
@@ -61,17 +61,18 @@ namespace WebBazar.API.Services
             return roles;
         }
 
-        public async Task<List<AdForListDTO>> GetAdsForApproval()
+        public async Task<List<AdForListDTO>> GetAdsForApprovalAsync()
         {
             var configuration = new MapperConfiguration(cfg =>
                 cfg.CreateMap<Ad, AdForListDTO>().ForMember(
                     dto => dto.PhotoUrl, 
-                    conf => conf.MapFrom(ol => ol.Photos.FirstOrDefault(p => p.IsMain).Url))
+                    conf => conf.MapFrom(ol => ol.Photos.FirstOrDefault(p => p.IsMain && !p.IsDeleted).Url))
             );
 
             var ads = await _context.Ads
+                // .Include(a => a.Photos)
                 .IgnoreQueryFilters()
-                .Where(a => a.IsApproved == false)
+                .Where(a => a.IsApproved == false && a.IsDeleted == false)
                 .OrderByDescending(a => a.DateAdded)
                 .ProjectTo<AdForListDTO>(configuration)
                 .ToListAsync();
@@ -79,7 +80,7 @@ namespace WebBazar.API.Services
             return ads;
         }
 
-        public async Task<Result> EditUserRoles(string userName, string[] selectedRoles)
+        public async Task<Result> EditUserRolesAsync(string userName, string[] selectedRoles)
         {
             var user = await _userManager.FindByNameAsync(userName);
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -91,7 +92,6 @@ namespace WebBazar.API.Services
             {
                 return "Грешка при добавянето на роли.";
             }
-                
             
             result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
             if (!result.Succeeded)
@@ -102,28 +102,40 @@ namespace WebBazar.API.Services
             return true;
         }
 
-        public async Task ApproveAd(int id) 
+        public async Task<Result> ApproveAdAsync(int id) 
         {
             var ad = await _context.Ads
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .Where(a => a.Id == id && a.IsDeleted == false)
+                .FirstOrDefaultAsync();
+
+            if (ad == null)
+            {
+                return "Обявата не е намерена";
+            }
 
             ad.IsApproved = true;
 
             await _context.SaveChangesAsync();
+
+            return true;
         }
 
+        /*
         public async Task RejectAd(int id) 
         {
             var ad = await _context.Ads
-                .Include(a => a.Photos)
+                // .Include(a => a.Photos)
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .Where(a => a.Id == id && a.IsDeleted == false)
+                .FirstOrDefaultAsync();
 			
-			if (ad.Photos.Any())
-            {
-                RemoveAdPhotos(ad);
-            }
+            // ad.Photos = ad.Photos.Where(a => a.IsDeleted == false).ToList();
+            
+			// if (ad.Photos.Any())
+            // {
+                // RemoveAdPhotos(ad);
+            // }
 
             _context.Ads.Remove(ad);
 
@@ -150,5 +162,6 @@ namespace WebBazar.API.Services
                 _context.Photos.Remove(photo);
             }
         }
+        */
     }
 }

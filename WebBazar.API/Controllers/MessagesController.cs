@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.Services.Interfaces;
 using WebBazar.API.DTOs.Message;
 using WebBazar.API.Helpers;
+using WebBazar.API.Extensions;
 
 namespace WebBazar.API.Controllers
 {
@@ -18,7 +19,7 @@ namespace WebBazar.API.Controllers
         }
 
         [HttpGet("thread")]
-        public async Task<IActionResult> GetMessageThread([FromQuery]int adId, [FromQuery]int recipientId)
+        public async Task<IActionResult> MessageThread([FromQuery]int adId, [FromQuery]int recipientId)
         {
             var senderId = _currentUser.GetId();
 
@@ -28,17 +29,19 @@ namespace WebBazar.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserMessages([FromQuery]MessageParams messageParams)
+        public async Task<IActionResult> UserMessages([FromQuery]MessageParams messageParams)
         {
             var userId = _currentUser.GetId();
             
-            var messages = await _messageService.UserMessagesAsync(messageParams, userId);
+            var model = await _messageService.UserMessagesAsync(messageParams, userId);
 
-            return Ok(messages);
+            this.HttpContext.Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount);
+
+            return Ok(model.Messages);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMessage(MessageForCreationDTO messageForCreationDTO)
+        public async Task<IActionResult> Create(MessageForCreationDTO messageForCreationDTO)
         {
             var userId = _currentUser.GetId();
             
@@ -54,11 +57,11 @@ namespace WebBazar.API.Controllers
                 return BadRequest(result.Error);
             }
 
-            return Created(nameof(this.CreateMessage), result.Data);
+            return Created(nameof(this.Create), result.Data);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMessage(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var userId = _currentUser.GetId();
 
@@ -72,8 +75,8 @@ namespace WebBazar.API.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}/read")]
-        public async Task<IActionResult> MarkMessageAsRead(int id)
+        [HttpPut("{id}/read")]
+        public async Task<IActionResult> MarkAsRead(int id)
         {
             var userId = _currentUser.GetId();
 
@@ -88,7 +91,7 @@ namespace WebBazar.API.Controllers
         }
 
         [HttpGet("unread/count")]
-        public async Task<IActionResult> GetUnreadMessagesCount()
+        public async Task<IActionResult> GetUnreadCount()
         {
             var userId = _currentUser.GetId();
             

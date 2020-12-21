@@ -13,8 +13,11 @@ namespace WebBazar.API.Helpers
     {
          public AutoMapperProfiles() {
             CreateMap<Ad, AdForDetailedDTO>()
+                .ForMember(dest => dest.Photos, opt => {
+                    opt.MapFrom(src => src.Photos.Where(p => !p.IsDeleted).OrderByDescending(p => p.IsMain));
+                })
                 .ForMember(dest => dest.PhotoUrl, opt => {
-                    opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
+                    opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain && !p.IsDeleted).Url);
                 })
                 .ForMember(dest => dest.CategoryName, opt => {
                     opt.MapFrom(src => src.Category.Name);
@@ -28,15 +31,15 @@ namespace WebBazar.API.Helpers
 
             CreateMap<Ad, AdForListDTO>()
                 .ForMember(dest => dest.PhotoUrl, opt => {
-                    opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url);
+                    opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain && !p.IsDeleted).Url);
                 });
-            
-            CreateMap<Category, CategoryToReturnDTO>();
-            CreateMap<CategoryForCreationDTO, Category>();
 
             CreateMap<AdForUpdateDTO, Ad>();
             CreateMap<AdForCreateDTO, Ad>();
             
+            CreateMap<Category, CategoryToReturnDTO>();
+            CreateMap<CategoryForCreationDTO, Category>();
+
             CreateMap<User, UserForDetailedDTO>();
             CreateMap<UserForRegisterDTO, User>();
             CreateMap<User, UserForUpdateDTO>();
@@ -45,6 +48,7 @@ namespace WebBazar.API.Helpers
                     opt.MapFrom(src => src.Email != null ?  src.Email.ToUpper() : null);
                 });
 
+            CreateMap<MessageForCreationDTO, Message>().ReverseMap();
             CreateMap<Message, MessageToReturnDTO>()
                 .ForMember(dest => dest.SenderUsername, opt => {
                     opt.MapFrom(src => src.Sender.UserName);
@@ -52,7 +56,6 @@ namespace WebBazar.API.Helpers
                 .ForMember(dest => dest.RecipientUsername, opt => {
                     opt.MapFrom(src => src.Recipient.UserName);
                 });
-            CreateMap<MessageForCreationDTO, Message>().ReverseMap();
 
             CreateMap<Photo, PhotoForReturnDTO>();  
             CreateMap<Photo, PhotoForDetailedDTO>();

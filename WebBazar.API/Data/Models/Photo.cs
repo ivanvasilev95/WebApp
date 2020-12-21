@@ -1,6 +1,8 @@
+using WebBazar.API.Data.Models.Base;
+
 namespace WebBazar.API.Data.Models
 {
-    public class Photo
+    public class Photo : DeletableEntity
     {
         public int Id { get; set; }
         public string Url { get; set; }

@@ -20,7 +20,7 @@ export class AdminService {
   }
 
   updateUserRoles(userName: string, roles: {}) {
-    return this.http.post(this.baseUrl + 'editRoles/' + userName, roles);
+    return this.http.put(this.baseUrl + 'editRoles/' + userName, roles);
   }
 
   getAdsForApproval() {
@@ -28,7 +28,7 @@ export class AdminService {
   }
 
   approveAd(id) {
-    return this.http.post(this.baseUrl + 'approveAd/' + id, {});
+    return this.http.put(this.baseUrl + 'approveAd/' + id, {});
   }
 
   rejectAd(id) {

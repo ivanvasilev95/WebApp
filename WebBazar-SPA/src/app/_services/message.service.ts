@@ -3,8 +3,8 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PaginatedResult } from '../_models/pagination';
 import { Message } from '../_models/message';
-import { map, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -62,13 +62,17 @@ export class MessageService {
   }
 
   markMessageAsRead(id: number) {
-    return this.http.post(this.baseUrl + id + '/read', {});
+    return this.http.put(this.baseUrl + id + '/read', {});
   }
 
   getUnreadMessagesCount() {
     return this.http.get(this.baseUrl + 'unread/count')
       .pipe(
-        tap((count: number) => { MessageService.unreadMessagesCount = count; })
+        tap((count: number) => { MessageService.unreadMessagesCount = count; }),
+        catchError(error => {
+          MessageService.unreadMessagesCount = -1;
+          return of(null);
+        })
       );
   }
 }

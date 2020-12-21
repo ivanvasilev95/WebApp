@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Ad } from 'src/app/_models/ad';
 import { AdService } from 'src/app/_services/ad.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
@@ -12,17 +13,11 @@ import { LikeService } from 'src/app/_services/like.service';
 export class UserFavoritesComponent implements OnInit {
   ads: Ad[];
 
-  constructor(private adService: AdService, private likeService: LikeService, private alertify: AlertifyService) { }
+  constructor(private likeService: LikeService, private route: ActivatedRoute, private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.loadUserLikedAds();
-  }
-
-  loadUserLikedAds() {
-    this.adService.getUserLikedAds().subscribe((ads: Ad[]) => {
-      this.ads = ads;
-    }, error => {
-      this.alertify.error(error);
+    this.route.data.subscribe(data => {
+      this.ads = data.ads;
     });
   }
 

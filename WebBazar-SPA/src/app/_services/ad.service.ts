@@ -55,22 +55,22 @@ export class AdService {
   }
 
   getUserAds(): Observable<Ad[]> {
-    return this.http.get<Ad[]>(this.baseUrl + 'personal');
+    return this.http.get<Ad[]>(this.baseUrl + 'mine');
   }
 
-  deleteAd(adId: number) {
-    return this.http.delete(this.baseUrl + adId);
-  }
-
-  updateAd(adId: number, ad: Ad) {
-    return this.http.put(this.baseUrl + adId, ad);
+  getUserLikedAds() {
+    return this.http.get(this.baseUrl + 'liked');
   }
 
   createAd(ad: Ad): Observable<number> {
     return this.http.post<number>(this.baseUrl, ad);
   }
 
-  getUserLikedAds() {
-    return this.http.get(this.baseUrl + 'liked');
+  updateAd(adId: number, ad: Ad) {
+    return this.http.put(this.baseUrl + adId, ad);
+  }
+
+  deleteAd(adId: number) {
+    return this.http.delete(this.baseUrl + adId);
   }
 }

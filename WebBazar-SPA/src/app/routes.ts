@@ -22,6 +22,7 @@ import { LoginGuard } from './_guards/login.guard';
 import { AdEditResolver } from './_resolvers/ad-edit.resolver';
 import { AuthPanelComponent } from './auth/auth-panel/auth-panel.component';
 import { CategoriesResolver } from './_resolvers/categories.resolver';
+import { UserFavoritesResolver } from './_resolvers/user-favorites.resolver';
 
 export const appRoutes: Routes = [
     { path: '', component: HomeComponent },
@@ -41,7 +42,7 @@ export const appRoutes: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [AuthGuard],
         children: [
-            { path: 'favorites', component: UserFavoritesComponent },
+            { path: 'favorites', component: UserFavoritesComponent, resolve: {ads: UserFavoritesResolver} },
             { path: 'messages', component: UserMessagesComponent,
                 resolve: {messages: UserMessagesResolver} },
             { path: 'user/edit', component: UserEditComponent,

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.DTOs.Ad;
+using WebBazar.API.Extensions;
 using WebBazar.API.Helpers;
 using WebBazar.API.Services.Interfaces;
 
@@ -22,9 +23,11 @@ namespace WebBazar.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> All([FromQuery]AdParams adParams)
         {
-            var ads = await _adService.AllAsync(adParams);
+            var model = await _adService.AllAsync(adParams);
 
-            return Ok(ads);
+            this.HttpContext.Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount);
+
+            return Ok(model.Ads);
         }
 
         [HttpGet("{id}")]
@@ -56,18 +59,18 @@ namespace WebBazar.API.Controllers
 
             if (result.Failure)
             {
-                return BadRequest();
+                return BadRequest(result.Error);
             }
 
             return Ok();
         }
 
-        [HttpGet("personal")]
+        [HttpGet("mine")]
         public async Task<IActionResult> Mine()
         {
             var userId = _currentUser.GetId();
 
-            var ads = await _adService.UserAdsAsync(userId);
+            var ads = await _adService.MineAsync(userId);
 
             return Ok(ads);
         }
@@ -77,7 +80,7 @@ namespace WebBazar.API.Controllers
         {
             var userId = _currentUser.GetId();
 
-            var ads = await _adService.UserLikedAdsAsync(userId);
+            var ads = await _adService.LikedAsync(userId);
 
             return Ok(ads);
         }

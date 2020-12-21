@@ -38,7 +38,6 @@ export class UserAdsComponent implements OnInit {
     if (this.authService.loggedIn()) {
       return +this.authService.decodedToken.nameid === userId || this.authService.roleMatch(['Admin', 'Moderator']);
     }
-
     return false;
   }
 

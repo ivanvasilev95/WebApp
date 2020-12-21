@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using WebBazar.API.Data.Models.Base;
 
 namespace WebBazar.API.Data.Models
 {
-    public class Ad
+    public class Ad : DeletableEntity
     {
         public int Id { get; set; }
         public string Title { get; set; }

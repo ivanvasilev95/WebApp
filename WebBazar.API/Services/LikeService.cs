@@ -40,8 +40,7 @@ namespace WebBazar.API.Services
                 return "Обявата вече е добавена в Наблюдавани";
             }
 
-            _context.Likes.Add(new Like
-            {
+            _context.Likes.Add(new Like {
                 UserId = userId,
                 AdId = adId
             });
@@ -66,6 +65,7 @@ namespace WebBazar.API.Services
             }
 
             _context.Likes.Remove(like);
+            
             await _context.SaveChangesAsync();
 
             return true;

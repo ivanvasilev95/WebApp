@@ -65,6 +65,12 @@ export class PhotoEditorComponent implements OnInit {
       const currentMainPhoto = this.photos.filter(p => p.isMain === true)[0];
       currentMainPhoto.isMain = false;
       photo.isMain = true;
+
+      // set the new main photo at first place
+      // this.photos = this.photos.sort((a, b) => a.isMain < b.isMain ? 1 : -1);
+      this.photos.splice(this.photos.findIndex(p => p.id === photo.id), 1);
+      this.photos.unshift(photo);
+
       this.getAdPhotoChange.emit(photo.url);
     }, error => {
       this.alertify.error(error);

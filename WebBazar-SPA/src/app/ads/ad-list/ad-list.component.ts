@@ -56,7 +56,7 @@ export class AdListComponent implements OnInit {
   getPaginator() {
     const pageItems = this.pagination.currentPage * this.pagination.itemsPerPage;
 
-    return 'Показване на съобщения ' +
+    return 'Показване на обяви ' +
            (1 + (this.pagination.itemsPerPage * (this.pagination.currentPage - 1))) +
            ' - ' +
            (pageItems > this.pagination.totalItems ? this.pagination.totalItems : pageItems) +

@@ -28,6 +28,7 @@ namespace WebBazar.API.Services
             var category = _mapper.Map<Category>(model);
 
             await _context.AddAsync(category);
+            
             await _context.SaveChangesAsync();
 
             return  _mapper.Map<Category, CategoryToReturnDTO>(category);
@@ -42,8 +43,7 @@ namespace WebBazar.API.Services
                 return "Категорията вече съществува.";
             }
 
-            var category = await _context
-                .Categories
+            var category = await _context.Categories
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
             
@@ -53,15 +53,13 @@ namespace WebBazar.API.Services
         }
 
         private async Task<bool> CategoryNameIsTakenAsync(string name) {
-            return await _context
-                .Categories
+            return await _context.Categories
                 .AnyAsync(c => c.Name.ToLower() == name.ToLower());
         }
 
         public async Task<Result> DeleteAsync(int id)
         {
-            var category = await _context
-                .Categories
+            var category = await _context.Categories
                 .Include(c => c.Ads)
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
@@ -77,6 +75,7 @@ namespace WebBazar.API.Services
             }
 
             _context.Remove(category);
+
             await _context.SaveChangesAsync();
 
             return true;
