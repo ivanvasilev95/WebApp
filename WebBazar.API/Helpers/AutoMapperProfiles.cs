@@ -40,7 +40,10 @@ namespace WebBazar.API.Helpers
             CreateMap<Category, CategoryToReturnDTO>();
             CreateMap<CategoryForCreationDTO, Category>();
 
-            CreateMap<User, UserForDetailedDTO>();
+            CreateMap<User, UserForDetailedDTO>()
+                .ForMember(dest => dest.Ads, opt => {
+                    opt.MapFrom(src => src.Ads.Where(a => !a.IsDeleted));
+                });
             CreateMap<UserForRegisterDTO, User>();
             CreateMap<User, UserForUpdateDTO>();
             CreateMap<UserForUpdateDTO, User>()

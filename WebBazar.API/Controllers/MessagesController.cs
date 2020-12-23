@@ -91,7 +91,7 @@ namespace WebBazar.API.Controllers
         }
 
         [HttpGet("unread/count")]
-        public async Task<IActionResult> GetUnreadCount()
+        public async Task<IActionResult> UnreadCount()
         {
             var userId = _currentUser.GetId();
             

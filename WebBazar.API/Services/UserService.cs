@@ -39,62 +39,20 @@ namespace WebBazar.API.Services
                 .Include(u => u.Ads)
                 .ThenInclude(a => a.User)
                 .AsQueryable();
-
-            User user = null;
-            
+                
             if (includeNotApprovedAds)
             {
-                user = await query
-                    .IgnoreQueryFilters()
-                    .FirstOrDefaultAsync(u => u.Id == id && u.IsDeleted == false);
-
-                user.Ads = user.Ads.Where(a => a.IsDeleted == false).ToList();
+                query = query.IgnoreQueryFilters();
             }
-            else
-            {
-                user = await query.FirstOrDefaultAsync(u => u.Id == id);
-            }
+            
+            var user = await query.FirstOrDefaultAsync(u => u.Id == id && u.IsDeleted == false);
 
             return user;
         }
 
-        // requires EF Core 5
-        // private async Task<User> FindByIdAsync(int id, bool includeNotApprovedAds)
-        // {
-        //     if (includeNotApprovedAds)
-        //     {
-        //         var user = await _context.Users
-        //              // .IgnoreQueryFilters()
-        //             .Include(u => u.Ads.Where(a => a.IsDeleted == false))
-        //             .ThenInclude(a => a.Photos)
-        //             .Include(u => u.Ads)
-        //             .ThenInclude(a => a.Category)
-        //             .Include(u => u.Ads)
-        //             .ThenInclude(a => a.User)
-        //             .IgnoreQueryFilters()
-        //             .FirstOrDefaultAsync(u => u.Id == id && u.IsDeleted == false);
-                
-        //         return user;
-        //     }
-        //     else
-        //     {
-        //         var user = await _context.Users
-        //             .Include(u => u.Ads)
-        //             .ThenInclude(a => a.Photos)
-        //             .Include(u => u.Ads)
-        //             .ThenInclude(a => a.Category)
-        //             .Include(u => u.Ads)
-        //             .ThenInclude(a => a.User)
-        //             .FirstOrDefaultAsync(u => u.Id == id);
-
-        //         return user;
-        //     }
-        // }
-
         public async Task<UserForUpdateDTO> GetUserForEditAsync(int id)
         {
-            return await _context
-                .Users
+            return await _context.Users
                 .Where(u => u.Id == id)
                 .ProjectTo<UserForUpdateDTO>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
