@@ -20,7 +20,7 @@ export class AdDetailResolver implements Resolve<Ad> {
                 }
             }),
             catchError(error => {
-                this.returnUserToAds(error);
+                this.returnUserToAds('Обявата не е намерена'); // error
                 return of(null);
             })
         );

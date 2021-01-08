@@ -29,6 +29,21 @@ export class AdEditComponent implements OnInit {
     });
   }
 
+  updateDescription() {
+    if (this.ad.description !== null && this.ad.description.trim() !== '') {
+      if (this.ad.description.trim().length < 10 || this.ad.description.trim().length > 1000) {
+        this.alertify.error('Полето \'Описание\' не трябва да бъде по-късо от 10 или по-дълго от 1000 символа');
+        return;
+      } else {
+        this.ad.description = this.ad.description.trim();
+      }
+    } else {
+      this.ad.description = null;
+    }
+
+    this.updateAd();
+  }
+
   updateAd() {
     let fieldsAreValid = true;
 
@@ -71,25 +86,10 @@ export class AdEditComponent implements OnInit {
     return true;
   }
 
-  updateDescription() {
-    if (this.ad.description !== null && this.ad.description.trim() !== '') {
-      if (this.ad.description.trim().length < 10 || this.ad.description.trim().length > 1000) {
-        this.alertify.error('Полето \'Описание\' не трябва да бъде по-късо от 10 или по-дълго от 1000 символа');
-        return;
-      } else {
-        this.ad.description = this.ad.description.trim();
-      }
-    } else {
-      this.ad.description = null;
-    }
-
-    this.updateAd();
-  }
-	
   updateMainPhoto(photoUrl: string) {
     this.ad.photoUrl = photoUrl;
   }
-  
+
   onCategorySelect() {
     this.ad.categoryName = this.categories.find(c => c.id === this.ad.categoryId).name;
   }

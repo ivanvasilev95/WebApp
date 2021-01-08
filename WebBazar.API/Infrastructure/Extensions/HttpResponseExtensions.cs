@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using WebBazar.API.Helpers;
+using WebBazar.API.Infrastructure;
 
-namespace WebBazar.API.Extensions
+namespace WebBazar.API.Infrastructure.Extensions
 {
     public static class HttpResponseExtensions
     {

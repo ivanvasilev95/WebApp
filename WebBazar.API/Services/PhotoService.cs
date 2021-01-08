@@ -8,24 +8,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebBazar.API.Data;
 using WebBazar.API.DTOs.Photo;
-using WebBazar.API.Helpers;
 using WebBazar.API.Data.Models;
 using WebBazar.API.Services.Interfaces;
+using WebBazar.API.Infrastructure;
+using WebBazar.API.Infrastructure.Services;
 
 namespace WebBazar.API.Services
 {
     public class PhotoService : BaseService, IPhotoService
     {
-        private Cloudinary _cloudinary;
+        private Cloudinary cloudinary;
 
-        public PhotoService(DataContext context, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
-            : base(context, mapper)
+        public PhotoService(
+            DataContext data,
+            IMapper mapper,
+            IOptions<CloudinarySettings> cloudinaryConfig)
+            : base(data, mapper)
         {
-            var acc = new Account(cloudinaryConfig.Value.CloudName, cloudinaryConfig.Value.ApiKey, cloudinaryConfig.Value.ApiSecret);
-            _cloudinary = new Cloudinary(acc); 
+            var account = new Account(cloudinaryConfig.Value.CloudName, cloudinaryConfig.Value.ApiKey, cloudinaryConfig.Value.ApiSecret);
+            this.cloudinary = new Cloudinary(account); 
         }
 
-        public async Task<Result<PhotoForReturnDTO>> AddAsync(int adId, PhotoForCreationDTO model)
+        public async Task<Result<PhotoForDetailedDTO>> AddAsync(PhotoForCreationDTO model, int adId)
         {
             var file = model.File;
 
@@ -39,27 +43,26 @@ namespace WebBazar.API.Services
             model.Url = uploadResult.Uri.ToString();
             model.PublicId = uploadResult.PublicId;
 
-            var photo = _mapper.Map<Photo>(model);
+            var photo = this.mapper.Map<Photo>(model);
 
-            var ad = await _context.Ads
+            var ad = await this.data.Ads
                 .Include(a => a.Photos)
                 .IgnoreQueryFilters()
                 .Where(a => a.Id == adId && a.IsDeleted == false)
                 .FirstOrDefaultAsync();
             
-            if (!ad.Photos.Any(p => p.IsMain && !p.IsDeleted))
+            var adAlreadyHasMainPhoto = ad.Photos.Any(p => p.IsMain && !p.IsDeleted);
+
+            if (!adAlreadyHasMainPhoto)
             {
                 photo.IsMain = true;
             }
             
             ad.Photos.Add(photo);
 
-            if (await _context.SaveChangesAsync() > 0)
-            {
-                return _mapper.Map<Photo, PhotoForReturnDTO>(photo);
-            }
+            await this.data.SaveChangesAsync();
             
-            return "Не може да се добави снимката";
+            return this.mapper.Map<Photo, PhotoForDetailedDTO>(photo);
         }
 
         private ImageUploadResult UploadToCloudinary(IFormFile file) 
@@ -70,54 +73,17 @@ namespace WebBazar.API.Services
             {
                 using (var stream = file.OpenReadStream()) 
                 {
-                    var uploadParams = new ImageUploadParams() {
+                    var uploadParams = new ImageUploadParams()
+                    {
                         File = new FileDescription(file.Name, stream),
                         Transformation = new Transformation().Width(500).Height(500)
                     };
 
-                    uploadResult = _cloudinary.Upload(uploadParams);
+                    uploadResult = this.cloudinary.Upload(uploadParams);
                 }
             }
 
             return uploadResult;
-        }
-
-        public async Task<Result> DeleteAsync(int id)
-        {
-            var photoFromRepo = await GetPhotoAsync(id);
-
-            if (photoFromRepo.IsMain)
-            {
-                return "Тази снимка е зададена като главна и не може да се изтрие";  
-            }
-            
-            DeletePhoto(photoFromRepo);
-
-            if (await _context.SaveChangesAsync() > 0)
-            {
-                return true;
-            }
-            
-            return "Грешка при изтриване на снимката";
-        }
-
-        private void DeletePhoto(Photo photo) 
-        {
-            if (photo.PublicId != null)
-            {
-                var deleteParams = new DeletionParams(photo.PublicId);
-
-                var result = _cloudinary.Destroy(deleteParams);
-
-                if (result.Result == "ok")
-                {
-                    _context.Photos.Remove(photo);
-                }
-            }
-            else 
-            {
-                _context.Photos.Remove(photo);
-            }
         }
 
         public async Task<Result> SetMainAsync(int id)
@@ -129,27 +95,59 @@ namespace WebBazar.API.Services
                 return "Тази снимка вече е зададена като главна";
             }
             
-            var currentMainPhoto = await _context
-                .Photos
-                .FirstOrDefaultAsync(p => p.AdId == photo.AdId && p.IsMain);
+            var currentMainPhoto = await this.data.Photos
+                .Where(p => p.AdId == photo.AdId && p.IsMain)
+                .FirstOrDefaultAsync();
                 
             currentMainPhoto.IsMain = false;
 
             photo.IsMain = true;
 
-            if (await _context.SaveChangesAsync() > 0)
+            await this.data.SaveChangesAsync();
+                
+            return true;
+        }
+
+        public async Task<Result> DeleteAsync(int id)
+        {
+            var photo = await GetPhotoAsync(id);
+
+            if (photo.IsMain)
             {
-                return true;
+                return "Тази снимка е зададена като главна и не може да се изтрие";  
             }
             
-            return "Не може да се зададе снимката като главна";
+            DeletePhoto(photo);
+
+            await this.data.SaveChangesAsync();
+
+            return true;
         }
 
         private async Task<Photo> GetPhotoAsync(int id)
         {
-            return await _context
-                .Photos
-                .FirstOrDefaultAsync(p => p.Id == id);
+            return await this.data.Photos
+                .Where(p => p.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        private void DeletePhoto(Photo photo) 
+        {
+            if (photo.PublicId != null)
+            {
+                var deletionParams = new DeletionParams(photo.PublicId);
+
+                var deletionResult = this.cloudinary.Destroy(deletionParams);
+
+                if (deletionResult.Result == "ok")
+                {
+                    this.data.Remove(photo);
+                }
+            }
+            else 
+            {
+                this.data.Remove(photo);
+            }
         }
     }
 }

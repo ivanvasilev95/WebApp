@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebBazar.API.Data.Models;
 using WebBazar.API.Data.Models.Base;
-using WebBazar.API.Services.Interfaces;
+using WebBazar.API.Infrastructure.Services;
 
 namespace WebBazar.API.Data
 {
@@ -15,12 +15,12 @@ namespace WebBazar.API.Data
         IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>,
         IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
-        private readonly ICurrentUserService _currentUser;
+        private readonly ICurrentUserService currentUser;
 
         public DataContext(DbContextOptions<DataContext> options, ICurrentUserService currentUser)
             : base(options)
         {
-            _currentUser = currentUser;
+            this.currentUser = currentUser;
         }
         
         public DbSet<Ad> Ads { get; set; }
@@ -93,7 +93,7 @@ namespace WebBazar.API.Data
                 .Entries()
                 .ToList()
                 .ForEach(entry => {
-                    var userName = _currentUser.GetUserName();
+                    var userName = this.currentUser.GetUserName();
 
                     if (entry.Entity is IDeletableEntity deletableEntity)
                     {

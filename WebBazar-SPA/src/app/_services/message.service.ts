@@ -53,20 +53,8 @@ export class MessageService {
     return this.http.get<Message[]>(this.baseUrl + 'thread', {params});
   }
 
-  sendMessage(message: Message): Observable<Message> {
-    return this.http.post<Message>(this.baseUrl, message);
-  }
-
-  deleteMessage(id: number) {
-    return this.http.delete(this.baseUrl + id);
-  }
-
-  markMessageAsRead(id: number) {
-    return this.http.put(this.baseUrl + id + '/read', {});
-  }
-
   getUnreadMessagesCount() {
-    return this.http.get(this.baseUrl + 'unread/count')
+    return this.http.get(this.baseUrl + 'unreadCount')
       .pipe(
         tap((count: number) => { MessageService.unreadMessagesCount = count; }),
         catchError(error => {
@@ -74,5 +62,17 @@ export class MessageService {
           return of(null);
         })
       );
+  }
+
+  sendMessage(message: Message): Observable<Date> {
+    return this.http.post<Date>(this.baseUrl, message);
+  }
+
+  markMessageAsRead(id: number) {
+    return this.http.put(this.baseUrl + id + '/markAsRead', {});
+  }
+
+  deleteMessage(id: number) {
+    return this.http.delete(this.baseUrl + id);
   }
 }

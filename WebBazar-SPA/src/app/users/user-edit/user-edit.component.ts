@@ -32,7 +32,7 @@ export class UserEditComponent implements OnInit {
     });
   }
 
-  updateUser() {
+  editUser() {
     this.checkUserProperties();
 
     const userId = +this.authService.decodedToken.nameid;
@@ -40,7 +40,9 @@ export class UserEditComponent implements OnInit {
     const email = this.user.email;
     const address = this.user.address;
 
-    if (userId !== 25) { // user is not main admin (with id = 25) and full name field is invalid
+    const mainAdminId = 1;
+
+    if (userId !== mainAdminId) {
       if (fullName === null || fullName === undefined) {
         this.alertify.error('Полето \'Твоето име\' не може да бъде празно');
         return;
@@ -52,17 +54,17 @@ export class UserEditComponent implements OnInit {
       this.user.fullName = this.user.fullName.trim();
     }
 
-    if ((email === null || email === undefined) &&  userId !== 25) { // is not main admin (with id = 25) and email field is empty
+    if (userId !== mainAdminId && (email === null || email === undefined)) {
       this.alertify.error('Полето \'Имейл адрес\' не може да бъде празно');
       return;
     }
 
-    if (email !== null && email !== undefined && !this.validateEmail(email)) { // email is not valid
+    if (email !== null && email !== undefined && !this.validateEmail(email)) {
       this.alertify.error('Имейлът адресът не е валиден');
       return;
     }
 
-    if (address !== null) { // validate address, if it's not null
+    if (address !== null) {
       if (address.trim().length < 5 || address.trim().length > 25) {
         this.alertify.error('Полето \'Населено място\' не трябва да бъде по-късо от 5 или по-дълго от 25 символа');
         return;
@@ -71,7 +73,7 @@ export class UserEditComponent implements OnInit {
       }
     }
 
-    this.userService.updateUser(userId, this.user).subscribe(() => {
+    this.userService.editUser(userId, this.user).subscribe(() => {
       this.alertify.success('Профилът е редактиран успешно');
       this.editForm.reset(this.user);
     }, error => {
@@ -79,11 +81,6 @@ export class UserEditComponent implements OnInit {
     });
   }
 
-  validateEmail(email) {
-    const re = /\S+@\S+/; // /\S+@\S+\.\S+/
-    return re.test(email);
-  }
-  
   checkUserProperties() {
     if (this.user.fullName !== null && this.user.fullName.trim() === '') { this.user.fullName = null; }
     if (this.user.address !== null && this.user.address.trim() === '') { this.user.address = null; }
@@ -94,5 +91,10 @@ export class UserEditComponent implements OnInit {
         this.user.email = this.user.email.toLowerCase().trim();
       }
     }
+  }
+
+  validateEmail(email) {
+    const re = /\S+@\S+/; // /\S+@\S+\.\S+/
+    return re.test(email);
   }
 }

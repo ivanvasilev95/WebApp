@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebBazar.API.Helpers
+namespace WebBazar.API.Infrastructure
 {
     public class PagedList<T> : List<T>
     {
@@ -17,6 +16,7 @@ namespace WebBazar.API.Helpers
             CurrentPage = pageNumber;
             PageSize = pageSize;
             TotalCount = totalCount;
+
             this.AddRange(items);
         }
 

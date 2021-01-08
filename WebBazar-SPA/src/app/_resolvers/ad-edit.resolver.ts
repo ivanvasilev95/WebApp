@@ -15,7 +15,7 @@ export class AdEditResolver implements Resolve<Ad> {
     resolve(route: ActivatedRouteSnapshot): Observable<Ad> {
         return this.adService.getAd(route.params.id).pipe(
             catchError(error => {
-                this.alertify.error(error);
+                this.alertify.error('Обявата не е намерена'); // error
                 this.router.navigate(['user/ads']);
                 return of(null);
             })

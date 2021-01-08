@@ -9,15 +9,15 @@ namespace WebBazar.API.Data.Models
     {
         public string FullName { get; set; }
         public string Address { get; set; }
-        public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedOn { get; set; }
+        public string DeletedBy { get; set; }
         public ICollection<Ad> Ads { get; set; }
         public ICollection<Message> MessagesSent { get; set; }
         public ICollection<Message> MessagesReceived { get; set; }
         public ICollection<Like> Likes { get; set; }
         public ICollection<UserRole> UserRoles { get; set; }
-        public DateTime? DeletedOn { get; set; }
-        public string DeletedBy { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

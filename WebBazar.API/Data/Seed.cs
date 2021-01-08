@@ -6,13 +6,13 @@ namespace WebBazar.API.Data
 {
     public class Seed
     {
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
+        private readonly UserManager<User> userManager;
+        private readonly RoleManager<Role> roleManager;
         
         public Seed(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
         }
 
         public void SeedData()
@@ -26,16 +26,17 @@ namespace WebBazar.API.Data
 
             foreach (var role in roles)
             {
-                _roleManager.CreateAsync(role).Wait();
+                this.roleManager.CreateAsync(role).Wait();
             }
 
             var adminUser = new User { UserName = "admin" };
 
-            IdentityResult result = _userManager.CreateAsync(adminUser, "admin1").Result;
+            IdentityResult result = this.userManager.CreateAsync(adminUser, "admin1").Result;
+            
             if (result.Succeeded)
             {
-                var admin = _userManager.FindByNameAsync("admin").Result;
-                _userManager.AddToRoleAsync(admin, "Admin").Wait();
+                var admin = this.userManager.FindByNameAsync("admin").Result;
+                this.userManager.AddToRoleAsync(admin, "Admin").Wait();
             }
         }
     }

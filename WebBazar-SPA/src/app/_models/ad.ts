@@ -3,17 +3,17 @@ import { Photo } from './photo';
 export interface Ad {
     id: number;
     title: string;
+    description?: string;
     location: string;
-    price?: number;
-    dateAdded: Date;
     photoUrl: string;
     categoryId?: number;
     categoryName?: string;
-    description?: string;
-    isUsed?: boolean;
     userId?: number;
     userName?: string;
-    photos?: Photo[];
+    isUsed?: boolean;
+    price?: number;
     isApproved: boolean;
+    dateAdded: Date;
     likesCount?: number;
+    photos?: Photo[];
 }

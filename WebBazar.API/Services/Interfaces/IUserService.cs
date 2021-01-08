@@ -1,13 +1,13 @@
 using System.Threading.Tasks;
 using WebBazar.API.DTOs.User;
-using WebBazar.API.Helpers;
+using WebBazar.API.Infrastructure.Services;
 
 namespace WebBazar.API.Services.Interfaces
 {
     public interface IUserService
     {
-         Task<Result<UserForDetailedDTO>> GetUserWithAdsAsync(int id, bool includeNotApprovedAds);
-         Task<UserForUpdateDTO> GetUserForEditAsync(int id);
-         Task<Result> UpdateUserAsync(int id, UserForUpdateDTO model);
+         Task<UserForDetailedDTO> GetWithAdsAsync(int id, bool includeNotApprovedAds);
+         Task<UserForUpdateDTO> DetailsAsync(int id);
+         Task<Result> UpdateAsync(int id, UserForUpdateDTO model);
     }
 }

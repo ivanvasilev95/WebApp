@@ -1,11 +1,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebBazar.API.Data.Models;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using WebBazar.API.DTOs.User;
 using WebBazar.API.Services.Interfaces;
+using WebBazar.API.Infrastructure.Extensions;
 
 namespace WebBazar.API.Controllers
 {
@@ -14,67 +12,27 @@ namespace WebBazar.API.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IAuthService _authService;
-        private readonly IMapper _mapper;
+        private readonly IAuthService authentication;
 
-        public AuthController(
-            UserManager<User> userManager,
-            IAuthService authService,
-            IMapper mapper)
+        public AuthController(IAuthService authentication)
         {
-            _userManager = userManager;
-            _authService = authService;
-            _mapper = mapper;
+            this.authentication = authentication;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
+        [HttpPost(nameof(Login))]
+        public async Task<ActionResult<LoginServiceModel>> Login(UserForLoginDTO model)
         {
-            var user = await _userManager.FindByNameAsync(userForLoginDTO.UserName);
-
-            if (user == null)
-            {
-                return Unauthorized("Невалидено потребителско име или парола");
-            }
-
-            var passwordValid = await _userManager.CheckPasswordAsync(user, userForLoginDTO.Password);
-
-            if (passwordValid) 
-            {
-                return Ok(new
-                {
-                    token = _authService.GenerateJwtToken(user).Result
-                });
-            }
-
-            return Unauthorized("Невалидено потребителско име или парола");  
+            return await this.authentication
+                .LoginAsync(model)
+                .ToActionResult(); 
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
-        {
-            if (await _userManager.FindByNameAsync(userForRegisterDTO.UserName) != null) 
-            {
-                return BadRequest("Вече има регистриран потребител с това потребителско име");
-            }
-
-            if (await _userManager.FindByEmailAsync(userForRegisterDTO.Email) != null) 
-            {
-                return BadRequest("Вече има регистриран потребител с този имейл адрес");
-            }
-
-            var userToCreate = _mapper.Map<User>(userForRegisterDTO);
-
-            var result = await _userManager.CreateAsync(userToCreate, userForRegisterDTO.Password);
-            
-            if (result.Succeeded) 
-            {
-                await _userManager.AddToRoleAsync(userToCreate, "Member");
-                return Ok();
-            }
-            
-            return BadRequest(result.Errors);
+        [HttpPost(nameof(Register))]
+        public async Task<ActionResult> Register(UserForRegisterDTO model)
+        {   
+            return await this.authentication
+                .RegisterAsync(model)
+                .ToActionResult();
         }
     }
 }

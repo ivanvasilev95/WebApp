@@ -1,87 +1,70 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebBazar.API.DTOs.Ad;
 using WebBazar.API.DTOs.Role;
+using WebBazar.API.DTOs.User;
+using WebBazar.API.Infrastructure.Extensions;
 using WebBazar.API.Services.Interfaces;
 
 namespace WebBazar.API.Controllers
 {
     public class AdminController : ApiController
     {
-        private readonly IAdminService _adminService;
+        private readonly IAdminService admin;
 
-        public AdminController(IAdminService adminService)   
+        public AdminController(IAdminService admin)   
         {
-            _adminService = adminService;
+            this.admin = admin;
         }
 
         [Authorize(Policy = "RequireAdminRole")]
-        [HttpGet("usersWithRoles")]
-        public async Task<IActionResult> GetUsersWithRoles()
+        [HttpGet(nameof(UsersWithRoles))]
+        public async Task<IEnumerable<UserWithRolesServiceModel>> UsersWithRoles()
         {
-            var userList = await _adminService.GetUsersWithRolesAsync();
-            
-            return Ok(userList);
+            return await this.admin.UsersWithRolesAsync();
         }
 
         [Authorize(Policy = "RequireAdminRole")]
-        [HttpGet("roles")]
-        public async Task<IActionResult> GetRoles()
+        [HttpGet(nameof(Roles))]
+        public async Task<string[]> Roles()
         {
-            var roles = await _adminService.GetRolesAsync();
+            return await this.admin.RolesAsync();
+        }
 
-            return Ok(roles);
+        [Authorize(Policy = "RequireAdminOrModeratorRole")]
+        [HttpGet(nameof(AdsForApproval))]
+        public async Task<IEnumerable<AdForListDTO>> AdsForApproval()
+        {
+            return await this.admin.AdsForApprovalAsync();
         }
 
         [Authorize(Policy = "RequireAdminRole")]
-        [HttpPut("editRoles/{userName}")]
-        public async Task<IActionResult> EditUserRoles(string userName, RoleEditDTO roleEditDTO)
+        [HttpPut(nameof(EditUserRoles) + PathSeparator + "{userName}")]
+        public async Task<ActionResult> EditUserRoles(string userName, RoleEditDTO model)
         {
-            var result = await _adminService.EditUserRolesAsync(userName, roleEditDTO.RoleNames);
-
-            if (result.Failure) 
-            {
-                return BadRequest(result.Error);
-            }
-            
-            return Ok();
+            return await this.admin
+                .EditUserRolesAsync(userName, model.RoleNames)
+                .ToActionResult();
         }
 
         [Authorize(Policy = "RequireAdminOrModeratorRole")]
-        [HttpGet("adsForApproval")]
-        public async Task<IActionResult> GetAdsForApproval()
+        [HttpPut(nameof(ApproveAd) + PathSeparator + Id)]
+        public async Task<ActionResult> ApproveAd(int id) 
         {
-            var ads = await _adminService.GetAdsForApprovalAsync();
-
-            return Ok(ads);
+            return await this.admin
+                .ApproveAdAsync(id)
+                .ToActionResult();
         }
 
         [Authorize(Policy = "RequireAdminOrModeratorRole")]
-        [HttpPut("approveAd/{id}")]
-        public async Task<IActionResult> ApproveAd(int id) 
+        [HttpDelete(nameof(RejectAd) + PathSeparator + Id)]
+        public async Task<ActionResult> RejectAd(int id, [FromServices]IAdService ads) 
         {
-            var result = await _adminService.ApproveAdAsync(id);
-
-            if (result.Failure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
-        }
-
-        [Authorize(Policy = "RequireAdminOrModeratorRole")]
-        [HttpDelete("rejectAd/{id}")]
-        public async Task<IActionResult> RejectAd(int id, [FromServices]IAdService adService) 
-        {
-            var result = await adService.DeleteAsync(id);
-
-            if (result.Failure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return await ads
+                .DeleteAsync(id)
+                .ToActionResult();
         }
     }
 }

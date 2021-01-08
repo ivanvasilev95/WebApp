@@ -1,4 +1,4 @@
-namespace WebBazar.API.Helpers
+namespace WebBazar.API.DTOs.Message
 {
     public class MessageParams
     {

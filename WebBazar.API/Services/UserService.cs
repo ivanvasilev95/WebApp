@@ -5,33 +5,28 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using WebBazar.API.Data;
-using WebBazar.API.DTOs.User;
-using WebBazar.API.Helpers;
 using WebBazar.API.Data.Models;
+using WebBazar.API.DTOs.User;
+using WebBazar.API.Infrastructure.Services;
 using WebBazar.API.Services.Interfaces;
 
 namespace WebBazar.API.Services
 {
     public class UserService : BaseService, IUserService
     {
-        public UserService(DataContext context, IMapper mapper)
-            : base(context, mapper) {}
+        public UserService(DataContext data, IMapper mapper)
+            : base(data, mapper) {}
 
-        public async Task<Result<UserForDetailedDTO>> GetUserWithAdsAsync(int id, bool includeNotApprovedAds)
+        public async Task<UserForDetailedDTO> GetWithAdsAsync(int id, bool includeNotApprovedAds)
         {
-            var user = await FindByIdAsync(id, includeNotApprovedAds);
+            var user = await GetUserAsync(id, includeNotApprovedAds);
 
-            if (user == null)
-            {
-                return "Потребителят не е намерен";
-            }
-
-            return _mapper.Map<UserForDetailedDTO>(user);
+            return this.mapper.Map<UserForDetailedDTO>(user);
         }
 
-        private async Task<User> FindByIdAsync(int id, bool includeNotApprovedAds)
+        private async Task<User> GetUserAsync(int id, bool includeNotApprovedAds)
         {
-            var query = _context.Users
+            var users = this.data.Users
                 .Include(u => u.Ads)
                 .ThenInclude(a => a.Photos)
                 .Include(u => u.Ads)
@@ -42,28 +37,45 @@ namespace WebBazar.API.Services
                 
             if (includeNotApprovedAds)
             {
-                query = query.IgnoreQueryFilters();
+                users = users.IgnoreQueryFilters();
             }
             
-            var user = await query.FirstOrDefaultAsync(u => u.Id == id && u.IsDeleted == false);
-
-            return user;
-        }
-
-        public async Task<UserForUpdateDTO> GetUserForEditAsync(int id)
-        {
-            return await _context.Users
-                .Where(u => u.Id == id)
-                .ProjectTo<UserForUpdateDTO>(_mapper.ConfigurationProvider)
+            return await users
+                .Where(u => u.Id == id && u.IsDeleted == false)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Result> UpdateUserAsync(int id, UserForUpdateDTO model)
+        public async Task<UserForUpdateDTO> DetailsAsync(int id)
         {
-            var email = model.Email;
+            return await this.data.Users
+                .Where(u => u.Id == id)
+                .ProjectTo<UserForUpdateDTO>(this.mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
 
-            // is not main admin (with id = 25) and email field is empty
-            if (string.IsNullOrWhiteSpace(email) && id != 25)
+        public async Task<Result> UpdateAsync(int id, UserForUpdateDTO model)
+        {
+            var result = await ValidateEmailAddress(id, model.Email);
+            
+            if (result.Failure)
+            {
+                return result.Error;
+            }
+
+            var user = await this.data.Users
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+            
+            this.mapper.Map(model, user);
+
+            return true;
+        }
+
+        private async Task<Result> ValidateEmailAddress(int userId, string email)
+        {
+            const int mainAdminId = 1;
+            
+            if (userId != mainAdminId && string.IsNullOrWhiteSpace(email))
             {
                 return "Полето имейл не може да бъде празно";
             }
@@ -75,18 +87,11 @@ namespace WebBazar.API.Services
                     return "Имейлът адресът не е валиден";
                 }
                 
-                if (await EmailIsNotAvailableAsync(id, email))
+                if (await EmailIsNotAvailableAsync(userId, email))
                 {
                     return "Вече има регистриран потребител с този имейл адрес";
                 }
             }
-
-            var user = await _context
-                .Users
-                .Where(u => u.Id == id)
-                .FirstOrDefaultAsync();
-            
-            _mapper.Map(model, user);
 
             return true;
         }
@@ -106,7 +111,8 @@ namespace WebBazar.API.Services
 
         private async Task<bool> EmailIsNotAvailableAsync(int userId, string email)
         {
-            return await _context.Users.AnyAsync(u => u.Id != userId && u.Email == email);
+            return await this.data.Users
+                .AnyAsync(u => u.Id != userId && u.Email == email);
         }
     }
 }

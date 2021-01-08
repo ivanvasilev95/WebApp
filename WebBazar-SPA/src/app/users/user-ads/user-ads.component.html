@@ -4,7 +4,7 @@
         <div *ngIf="user?.fullName !== '' && user?.fullName !== null"><h4>{{user?.fullName}}</h4></div>
         <div *ngIf="user?.fullName === '' || user?.fullName === null"><h4>{{user?.userName}}</h4></div>
         <div *ngIf="user?.address !== null && user?.address !== ''"><p>{{user?.address}}</p></div>
-        <h6><em>Потребител от {{user?.created | date: 'dd/MM/yyyy'}}</em></h6>
+        <h6><em>Потребител от {{user?.createdOn | date: 'dd/MM/yyyy'}}</em></h6>
         <em>Последно активен: {{user?.lastActive | timeAgo}}</em>
       </div>
   </div>

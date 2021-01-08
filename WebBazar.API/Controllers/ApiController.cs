@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using WebBazar.API.Helpers;
+using WebBazar.API.Infrastructure.Filters;
 
 namespace WebBazar.API.Controllers
 {
@@ -8,5 +8,7 @@ namespace WebBazar.API.Controllers
     [ServiceFilter(typeof(LogUserActivity))]
     public abstract class ApiController : ControllerBase
     {
+        protected const string Id = "{id}";
+        protected const string PathSeparator = "/";
     }
 }

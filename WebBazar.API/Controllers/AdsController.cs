@@ -1,101 +1,81 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.DTOs.Ad;
-using WebBazar.API.Extensions;
-using WebBazar.API.Helpers;
+using WebBazar.API.Infrastructure.Extensions;
+using WebBazar.API.Infrastructure.Services;
 using WebBazar.API.Services.Interfaces;
 
 namespace WebBazar.API.Controllers
 {
     public class AdsController : ApiController
     {
-        private readonly IAdService _adService;
-        private readonly ICurrentUserService _currentUser;
+        private readonly IAdService ads;
+        private readonly ICurrentUserService currentUser;
         
-        public AdsController(IAdService adService, ICurrentUserService currentUser)
+        public AdsController(IAdService ads, ICurrentUserService currentUser)
         {
-            _adService = adService;
-            _currentUser = currentUser;
+            this.ads = ads;
+            this.currentUser = currentUser;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> All([FromQuery]AdParams adParams)
+        public async Task<IEnumerable<AdForListDTO>> All([FromQuery]AdParams adParams)
         {
-            var model = await _adService.AllAsync(adParams);
+            var model = await this.ads.AllAsync(adParams);
 
             this.HttpContext.Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount);
 
-            return Ok(model.Ads);
+            return model.Ads;
         }
 
-        [HttpGet("{id}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet(nameof(Mine))]
+        public async Task<IEnumerable<AdForListDTO>> Mine()
         {
-            var result = await _adService.ByIdAsync(id);
+            var userId = this.currentUser.GetId();
 
-            if (result.Failure)
-            {
-                return NotFound(result.Error);
-            }
+            return await this.ads.MineAsync(userId);
+        }
 
-            return Ok(result.Data);
+        [HttpGet(nameof(Liked))]
+        public async Task<IEnumerable<AdForListDTO>> Liked()
+        {
+            var userId = this.currentUser.GetId();
+
+            return await this.ads.LikedAsync(userId);
+        }
+
+        [HttpGet(Id)]
+        [AllowAnonymous]
+        public async Task<AdForDetailedDTO> Details(int id)
+        {
+            return await this.ads.DetailsAsync(id);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(AdForCreateDTO adForCreateDTO)
+        public async Task<ActionResult> Create(AdForCreateDTO model)
         {
-            var id = await _adService.CreateAsync(adForCreateDTO);
+            var id = await this.ads.CreateAsync(model);
 
             return Created(nameof(this.Create), id);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id) 
+        [HttpPut(Id)]
+        public async Task<ActionResult> Update(int id, AdForUpdateDTO model)
         {
-            var result = await _adService.DeleteAsync(id);
-
-            if (result.Failure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return await this.ads
+                .UpdateAsync(id, model)
+                .ToActionResult();
         }
 
-        [HttpGet("mine")]
-        public async Task<IActionResult> Mine()
+        [HttpDelete(Id)]
+        public async Task<ActionResult> Delete(int id) 
         {
-            var userId = _currentUser.GetId();
-
-            var ads = await _adService.MineAsync(userId);
-
-            return Ok(ads);
-        }
-
-        [HttpGet("liked")]
-        public async Task<IActionResult> Liked()
-        {
-            var userId = _currentUser.GetId();
-
-            var ads = await _adService.LikedAsync(userId);
-
-            return Ok(ads);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, AdForUpdateDTO adForUpdateDTO)
-        {
-            var result = await _adService.UpdateAsync(id, adForUpdateDTO);
-            
-            if (result.Failure)
-            {
-                return BadRequest();
-            }
-
-            return Ok();
+            return await this.ads
+                .DeleteAsync(id)
+                .ToActionResult();
         }
     }
 }

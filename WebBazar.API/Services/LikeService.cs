@@ -1,38 +1,21 @@
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WebBazar.API.Data;
-using WebBazar.API.Helpers;
 using WebBazar.API.Data.Models;
+using WebBazar.API.Infrastructure.Services;
 using WebBazar.API.Services.Interfaces;
 
 namespace WebBazar.API.Services
 {
     public class LikeService : BaseService, ILikeService
     {
-        public LikeService(DataContext context, IMapper mapper)
-            : base(context, mapper) {}
+        public LikeService(DataContext data, IMapper mapper)
+            : base(data, mapper) {}
 
-        public async Task<Result> Like(int userId, int adId)
+        public async Task<Result> LikeAsync(int adId, int userId)
         {
-            var ad = await _context
-                .Ads
-                .Where(a => a.Id == adId)
-                .FirstOrDefaultAsync();
-
-            if (ad == null)
-            {
-               return "Обявата не е намерена"; 
-            }
-
-            if (ad.UserId == userId)
-            {
-                return "Не може да добавяте собствени обяви в Наблюдавани";
-            }
-
-            var adAlreadyLiked = await _context
-                .Likes
+            var adAlreadyLiked = await this.data.Likes
                 .AnyAsync(l => l.UserId == userId && l.AdId == adId);
 
             if (adAlreadyLiked)
@@ -40,23 +23,21 @@ namespace WebBazar.API.Services
                 return "Обявата вече е добавена в Наблюдавани";
             }
 
-            _context.Likes.Add(new Like {
+            var like = new Like
+            {
                 UserId = userId,
                 AdId = adId
-            });
+            };
 
-            if (await _context.SaveChangesAsync() > 0)
-            {
-                return true;
-            }
+            await this.data.AddAsync(like);
+            await this.data.SaveChangesAsync();
             
-            return "Грешка при добавяне на обявата в Наблюдавани";
+            return true;
         }
 
-        public async Task<Result> Unlike(int userId, int adId)
+        public async Task<Result> UnlikeAsync(int adId, int userId)
         {
-            var like = await _context
-                .Likes
+            var like = await this.data.Likes
                 .FirstOrDefaultAsync(l => l.UserId == userId && l.AdId == adId);
 
             if (like == null)
@@ -64,9 +45,8 @@ namespace WebBazar.API.Services
                 return "Лайкът не е намерен";
             }
 
-            _context.Likes.Remove(like);
-            
-            await _context.SaveChangesAsync();
+            this.data.Remove(like);
+            await this.data.SaveChangesAsync();
 
             return true;
         }

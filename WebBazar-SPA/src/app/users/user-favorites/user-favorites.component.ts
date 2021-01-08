@@ -24,7 +24,7 @@ export class UserFavoritesComponent implements OnInit {
   unlikeAd(adId: number) {
     this.likeService.unlikeAd(adId).subscribe(() => {
       this.ads.splice(this.ads.findIndex(a => a.id === adId), 1);
-      this.alertify.success('Обявата беше премахната от Наблюдавани');
+      this.alertify.warning('Обявата беше премахната от Наблюдавани');
     }, error => {
       this.alertify.error(error);
     });

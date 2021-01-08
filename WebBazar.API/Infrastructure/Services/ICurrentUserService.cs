@@ -1,4 +1,4 @@
-namespace WebBazar.API.Services.Interfaces
+namespace WebBazar.API.Infrastructure.Services
 {
     public interface ICurrentUserService
     {

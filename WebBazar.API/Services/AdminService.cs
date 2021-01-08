@@ -8,52 +8,45 @@ using WebBazar.API.DTOs.Ad;
 using AutoMapper.QueryableExtensions;
 using System.Collections.Generic;
 using WebBazar.API.Services.Interfaces;
-using CloudinaryDotNet.Actions;
-using CloudinaryDotNet;
-using Microsoft.Extensions.Options;
-using WebBazar.API.Helpers;
 using WebBazar.API.Data;
+using WebBazar.API.DTOs.User;
+using WebBazar.API.Infrastructure.Services;
 
 namespace WebBazar.API.Services
 {
     public class AdminService : IAdminService
     {
-        private readonly DataContext _context;
-        private readonly UserManager<User> _userManager;
-        private IOptions<CloudinarySettings> _cloudinaryConfig;
+        private readonly DataContext data;
+        private readonly UserManager<User> userManager;
 
-        public AdminService(
-            DataContext context,
-            UserManager<User> userManager,
-            IOptions<CloudinarySettings> cloudinaryConfig)
+        public AdminService(DataContext data, UserManager<User> userManager)
         {
-            _context = context;
-            _userManager = userManager;
-            _cloudinaryConfig = cloudinaryConfig;
+            this.data = data;
+            this.userManager = userManager;
         }
 
-        public async Task<dynamic> GetUsersWithRolesAsync()
+        public async Task<IEnumerable<UserWithRolesServiceModel>> UsersWithRolesAsync()
         {
-            var userList = await (from user in _context.Users
+            var users = await (from user in this.data.Users
                                   orderby user.Id
-                                  select new
+                                  select new UserWithRolesServiceModel
                                   {
                                       Id = user.Id,
                                       UserName = user.UserName,
                                       Roles = (from userRole in user.UserRoles
-                                               join role in _context.Roles
+                                               join role in this.data.Roles
                                                on userRole.RoleId
                                                equals role.Id
                                                orderby role.Name
                                                select role.Name).ToList()
                                   }).ToListAsync();
 
-            return userList;
+            return users;
         }
 
-        public async Task<string[]> GetRolesAsync()
+        public async Task<string[]> RolesAsync()
         {
-            var roles = await _context.Roles
+            var roles = await this.data.Roles
                 .OrderBy(r => r.Name)
                 .Select(r => r.Name)
                 .ToArrayAsync();
@@ -61,7 +54,7 @@ namespace WebBazar.API.Services
             return roles;
         }
 
-        public async Task<List<AdForListDTO>> GetAdsForApprovalAsync()
+        public async Task<IEnumerable<AdForListDTO>> AdsForApprovalAsync()
         {
             var configuration = new MapperConfiguration(cfg =>
                 cfg.CreateMap<Ad, AdForListDTO>().ForMember(
@@ -69,7 +62,7 @@ namespace WebBazar.API.Services
                     conf => conf.MapFrom(ol => ol.Photos.FirstOrDefault(p => p.IsMain && !p.IsDeleted).Url))
             );
 
-            var ads = await _context.Ads
+            var ads = await this.data.Ads
                 // .Include(a => a.Photos)
                 .IgnoreQueryFilters()
                 .Where(a => a.IsApproved == false && a.IsDeleted == false)
@@ -82,18 +75,20 @@ namespace WebBazar.API.Services
 
         public async Task<Result> EditUserRolesAsync(string userName, string[] selectedRoles)
         {
-            var user = await _userManager.FindByNameAsync(userName);
-            var userRoles = await _userManager.GetRolesAsync(user);
+            var user = await this.userManager.FindByNameAsync(userName);
+            var userRoles = await this.userManager.GetRolesAsync(user);
 
             selectedRoles = selectedRoles ?? new string[] {};
 
-            var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
+            var result = await this.userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
+
             if (!result.Succeeded)
             {
                 return "Грешка при добавянето на роли.";
             }
             
-            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+            result = await this.userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+
             if (!result.Succeeded)
             {
                 return "Грешка при премахването на роли.";
@@ -104,7 +99,7 @@ namespace WebBazar.API.Services
 
         public async Task<Result> ApproveAdAsync(int id) 
         {
-            var ad = await _context.Ads
+            var ad = await this.data.Ads
                 .IgnoreQueryFilters()
                 .Where(a => a.Id == id && a.IsDeleted == false)
                 .FirstOrDefaultAsync();
@@ -116,52 +111,9 @@ namespace WebBazar.API.Services
 
             ad.IsApproved = true;
 
-            await _context.SaveChangesAsync();
+            await this.data.SaveChangesAsync();
 
             return true;
         }
-
-        /*
-        public async Task RejectAd(int id) 
-        {
-            var ad = await _context.Ads
-                // .Include(a => a.Photos)
-                .IgnoreQueryFilters()
-                .Where(a => a.Id == id && a.IsDeleted == false)
-                .FirstOrDefaultAsync();
-			
-            // ad.Photos = ad.Photos.Where(a => a.IsDeleted == false).ToList();
-            
-			// if (ad.Photos.Any())
-            // {
-                // RemoveAdPhotos(ad);
-            // }
-
-            _context.Ads.Remove(ad);
-
-            await _context.SaveChangesAsync();
-        }
-
-        private void RemoveAdPhotos(Ad ad) 
-        {
-            var acc = new Account(
-                _cloudinaryConfig.Value.CloudName,
-                _cloudinaryConfig.Value.ApiKey,
-                _cloudinaryConfig.Value.ApiSecret);
-
-            var cloudinary = new Cloudinary(acc);
-
-            foreach (var photo in ad.Photos) 
-            {
-                if (photo.PublicId != null) 
-                {
-                    var deleteParams = new DeletionParams(photo.PublicId);
-					cloudinary.Destroy(deleteParams);
-                }
-
-                _context.Photos.Remove(photo);
-            }
-        }
-        */
     }
 }

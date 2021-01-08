@@ -7,7 +7,7 @@ using WebBazar.API.DTOs.User;
 using WebBazar.API.DTOs.Category;
 using WebBazar.API.Data.Models;
 
-namespace WebBazar.API.Helpers
+namespace WebBazar.API.Infrastructure
 {
     public class AutoMapperProfiles : Profile
     {
@@ -45,11 +45,12 @@ namespace WebBazar.API.Helpers
                     opt.MapFrom(src => src.Ads.Where(a => !a.IsDeleted));
                 });
             CreateMap<UserForRegisterDTO, User>();
-            CreateMap<User, UserForUpdateDTO>();
+            // CreateMap<User, UserForUpdateDTO>();
             CreateMap<UserForUpdateDTO, User>()
                 .ForMember(dest => dest.NormalizedEmail, opt => {
                     opt.MapFrom(src => src.Email != null ?  src.Email.ToUpper() : null);
-                });
+                })
+                .ReverseMap();
 
             CreateMap<MessageForCreationDTO, Message>().ReverseMap();
             CreateMap<Message, MessageToReturnDTO>()
@@ -60,7 +61,6 @@ namespace WebBazar.API.Helpers
                     opt.MapFrom(src => src.Recipient.UserName);
                 });
 
-            CreateMap<Photo, PhotoForReturnDTO>();  
             CreateMap<Photo, PhotoForDetailedDTO>();
             CreateMap<PhotoForCreationDTO, Photo>();
          }

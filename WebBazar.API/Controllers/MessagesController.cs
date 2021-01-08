@@ -2,55 +2,55 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.Services.Interfaces;
 using WebBazar.API.DTOs.Message;
-using WebBazar.API.Helpers;
-using WebBazar.API.Extensions;
+using System.Collections.Generic;
+using WebBazar.API.Infrastructure.Services;
+using WebBazar.API.Infrastructure.Extensions;
 
 namespace WebBazar.API.Controllers
 {
     public class MessagesController : ApiController
     {
-        private readonly IMessageService _messageService;
-        private readonly ICurrentUserService _currentUser;
+        private readonly IMessageService messages;
+        private readonly ICurrentUserService currentUser;
 
-        public MessagesController(IMessageService messageService, ICurrentUserService currentUser)
+        public MessagesController(IMessageService messages, ICurrentUserService currentUser)
         {
-            _messageService = messageService;
-            _currentUser = currentUser;
-        }
-
-        [HttpGet("thread")]
-        public async Task<IActionResult> MessageThread([FromQuery]int adId, [FromQuery]int recipientId)
-        {
-            var senderId = _currentUser.GetId();
-
-            var messageThread = await _messageService.MessageThreadAsync(adId, senderId, recipientId);
-
-            return Ok(messageThread);
+            this.messages = messages;
+            this.currentUser = currentUser;
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserMessages([FromQuery]MessageParams messageParams)
+        public async Task<IEnumerable<MessageToReturnDTO>> Mine([FromQuery]MessageParams messageParams)
         {
-            var userId = _currentUser.GetId();
+            var userId = this.currentUser.GetId();
             
-            var model = await _messageService.UserMessagesAsync(messageParams, userId);
+            var model = await this.messages.MineAsync( messageParams, userId);
 
             this.HttpContext.Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount);
 
-            return Ok(model.Messages);
+            return model.Messages;
+        }
+
+        [HttpGet(nameof(Thread))]
+        public async Task<IEnumerable<MessageToReturnDTO>> Thread([FromQuery]int adId, [FromQuery]int recipientId)
+        {
+            var senderId = this.currentUser.GetId();
+            
+            return await this.messages.ThreadAsync(adId, senderId, recipientId);
+        }
+
+        [HttpGet(nameof(UnreadCount))]
+        public async Task<int> UnreadCount()
+        {
+            var userId = this.currentUser.GetId();
+            
+            return await this.messages.UnreadCountAsync(userId);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(MessageForCreationDTO messageForCreationDTO)
+        public async Task<ActionResult> Create(MessageForCreationDTO model)
         {
-            var userId = _currentUser.GetId();
-            
-            if (messageForCreationDTO.SenderId != userId)
-            {
-                return Unauthorized();
-            }
-
-            var result = await _messageService.CreateAsync(messageForCreationDTO);
+            var result = await this.messages.CreateAsync(model);
 
             if (result.Failure)
             {
@@ -60,44 +60,20 @@ namespace WebBazar.API.Controllers
             return Created(nameof(this.Create), result.Data);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPut(Id + PathSeparator + nameof(MarkAsRead))]
+        public async Task<ActionResult> MarkAsRead(int id)
         {
-            var userId = _currentUser.GetId();
-
-            var result = await _messageService.DeleteAsync(id, userId);
-
-            if (result.Failure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return await this.messages
+                .MarkAsReadAsync(id)
+                .ToActionResult();
         }
 
-        [HttpPut("{id}/read")]
-        public async Task<IActionResult> MarkAsRead(int id)
+        [HttpDelete(Id)]
+        public async Task<ActionResult> Delete(int id)
         {
-            var userId = _currentUser.GetId();
-
-            var result = await _messageService.MarkAsReadAsync(id, userId);
-            
-            if (result.Failure)
-            {
-                return Unauthorized();
-            }
-
-            return Ok();
-        }
-
-        [HttpGet("unread/count")]
-        public async Task<IActionResult> UnreadCount()
-        {
-            var userId = _currentUser.GetId();
-            
-            var count = await _messageService.UnreadMessagesCountAsync(userId);
-            
-            return Ok(count);
+            return await this.messages
+                .DeleteAsync(id)
+                .ToActionResult();
         }
     }
 }

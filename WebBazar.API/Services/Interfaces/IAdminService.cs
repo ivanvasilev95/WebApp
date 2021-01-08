@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebBazar.API.DTOs.Ad;
-using WebBazar.API.Helpers;
+using WebBazar.API.DTOs.User;
+using WebBazar.API.Infrastructure.Services;
 
 namespace WebBazar.API.Services.Interfaces
 {
     public interface IAdminService
     {
-         Task<dynamic> GetUsersWithRolesAsync();
-         Task<string[]> GetRolesAsync();
-         Task<List<AdForListDTO>> GetAdsForApprovalAsync();
-         Task<Result> ApproveAdAsync(int id);
-         // Task RejectAd(int id);
-         Task<Result> EditUserRolesAsync(string userName, string[] selectedRoles);
+        Task<IEnumerable<AdForListDTO>> AdsForApprovalAsync();
+        Task<IEnumerable<UserWithRolesServiceModel>> UsersWithRolesAsync();
+        Task<string[]> RolesAsync();
+        Task<Result> ApproveAdAsync(int id);
+        Task<Result> EditUserRolesAsync(string userName, string[] selectedRoles);
     }
 }

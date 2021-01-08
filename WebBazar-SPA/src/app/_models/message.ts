@@ -1,15 +1,15 @@
 export interface Message {
     id: number;
-    senderId: number;
-    senderUsername: string;
-    recipientId: number;
-    recipientUsername: string;
     adId: number;
     adTitle: string;
-    content: string;
-    isRead: boolean;
-    dateRead: Date;
-    messageSent: Date;
+    senderId: number;
+    senderUsername: string;
     senderDeleted: boolean;
-    recipientDeleted: boolean;
+    recipientId: number;
+    recipientUsername: string;
+    // recipientDeleted: boolean;
+    content: string;
+    sentOn: Date;
+    isRead: boolean;
+    // readOn?: Date;
 }

@@ -23,7 +23,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                             this.router.navigate(['']);
                         }
                         if (typeof error.error === 'object') { // if not then it's string
-                            if (error.error !== null && error.error.constructor === Array) { // if it's an array object
+                            // if it's an array object (error.error instanceof Array)
+                            if (error.error !== null && error.error.constructor === Array) {
                                 let errorData = '';
                                 error.error.forEach(err => {
                                     errorData += err.description;

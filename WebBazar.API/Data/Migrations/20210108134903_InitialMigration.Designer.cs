@@ -9,8 +9,8 @@ using WebBazar.API.Data;
 namespace WebBazar.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201221175005_AuditInformation3")]
-    partial class AuditInformation3
+    [Migration("20210108134903_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -216,13 +216,10 @@ namespace WebBazar.API.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime?>("DateRead")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<bool>("IsRead")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("MessageSent")
+                    b.Property<DateTime?>("ReadOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("RecipientDeleted")
@@ -236,6 +233,9 @@ namespace WebBazar.API.Migrations
 
                     b.Property<int>("SenderId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("SentOn")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -325,7 +325,7 @@ namespace WebBazar.API.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("DeletedBy")

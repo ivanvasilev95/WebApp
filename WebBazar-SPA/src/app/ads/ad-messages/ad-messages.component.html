@@ -11,7 +11,7 @@
             <div class="header">
               <strong class="primary-font">{{message.senderUsername}}</strong>
               <small class="text-muted float-right">
-                <span class="fa fa-clock-o"> {{message.messageSent | timeAgo}}</span>
+                <span class="fa fa-clock-o"> {{message.sentOn | timeAgo}}</span>
               </small>
             </div>
             <p *ngIf="!message.senderDeleted">{{message.content}}</p>
@@ -24,7 +24,7 @@
             <div class="header">
               <strong class="primary-font">{{message.senderUsername}}</strong>
               <small class="text-muted float-right">
-                <span class="fa fa-clock-o"> {{message.messageSent | timeAgo}}</span>
+                <span class="fa fa-clock-o"> {{message.sentOn | timeAgo}}</span>
                 <span *ngIf="message.isRead" class="text-success"> (видяно)</span>
               </small>
             </div>

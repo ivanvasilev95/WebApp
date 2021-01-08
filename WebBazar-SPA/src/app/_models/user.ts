@@ -4,11 +4,11 @@ export interface User {
   id: number;
   userName: string;
   password: string;
+  email: string;
   fullName: string;
   address: string;
-  email: string;
-  created: Date;
   lastActive: Date;
+  createdOn: Date;
   ads?: Ad[];
   roles?: string[];
 }

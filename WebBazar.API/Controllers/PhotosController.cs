@@ -2,22 +2,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.Services.Interfaces;
 using WebBazar.API.DTOs.Photo;
+using WebBazar.API.Infrastructure.Extensions;
 
 namespace WebBazar.API.Controllers
 {
     public class PhotosController : ApiController
     {
-        private readonly IPhotoService _photoService;
+        private readonly IPhotoService photos;
 
-        public PhotosController(IPhotoService photoService)
+        public PhotosController(IPhotoService photos)
         {
-            _photoService = photoService;
+            this.photos = photos;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromQuery]int adId, [FromForm]PhotoForCreationDTO photoForCreationDTO)
+        public async Task<ActionResult> Add([FromForm]PhotoForCreationDTO model, [FromQuery]int adId)
         {
-            var result = await _photoService.AddAsync(adId, photoForCreationDTO);
+            var result = await this.photos.AddAsync(model, adId);
 
             if (result.Failure)
             {
@@ -27,30 +28,20 @@ namespace WebBazar.API.Controllers
             return Created(nameof(this.Add), result.Data);
         }
         
-        [HttpPost("{id}/setMain")]
-        public async Task<IActionResult> SetMain(int id)
+        [HttpPut(Id + PathSeparator + nameof(SetMain))]
+        public async Task<ActionResult> SetMain(int id)
         {
-            var result = await _photoService.SetMainAsync(id);
-
-            if (result.Failure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return await this.photos
+                .SetMainAsync(id)
+                .ToActionResult();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete(Id)]
+        public async Task<ActionResult> Delete(int id)
         {
-            var result = await _photoService.DeleteAsync(id);
-            
-            if (result.Failure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return await this.photos
+                .DeleteAsync(id)
+                .ToActionResult();
         }
     }
 }

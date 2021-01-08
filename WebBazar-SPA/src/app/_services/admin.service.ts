@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { User } from '../_models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +18,8 @@ export class AdminService {
     return this.http.get<string[]>(this.baseUrl + 'roles');
   }
 
-  updateUserRoles(userName: string, roles: {}) {
-    return this.http.put(this.baseUrl + 'editRoles/' + userName, roles);
+  editUserRoles(userName: string, roles: {}) {
+    return this.http.put(this.baseUrl + 'editUserRoles/' + userName, roles);
   }
 
   getAdsForApproval() {

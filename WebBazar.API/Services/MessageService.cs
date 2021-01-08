@@ -6,65 +6,152 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WebBazar.API.Data;
 using WebBazar.API.DTOs.Message;
-using WebBazar.API.Helpers;
 using WebBazar.API.Data.Models;
 using WebBazar.API.Services.Interfaces;
+using WebBazar.API.Infrastructure;
+using WebBazar.API.Infrastructure.Services;
 
 namespace WebBazar.API.Services
 {
     public class MessageService : BaseService, IMessageService
     {
-        public MessageService(DataContext context, IMapper mapper)
-            : base(context, mapper) {}
+        public MessageService(DataContext data, IMapper mapper)
+            : base(data, mapper) {}
 
-        public async Task<Result<MessageToReturnDTO>> CreateAsync(MessageForCreationDTO model)
+        public async Task<PaginatedMessagesServiceModel> MineAsync(MessageParams messageParams, int userId)
         {
-            var adExists = await _context.Ads
-                .AnyAsync(a => a.Id == model.AdId);
+            var messages = GetFilteredMessages(messageParams.MessageFilter, userId);
+
+            var paginatedMessages = await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
+
+            return new PaginatedMessagesServiceModel
+            {
+                Messages = this.mapper.Map<IEnumerable<MessageToReturnDTO>>(paginatedMessages),
+                CurrentPage = paginatedMessages.CurrentPage,
+                PageSize = paginatedMessages.PageSize,
+                TotalCount = paginatedMessages.TotalCount
+            };
+        }
+
+        private IQueryable<Message> GetFilteredMessages(string messageFilter, int userId)
+        {
+            var messages = this.data.Messages
+                .Include(u => u.Sender)
+                .Include(a => a.Ad)
+                .Include(u => u.Recipient)
+                .AsQueryable();
+
+            switch (messageFilter)
+            {
+                case "Inbox":
+                    messages = messages
+                        .Where(m => m.RecipientId == userId /* && !(m.RecipientId == userId && m.IsRead == false && m.SenderDeleted == true) */)
+                        .OrderBy(m => m.IsRead)
+                        .ThenByDescending(m => m.SentOn);
+                    break;
+                case "Outbox":
+                    messages = messages
+                        .Where(m => m.SenderId == userId && m.SenderDeleted == false)
+                        .OrderByDescending(m => m.SentOn);
+                    break;
+                default: // unread
+                    messages = messages
+                        .Where(m => m.RecipientId == userId && m.IsRead == false /* && m.SenderDeleted == false */)
+                        .OrderByDescending(m => m.SentOn);
+                    break;
+            }
+
+            return messages;
+        }
+
+        public async Task<IEnumerable<MessageToReturnDTO>> ThreadAsync(int adId, int senderId, int recipientId)
+        {
+            var messages = await this.data.Messages
+                .Include(u => u.Sender)
+                .Include(a => a.Ad)
+                .Include(u => u.Recipient)
+                .Where(m => (m.RecipientId == recipientId && m.SenderId == senderId && m.SenderDeleted == false
+                          || m.RecipientId == senderId && m.SenderId == recipientId /* && !(m.IsRead == false && m.SenderDeleted == true) */)
+                          && m.AdId == adId
+                          /* && !(m.IsRead == false && m.SenderDeleted == true) */)
+                .OrderBy(m => m.SentOn)
+                .ToListAsync();
+
+            return this.mapper.Map<IEnumerable<MessageToReturnDTO>>(messages);
+        }
+
+        public async Task<int> UnreadCountAsync(int userId)
+        {
+            return await this.data.Messages
+                .Where(m => m.RecipientId == userId && m.IsRead == false /* && m.SenderDeleted == false */)
+                .CountAsync();
+        }
+
+        public async Task<Result<DateTime>> CreateAsync(MessageForCreationDTO model)
+        {
+            var result = await ValidateInputModel(model);
+
+            if (result.Failure)
+            {
+                return result.Error;
+            }
+            
+            var message = this.mapper.Map<Message>(model);
+
+            await this.data.AddAsync(message);
+            await this.data.SaveChangesAsync();
+            
+            return message.SentOn;
+        }
+
+        private async Task<Result> ValidateInputModel(MessageForCreationDTO model)
+        {
+            var adExists = await this.data.Ads.AnyAsync(a => a.Id == model.AdId);
                 
             if (!adExists)
             {
                 return "Обявата не е намерена";  
             }
 
-            var recipientExists = await _context.Users
-                .AnyAsync(u => u.Id == model.RecipientId);
+            var recipientExists = await this.data.Users.AnyAsync(u => u.Id == model.RecipientId);
 
             if (!recipientExists)
             {
                 return "Получателят не е намерен";
             }
 
-            var message = _mapper.Map<Message>(model);
-
-            _context.Messages.Add(message);
-
-            if (await _context.SaveChangesAsync() > 0)
-            {
-                return _mapper.Map<Message, MessageToReturnDTO>(await this.GetMessageByIdAsync(message.Id));
-            }
-            
-            return "Грешка при запазване на съобщението";
-        }
-
-        private async Task<Message> GetMessageByIdAsync(int id)
-        {
-            return await _context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Recipient)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return true;
         }
         
-        public async Task<Result> DeleteAsync(int messageId, int userId)
+        public async Task<Result> MarkAsReadAsync(int id)
         {
-            var message = await _context.Messages
-                .FirstOrDefaultAsync(m => m.Id == messageId);
+            var message = await GetMessageAsync(id);
+
+            if (message == null)
+            {
+                return "Съобщението не е намерено";
+            }
+            
+            message.IsRead = true;
+            message.ReadOn = DateTime.Now;
+
+            await this.data.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<Result> DeleteAsync(int id)
+        {
+            var message = await GetMessageAsync(id);
 
             if (message == null)
             {
                 return "Съобщението не е намерено";
             }
 
+            message.SenderDeleted = true;
+            
+            /*
             if (message.SenderId == userId)
             {
                 message.SenderDeleted = true;
@@ -74,95 +161,18 @@ namespace WebBazar.API.Services
             {
                 message.RecipientDeleted = true;
             }
+            */
+
+            await this.data.SaveChangesAsync();
             
-            if (await _context.SaveChangesAsync() > 0)
-            {
-                return true;
-            }
-
-            return "Грешка при изтриване на съобщението";
-        }
-
-        public async Task<Result> MarkAsReadAsync(int messageId, int userId)
-        {
-            var message = await _context.Messages
-                .FirstOrDefaultAsync(m => m.Id == messageId);
-
-            if (message.RecipientId != userId)
-            {
-                return "Нямате право на тази операция";
-            }
-            
-            message.IsRead = true;
-            message.DateRead = DateTime.Now;
-
-            await _context.SaveChangesAsync();
-
             return true;
         }
 
-        public async Task<IEnumerable<MessageToReturnDTO>> MessageThreadAsync(int adId, int senderId, int recipientId)
+        private async Task<Message> GetMessageAsync(int id)
         {
-            var messages = await _context.Messages
-                .Include(u => u.Sender)
-                .Include(a => a.Ad)
-                .Include(u => u.Recipient)
-                .Where(m => (m.RecipientId == recipientId && m.SenderId == senderId && m.SenderDeleted == false
-                          || m.RecipientId == senderId && m.SenderId == recipientId /* && !(m.IsRead == false && m.SenderDeleted == true) */)
-                          && m.AdId == adId
-                          /* && !(m.IsRead == false && m.SenderDeleted == true) */)
-                .OrderBy(m => m.MessageSent)
-                .ToListAsync();
-
-            return _mapper.Map<IEnumerable<MessageToReturnDTO>>(messages);
-        }
-
-        public async Task<int> UnreadMessagesCountAsync(int userId)
-        {
-            var unreadMsgsCount = await _context.Messages
-                .Where(m => m.RecipientId == userId && m.IsRead == false /* && m.SenderDeleted == false */)
-                .CountAsync();
-            
-            return unreadMsgsCount;
-        }
-
-        public async Task<PaginatedMessagesServiceModel> UserMessagesAsync(MessageParams messageParams, int userId)
-        {
-            var messages = _context.Messages
-                .Include(u => u.Sender)
-                .Include(a => a.Ad)
-                .Include(u => u.Recipient)
-                .AsQueryable();
-
-            switch (messageParams.MessageFilter) 
-            {
-                case "Inbox":
-                    messages = messages
-                        .Where(m => m.RecipientId == userId /* && !(m.RecipientId == userId && m.IsRead == false && m.SenderDeleted == true) */)
-                        .OrderBy(m => m.IsRead)
-                        .ThenByDescending(m => m.MessageSent);
-                    break;
-                case "Outbox":
-                    messages = messages
-                        .Where(m => m.SenderId == userId && m.SenderDeleted == false)
-                        .OrderByDescending(m => m.MessageSent);
-                    break;
-                default: // unread
-                    messages = messages
-                        .Where(m => m.RecipientId == userId && m.IsRead == false /* && m.SenderDeleted == false */)
-                        .OrderByDescending(m => m.MessageSent);
-                    break;
-            }
-
-            var paginatedMessages = await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
-
-            return new PaginatedMessagesServiceModel
-            {
-                Messages = _mapper.Map<IEnumerable<MessageToReturnDTO>>(paginatedMessages),
-                CurrentPage = paginatedMessages.CurrentPage,
-                PageSize = paginatedMessages.PageSize,
-                TotalCount = paginatedMessages.TotalCount
-            };
+            return await this.data.Messages
+                .Where(m => m.Id == id)
+                .FirstOrDefaultAsync();
         }
     }
 }

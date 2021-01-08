@@ -8,12 +8,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using WebBazar.API.Data;
-using WebBazar.API.Helpers;
 using WebBazar.API.Data.Models;
+using WebBazar.API.Infrastructure;
+using WebBazar.API.Infrastructure.Filters;
+using WebBazar.API.Infrastructure.Services;
 using WebBazar.API.Services;
 using WebBazar.API.Services.Interfaces;
 
-namespace WebBazar.API.Extensions
+namespace WebBazar.API.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
@@ -22,7 +24,7 @@ namespace WebBazar.API.Extensions
             IConfiguration configuration)
                 => services
                     .AddDbContext<DataContext>(options => options
-                        .UseMySql(configuration.GetDefaultConnectionString()));
+                        .UseMySql(configuration.GetDbConnectionString(), options => options.EnableRetryOnFailure()));
         
         public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
@@ -53,8 +55,7 @@ namespace WebBazar.API.Extensions
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
+                    options.TokenValidationParameters = new TokenValidationParameters {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
@@ -74,7 +75,6 @@ namespace WebBazar.API.Extensions
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
             => services
-                .AddScoped<ICurrentUserService, CurrentUserService>()
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IAdminService, AdminService>()
                 .AddTransient<ICategoryService, CategoryService>()
@@ -83,6 +83,8 @@ namespace WebBazar.API.Extensions
                 .AddTransient<IPhotoService, PhotoService>()
                 .AddTransient<IMessageService, MessageService>()
                 .AddTransient<IAdService, AdService>()
+                .AddTransient<IJwtGeneratorService, JwtGeneratorService>()
+                .AddScoped<ICurrentUserService, CurrentUserService>()
                 .AddScoped<LogUserActivity>();
                 // .AddTransient<Seed>();
 
@@ -99,6 +101,7 @@ namespace WebBazar.API.Extensions
                         .RequireAuthenticatedUser()
                         .Build();
                     options.Filters.Add(new AuthorizeFilter(policy));
+                    options.Filters.Add<ModelOrNotFoundActionFilter>();
                 })
                 .AddNewtonsoftJson(x =>
                     x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

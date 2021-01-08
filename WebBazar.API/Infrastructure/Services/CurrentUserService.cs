@@ -1,9 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using WebBazar.API.Extensions;
-using WebBazar.API.Services.Interfaces;
+using WebBazar.API.Infrastructure.Extensions;
 
-namespace WebBazar.API.Services
+namespace WebBazar.API.Infrastructure.Services
 {
     public class CurrentUserService : ICurrentUserService
     {

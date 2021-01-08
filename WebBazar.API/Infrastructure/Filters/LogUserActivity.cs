@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using WebBazar.API.Data;
-using WebBazar.API.Extensions;
+using WebBazar.API.Infrastructure.Extensions;
 
-namespace WebBazar.API.Helpers
+namespace WebBazar.API.Infrastructure.Filters
 {
     public class LogUserActivity : IAsyncActionFilter
     {
@@ -17,9 +17,7 @@ namespace WebBazar.API.Helpers
             
             var userId = int.Parse(resultContext.HttpContext?.User?.GetId() ?? "0");
 
-            var user = await dataContext
-                .Users
-                .FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user != null)
             {

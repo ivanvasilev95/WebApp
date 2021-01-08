@@ -29,7 +29,7 @@ export class UserAdsComponent implements OnInit {
         this.user = user;
       },
       error => {
-        this.alertify.error(error);
+        this.alertify.error('Потребителят не е намерен');
         this.router.navigate(['']);
       });
   }

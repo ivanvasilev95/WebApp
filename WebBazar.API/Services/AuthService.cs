@@ -1,59 +1,78 @@
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using WebBazar.API.Data.Models;
+using WebBazar.API.DTOs.User;
+using WebBazar.API.Infrastructure.Services;
 using WebBazar.API.Services.Interfaces;
 
 namespace WebBazar.API.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _config;
+        private const string InvalidErrorMessage = "Невалидено потребителско име или парола";
 
-        public AuthService(UserManager<User> userManager, IConfiguration config)
+        private readonly UserManager<User> userManager;
+        private readonly IJwtGeneratorService jwtGenerator;
+        private readonly IMapper mapper;
+
+        public AuthService(
+            UserManager<User> userManager,
+            IMapper mapper,
+            IJwtGeneratorService jwtGenerator)
         {
-            _userManager = userManager;
-            _config = config;
+            this.userManager = userManager;
+            this.jwtGenerator = jwtGenerator;
+            this.mapper = mapper;
         }
 
-        public async Task<string> GenerateJwtToken(User user)
+        public async Task<Result<LoginServiceModel>> LoginAsync(UserForLoginDTO model)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
-            };
+            var user = await this.userManager.FindByNameAsync(model.UserName);
 
-            var roles = await _userManager.GetRolesAsync(user);
-
-            foreach(var role in roles)
+            if (user == null)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                return InvalidErrorMessage;
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var passwordValid = await this.userManager.CheckPasswordAsync(user, model.Password);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+            if (!passwordValid) 
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
-            };
+                return InvalidErrorMessage;
+            }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = await this.jwtGenerator.GenerateJwtTokenAsync(user);
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var encryptedToken = tokenHandler.WriteToken(token);
+            return new LoginServiceModel { Token = token };
+        }
 
-            return encryptedToken;
+        public async Task<Result> RegisterAsync(UserForRegisterDTO model)
+        {
+            if (await this.userManager.FindByNameAsync(model.UserName) != null) 
+            {
+                return "Вече има регистриран потребител с това потребителско име";
+            }
+
+            if (await this.userManager.FindByEmailAsync(model.Email) != null) 
+            {
+                return "Вече има регистриран потребител с този имейл адрес";
+            }
+
+            var user = this.mapper.Map<User>(model);
+
+            var identityResult = await this.userManager.CreateAsync(user, model.Password);
+            
+            if (!identityResult.Succeeded) 
+            {
+                return String.Join("\n", identityResult.Errors.Select(e => e.Description));
+            }
+            
+            await this.userManager.AddToRoleAsync(user, "Member");
+
+            return true;
         }
     }
 }

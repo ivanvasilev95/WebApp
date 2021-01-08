@@ -15,10 +15,10 @@ namespace WebBazar.API.DTOs.Ad
         public string Description { get; set; }
         [Required]
         public string Location { get; set; }
-        public double? Price { get; set; }
-        public bool? IsUsed { get; set; }
-        public DateTime DateAdded { get; set; }
-        public int UserId { get; set; }
         public int CategoryId { get; set; }
+        public int UserId { get; set; }
+        public bool? IsUsed { get; set; }
+        public double? Price { get; set; }
+        public DateTime DateAdded { get; set; }
     }
 }

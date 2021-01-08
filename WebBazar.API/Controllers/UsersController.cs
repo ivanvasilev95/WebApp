@@ -3,51 +3,38 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.Services.Interfaces;
 using WebBazar.API.DTOs.User;
+using WebBazar.API.Infrastructure.Extensions;
 
 namespace WebBazar.API.Controllers
 {
     public class UsersController : ApiController
     {
-        private readonly IUserService _userService;
+        private readonly IUserService users;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService users)
         {
-            _userService = userService;
+            this.users = users;
         }
 
         [AllowAnonymous]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserWithAds([FromRoute]int id, [FromQuery]bool includeNotApprovedAds)
+        [HttpGet(Id)]
+        public async Task<UserForDetailedDTO> UserWithAds([FromRoute]int id, [FromQuery]bool includeNotApprovedAds)
         {
-            var result = await _userService.GetUserWithAdsAsync(id, includeNotApprovedAds);
-
-            if (result.Failure)
-            {
-                return NotFound(result.Error);
-            }
-
-            return Ok(result.Data);
+            return await this.users.GetWithAdsAsync(id, includeNotApprovedAds);
         }
 
-        [HttpGet("{id}/edit")]
-        public async Task<IActionResult> GetUserForEdit(int id)
+        [HttpGet(Id + PathSeparator + nameof(Details))]
+        public async Task<UserForUpdateDTO> Details(int id)
         {
-            var user = await _userService.GetUserForEditAsync(id);
-
-            return Ok(user);
+            return await this.users.DetailsAsync(id);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserForUpdateDTO userForUpdateDTO)
+        [HttpPut(Id)]
+        public async Task<ActionResult> Update(int id, UserForUpdateDTO model)
         {
-            var result = await _userService.UpdateUserAsync(id, userForUpdateDTO);
-            
-            if (result.Failure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return await this.users
+                .UpdateAsync(id, model)
+                .ToActionResult();
         }
     }
 }

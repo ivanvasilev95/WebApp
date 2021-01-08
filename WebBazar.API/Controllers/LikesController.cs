@@ -1,49 +1,36 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebBazar.API.Services.Interfaces;
-using WebBazar.API.Data.Models;
+using WebBazar.API.Infrastructure.Services;
+using WebBazar.API.Infrastructure.Extensions;
 
 namespace WebBazar.API.Controllers
 {
     public class LikesController : ApiController
     {
-        private readonly ILikeService _likeService;
-        private readonly ICurrentUserService _currentUser;
+        private readonly ILikeService likes;
+        private readonly ICurrentUserService currentUser;
 
-        public LikesController(ILikeService likeService, ICurrentUserService currentUser)
+        public LikesController(ILikeService likes, ICurrentUserService currentUser)
         {
-            _likeService = likeService;
-            _currentUser = currentUser;
+            this.likes = likes;
+            this.currentUser = currentUser;
         }
         
-        [HttpPost("like")]
-        public async Task<IActionResult> LikeAd([FromQuery]int adId)
+        [HttpPost(nameof(Like))]
+        public async Task<ActionResult> Like([FromQuery]int adId)
         {
-            var userId = _currentUser.GetId();
-            
-            var result = await _likeService.Like(userId, adId);
-
-            if (result.Failure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return await this.likes
+                .LikeAsync(adId, this.currentUser.GetId())
+                .ToActionResult();
         }
 
-        [HttpDelete("unlike")]
-        public async Task<ActionResult<Like>> UnlikeAd([FromQuery]int adId) 
+        [HttpDelete(nameof(Unlike))]
+        public async Task<ActionResult> Unlike([FromQuery]int adId) 
         {      
-            var userId = _currentUser.GetId();
-
-            var result = await _likeService.Unlike(userId, adId);
-
-            if (result.Failure)
-            {
-                return NotFound();
-            }
-
-            return Ok();
+            return await this.likes
+                .UnlikeAsync(adId, this.currentUser.GetId())
+                .ToActionResult();
         }
     }
 }

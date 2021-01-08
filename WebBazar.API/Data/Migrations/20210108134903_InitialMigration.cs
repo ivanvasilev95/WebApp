@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebBazar.API.Migrations
 {
-    public partial class IdentityInitial : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,8 +45,11 @@ namespace WebBazar.API.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FullName = table.Column<string>(nullable: true),
                     Address = table.Column<string>(nullable: true),
-                    Created = table.Column<DateTime>(nullable: false),
-                    LastActive = table.Column<DateTime>(nullable: false)
+                    LastActive = table.Column<DateTime>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,6 +62,13 @@ namespace WebBazar.API.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<string>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    ModifiedBy = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -178,11 +188,15 @@ namespace WebBazar.API.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Location = table.Column<string>(nullable: true),
-                    Price = table.Column<double>(nullable: true),
                     IsUsed = table.Column<bool>(nullable: true),
+                    Price = table.Column<double>(nullable: true),
+                    IsApproved = table.Column<bool>(nullable: false),
                     DateAdded = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false)
@@ -234,15 +248,15 @@ namespace WebBazar.API.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    SenderId = table.Column<int>(nullable: false),
-                    RecipientId = table.Column<int>(nullable: false),
-                    AdId = table.Column<int>(nullable: false),
                     Content = table.Column<string>(nullable: true),
+                    SentOn = table.Column<DateTime>(nullable: false),
                     IsRead = table.Column<bool>(nullable: false),
-                    DateRead = table.Column<DateTime>(nullable: true),
-                    MessageSent = table.Column<DateTime>(nullable: false),
+                    ReadOn = table.Column<DateTime>(nullable: true),
                     SenderDeleted = table.Column<bool>(nullable: false),
-                    RecipientDeleted = table.Column<bool>(nullable: false)
+                    RecipientDeleted = table.Column<bool>(nullable: false),
+                    AdId = table.Column<int>(nullable: false),
+                    SenderId = table.Column<int>(nullable: false),
+                    RecipientId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -273,6 +287,9 @@ namespace WebBazar.API.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    DeletedBy = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true),
                     IsMain = table.Column<bool>(nullable: false),
                     PublicId = table.Column<string>(nullable: true),

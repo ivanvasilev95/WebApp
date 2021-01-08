@@ -1,4 +1,4 @@
-namespace WebBazar.API.Helpers
+namespace WebBazar.API.Infrastructure.Services
 {
     public class Result
     {
@@ -9,7 +9,10 @@ namespace WebBazar.API.Helpers
         public string Error { get; protected set; }
 
         public static implicit operator Result(bool succeeded)
-            => new Result { Succeeded = succeeded };
+            => new Result
+            {
+                Succeeded = succeeded
+            };
 
         public static implicit operator Result(string error)
             => new Result
@@ -24,7 +27,10 @@ namespace WebBazar.API.Helpers
         public T Data { get; private set; }
         
         public static implicit operator Result<T>(bool succeeded)
-            => new Result<T> { Succeeded = succeeded };
+            => new Result<T>
+            {
+                Succeeded = succeeded
+            };
 
         public static implicit operator Result<T>(string error)
             => new Result<T>

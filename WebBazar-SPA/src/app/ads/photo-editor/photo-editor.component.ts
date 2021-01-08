@@ -44,12 +44,7 @@ export class PhotoEditorComponent implements OnInit {
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
     this.uploader.onSuccessItem = (item, response) => {
       if (response) {
-        const res: Photo = JSON.parse(response);
-        const photo: Photo = {
-          id: res.id,
-          url: res.url,
-          isMain: res.isMain
-        };
+        const photo: Photo = JSON.parse(response);
 
         if (this.photos.length === 0) {
           this.getAdPhotoChange.emit(photo.url);

@@ -11,7 +11,7 @@ export class PhotoService {
   constructor(private http: HttpClient) { }
 
   setMainPhoto(id: number) {
-    return this.http.post(this.baseUrl + id + '/setMain', {});
+    return this.http.put(this.baseUrl + id + '/setMain', {});
   }
 
   deletePhoto(id: number) {

@@ -86,6 +86,10 @@ export class AdDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  saveTabNumberInLocalStorage(tabNumber: number) {
+    localStorage.setItem('tabNumber', tabNumber.toString());
+  }
+
   likeAd(adId: number) {
     this.likeService.likeAd(adId).subscribe(() => {
       this.alertify.success('Вие добавихте ' + this.ad.title + ' в Наблюдавани');
@@ -98,6 +102,10 @@ export class AdDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.ad.userId !== this.getLoggedInUserId();
   }
 
+  getLoggedInUserId() {
+    return +this.authService.decodedToken.nameid;
+  }
+
   userIsNotAdminOnly() {
     const userRoles = this.userIsLoggedIn() ? this.authService.decodedToken.role as Array<string> : null;
     if (userRoles && !(userRoles instanceof Array) && userRoles === 'Admin') {
@@ -108,13 +116,5 @@ export class AdDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   userIsLoggedIn() {
     return this.authService.loggedIn();
-  }
-
-  getLoggedInUserId() {
-    return +this.authService.decodedToken.nameid;
-  }
-
-  saveTabNumberInLocalStorage(tabNumber: number) {
-      localStorage.setItem('tabNumber', tabNumber.toString());
   }
 }

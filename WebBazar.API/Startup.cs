@@ -3,23 +3,22 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebBazar.API.Data;
 using AutoMapper;
-using WebBazar.API.Extensions;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Diagnostics;
+using WebBazar.API.Infrastructure.Extensions;
 
 namespace WebBazar.API
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {

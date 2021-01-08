@@ -36,8 +36,9 @@ export class CategoryManagementComponent implements OnInit {
       return;
     }
 
-    this.categoryService.add({name}).subscribe((category: Category) => {
-      this.categories.push(category);
+    this.categoryService.add({name}).subscribe((id: number) => {
+      const newCategory: Category = {id, name};
+      this.categories.push(newCategory);
       this.newCategoryName = '';
       this.alertify.success('Категорията е добавена успешно.');
     },

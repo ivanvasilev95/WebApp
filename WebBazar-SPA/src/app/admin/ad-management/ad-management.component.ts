@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Ad } from 'src/app/_models/ad';
 import { AdminService } from 'src/app/_services/admin.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 
@@ -8,7 +9,7 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
   styleUrls: ['./ad-management.component.css']
 })
 export class AdManagementComponent implements OnInit {
-  ads: any;
+  ads: Ad[];
 
   constructor(private adminService: AdminService, private alertify: AlertifyService) { }
 
@@ -17,7 +18,7 @@ export class AdManagementComponent implements OnInit {
   }
 
   getAdsForApproval() {
-    this.adminService.getAdsForApproval().subscribe(ads => {
+    this.adminService.getAdsForApproval().subscribe((ads: Ad[]) => {
       this.ads = ads;
     },
     error => {
