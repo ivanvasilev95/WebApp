@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using WebBazar.API.Data;
 using WebBazar.API.Data.Models;
-using WebBazar.API.Infrastructure;
 using WebBazar.API.Infrastructure.Filters;
 using WebBazar.API.Infrastructure.Services;
 using WebBazar.API.Services;
@@ -50,7 +49,7 @@ namespace WebBazar.API.Infrastructure.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var key = Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:Token").Value);
+            var key = Encoding.UTF8.GetBytes(configuration.GetSection("ApplicationSettings:Secret").Value);
             
             services
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

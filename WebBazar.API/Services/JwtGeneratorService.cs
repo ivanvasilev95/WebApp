@@ -20,7 +20,7 @@ namespace WebBazar.API.Services
         public JwtGeneratorService(UserManager<User> userManager, IConfiguration configuration)
         {
             this.userManager = userManager;
-            this.secret = configuration.GetSection("AppSettings:Token").Value;
+            this.secret = configuration.GetSection("ApplicationSettings:Secret").Value;
         }
 
         public async Task<string> GenerateJwtTokenAsync(User user)
