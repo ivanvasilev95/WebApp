@@ -59,7 +59,7 @@ namespace WebBazar.API.Services
             
             if (result.Failure)
             {
-                return result.Error;
+                return result;
             }
 
             var user = await this.data.Users

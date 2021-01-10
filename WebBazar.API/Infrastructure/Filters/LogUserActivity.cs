@@ -13,16 +13,16 @@ namespace WebBazar.API.Infrastructure.Filters
         {
             var resultContext = await next();
             
-            var dataContext = (DataContext)resultContext.HttpContext.RequestServices.GetService(typeof(DataContext));
-            
             var userId = int.Parse(resultContext.HttpContext?.User?.GetId() ?? "0");
+            
+            var data = (DataContext)resultContext.HttpContext.RequestServices.GetService(typeof(DataContext));
 
-            var user = await dataContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await data.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user != null)
             {
                 user.LastActive = DateTime.Now;
-                await dataContext.SaveChangesAsync();
+                await data.SaveChangesAsync();
             }
         }
     }

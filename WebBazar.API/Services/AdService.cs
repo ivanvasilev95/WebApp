@@ -99,14 +99,14 @@ namespace WebBazar.API.Services
 
         public async Task<IEnumerable<AdForListDTO>> LikedAsync(int userId)
         {
-            var userLikedAds = await this.data.Likes
+            var likedAds = await this.data.Likes
                 .Include(l => l.Ad)
                 .ThenInclude(a => a.Photos)
                 .Where(l => l.UserId == userId)
                 .Select(l => l.Ad)
                 .ToListAsync();
             
-            return this.mapper.Map<IEnumerable<AdForListDTO>>(userLikedAds);
+            return this.mapper.Map<IEnumerable<AdForListDTO>>(likedAds);
         }
 
         public async Task<AdForDetailedDTO> DetailsAsync(int id)
