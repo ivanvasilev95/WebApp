@@ -28,7 +28,7 @@ namespace WebBazar.API.Controllers
             return Created(nameof(this.Add), result.Data);
         }
         
-        [HttpPut(Id + PathSeparator + nameof(SetMain))]
+        [HttpPut(nameof(SetMain) + PathSeparator + Id)]
         public async Task<ActionResult> SetMain(int id)
         {
             return await this.photos

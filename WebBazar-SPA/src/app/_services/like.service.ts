@@ -12,14 +12,10 @@ export class LikeService {
   constructor(private http: HttpClient) { }
 
   likeAd(adId: number) {
-    return this.http.post(this.baseUrl + 'like', {}, {params: this.createQueryString(adId)});
+    return this.http.post(this.baseUrl + 'likeAd/' + adId, {});
   }
 
   unlikeAd(adId: number) {
-    return this.http.delete(this.baseUrl + 'unlike', {params: this.createQueryString(adId)});
-  }
-
-  private createQueryString(adId: number) {
-    return new HttpParams().append('adId', adId.toString());
+    return this.http.delete(this.baseUrl + 'unlikeAd/' + adId);
   }
 }

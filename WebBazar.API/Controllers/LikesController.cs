@@ -17,19 +17,19 @@ namespace WebBazar.API.Controllers
             this.currentUser = currentUser;
         }
         
-        [HttpPost(nameof(Like))]
-        public async Task<ActionResult> Like([FromQuery]int adId)
+        [HttpPost(nameof(LikeAd) + PathSeparator + Id)]
+        public async Task<ActionResult> LikeAd(int id)
         {
             return await this.likes
-                .LikeAsync(adId, this.currentUser.GetId())
+                .LikeAdAsync(id, this.currentUser.GetId())
                 .ToActionResult();
         }
 
-        [HttpDelete(nameof(Unlike))]
-        public async Task<ActionResult> Unlike([FromQuery]int adId) 
+        [HttpDelete(nameof(UnlikeAd) + PathSeparator + Id)]
+        public async Task<ActionResult> UnlikeAd(int id) 
         {      
             return await this.likes
-                .UnlikeAsync(adId, this.currentUser.GetId())
+                .UnlikeAdAsync(id, this.currentUser.GetId())
                 .ToActionResult();
         }
     }

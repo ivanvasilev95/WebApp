@@ -117,7 +117,7 @@ export class NewAdComponent implements OnInit {
 
       this.adService.createAd(ad).subscribe(newAdId => {
         this.alertify.success('Обявата е създадена успешно');
-        this.router.navigate(['/ads/' + newAdId + '/edit']);
+        this.router.navigate(['/ads/edit/' + newAdId]);
       }, error => {
         this.alertify.error(error);
       });

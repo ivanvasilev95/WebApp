@@ -23,13 +23,13 @@ namespace WebBazar.API.Controllers
             return await this.users.GetWithAdsAsync(id, includeNotApprovedAds);
         }
 
-        [HttpGet(Id + PathSeparator + nameof(Details))]
+        [HttpGet(nameof(Details) + PathSeparator + Id)]
         public async Task<UserForUpdateDTO> Details(int id)
         {
             return await this.users.DetailsAsync(id);
         }
 
-        [HttpPut(Id)]
+        [HttpPut(nameof(Update) + PathSeparator + Id)]
         public async Task<ActionResult> Update(int id, UserForUpdateDTO model)
         {
             return await this.users

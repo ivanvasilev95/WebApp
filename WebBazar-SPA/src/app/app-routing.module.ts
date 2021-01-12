@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AdListComponent } from './ads/ad-list/ad-list.component';
 import { UserFavoritesComponent } from './users/user-favorites/user-favorites.component';
@@ -23,11 +23,14 @@ import { AdEditResolver } from './_resolvers/ad-edit.resolver';
 import { AuthPanelComponent } from './auth/auth-panel/auth-panel.component';
 import { CategoriesResolver } from './_resolvers/categories.resolver';
 import { UserFavoritesResolver } from './_resolvers/user-favorites.resolver';
+import { NgModule } from '@angular/core';
 
-export const appRoutes: Routes = [
+const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'about', component: AboutComponent },
-    { path: 'auth', component: AuthPanelComponent, runGuardsAndResolvers: 'always', canActivate: [LoginGuard] },
+    { path: 'auth', component: AuthPanelComponent,
+        runGuardsAndResolvers: 'always',
+        canActivate: [LoginGuard] },
     { path: 'user/:id/ads', component: UserAdsComponent },
     { path: 'ads', component: AdListComponent,
         resolve: {ads: AdListResolver, categories: CategoriesResolver} },
@@ -48,10 +51,16 @@ export const appRoutes: Routes = [
             { path: 'user/edit', component: UserEditComponent,
                 resolve: {user: UserEditResolver}, canDeactivate: [PreventUnsavedChanges] },
             { path: 'user/ads', component: MyAdsComponent },
-            { path: 'ads/:id/edit', component: AdEditComponent,
+            { path: 'ads/edit/:id', component: AdEditComponent,
                 resolve: {ad: AdEditResolver, categories: CategoriesResolver} },
             { path: 'admin', component: AdminPanelComponent, data: {roles: ['Admin', 'Moderator']} }
         ]
     },
     { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
+
+@NgModule({
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
+  })
+  export class AppRoutingModule { }

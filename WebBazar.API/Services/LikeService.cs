@@ -13,7 +13,7 @@ namespace WebBazar.API.Services
         public LikeService(DataContext data, IMapper mapper)
             : base(data, mapper) {}
 
-        public async Task<Result> LikeAsync(int adId, int userId)
+        public async Task<Result> LikeAdAsync(int adId, int userId)
         {
             var adAlreadyLiked = await this.data.Likes
                 .AnyAsync(l => l.UserId == userId && l.AdId == adId);
@@ -35,7 +35,7 @@ namespace WebBazar.API.Services
             return true;
         }
 
-        public async Task<Result> UnlikeAsync(int adId, int userId)
+        public async Task<Result> UnlikeAdAsync(int adId, int userId)
         {
             var like = await this.data.Likes
                 .FirstOrDefaultAsync(l => l.UserId == userId && l.AdId == adId);

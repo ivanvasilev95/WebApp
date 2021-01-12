@@ -20,7 +20,7 @@ import { AlertifyService } from './_services/alertify.service';
 import { AdListComponent } from './ads/ad-list/ad-list.component';
 import { UserFavoritesComponent } from './users/user-favorites/user-favorites.component';
 import { UserMessagesComponent } from './users/user-messages/user-messages.component';
-import { appRoutes } from './routes';
+import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './_guards/auth.guard';
 import { AdService } from './_services/ad.service';
 import { MyAdsComponent } from './users/my-ads/my-ads.component';
@@ -111,7 +111,7 @@ export class CustomHammerConfig extends HammerGestureConfig  {
       FormsModule,
       ReactiveFormsModule,
       NgxGalleryModule,
-      RouterModule.forRoot(appRoutes),
+      AppRoutingModule,
       BsDropdownModule.forRoot(),
       ModalModule.forRoot(),
       PaginationModule.forRoot(),

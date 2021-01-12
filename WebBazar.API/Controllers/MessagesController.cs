@@ -60,7 +60,7 @@ namespace WebBazar.API.Controllers
             return Created(nameof(this.Create), result.Data);
         }
 
-        [HttpPut(Id + PathSeparator + nameof(MarkAsRead))]
+        [HttpPut(nameof(MarkAsRead) + PathSeparator + Id)]
         public async Task<ActionResult> MarkAsRead(int id)
         {
             return await this.messages

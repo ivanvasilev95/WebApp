@@ -69,7 +69,7 @@ export class MessageService {
   }
 
   markMessageAsRead(id: number) {
-    return this.http.put(this.baseUrl + id + '/markAsRead', {});
+    return this.http.put(this.baseUrl + 'markAsRead/' + id, {});
   }
 
   deleteMessage(id: number) {

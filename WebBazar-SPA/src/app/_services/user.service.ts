@@ -23,10 +23,10 @@ export class UserService {
   }
 
   getUserForEdit(id: number): Observable<User> {
-    return this.http.get<User>(this.baseUrl + id + '/details');
+    return this.http.get<User>(this.baseUrl + 'details/' + id);
   }
 
   editUser(id: number, user: User) {
-    return this.http.put(this.baseUrl + id, user);
+    return this.http.put(this.baseUrl + 'update/' + id, user);
   }
 }
