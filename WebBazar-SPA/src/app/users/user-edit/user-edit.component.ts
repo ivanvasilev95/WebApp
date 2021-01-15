@@ -60,7 +60,7 @@ export class UserEditComponent implements OnInit {
     }
 
     if (email !== null && email !== undefined && !this.validateEmail(email)) {
-      this.alertify.error('Имейлът адресът не е валиден');
+      this.alertify.error('Имейл адресът не е валиден');
       return;
     }
 

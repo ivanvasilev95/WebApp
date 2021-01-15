@@ -55,64 +55,18 @@ namespace WebBazar.API.Services
 
         public async Task<Result> UpdateAsync(int id, UserForUpdateDTO model)
         {
-            var result = await ValidateEmailAddress(id, model.Email);
-            
-            if (result.Failure)
-            {
-                return result;
-            }
-
             var user = await this.data.Users
                 .Where(u => u.Id == id)
                 .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return "Потребителят не е намерен";
+            }
             
             this.mapper.Map(model, user);
 
             return true;
-        }
-
-        private async Task<Result> ValidateEmailAddress(int userId, string email)
-        {
-            const int mainAdminId = 1;
-            
-            if (userId != mainAdminId && string.IsNullOrWhiteSpace(email))
-            {
-                return "Полето имейл не може да бъде празно";
-            }
-
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                if (!IsValidEmailAddress(email))
-                {
-                    return "Имейлът адресът не е валиден";
-                }
-                
-                if (await EmailIsNotAvailableAsync(userId, email))
-                {
-                    return "Вече има регистриран потребител с този имейл адрес";
-                }
-            }
-
-            return true;
-        }
-
-        private bool IsValidEmailAddress(string input)
-        {
-            try
-            {
-                var email = new MailAddress(input);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private async Task<bool> EmailIsNotAvailableAsync(int userId, string email)
-        {
-            return await this.data.Users
-                .AnyAsync(u => u.Id != userId && u.Email == email);
         }
     }
 }
